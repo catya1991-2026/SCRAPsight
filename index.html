@@ -3,221 +3,226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCRAPsight</title>
+<title>SCRAPsight | DCMP Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   
-  // REPLACE WITH YOUR CONFIG
+  // ── FIREBASE CONFIG (Project: scrapsight-8d40c) ──
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    projectId: "YOUR_PROJECT_ID",
-    appId: "YOUR_APP_ID"
+    projectId: "scrapsight-8d40c",
+    // Note: Use your full config from Firebase Settings for complete Auth/Analytics
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  window._db = db;
-  window._fbFns = { collection, addDoc, serverTimestamp };
+  
+  // Global mapping for the Save function
+  window.db = db;
+  window.addDoc = addDoc;
+  window.collection = collection;
+  window.serverTimestamp = serverTimestamp;
 </script>
 
 <style>
   :root {
     --bg: #050505;
     --surface: #121212;
-    --surface2: #1a1a1a;
     --border: #333333;
-    --accent: #ff2d55; /* Cyber Pink */
-    --accent2: #ffffff; /* Stark White */
+    --accent: #ff2d55; 
+    --accent2: #ffffff; 
     --text: #ffffff;
     --muted: #888888;
-    --good: #00ffa3;
-    --bad: #ff3b30;
+    --win: #00ffa3;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    min-height: 100vh;
+    background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif;
     background-image: 
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.05) 39px, rgba(255, 45, 85, 0.05) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.03) 39px, rgba(255, 255, 255, 0.03) 40px);
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.03) 39px, rgba(255, 45, 85, 0.03) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.02) 39px, rgba(255, 255, 255, 0.02) 40px);
   }
 
-  /* ── HEADER ── */
-  .header {
-    background: #000;
-    border-bottom: 3px solid var(--accent);
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-badge {
-    background: var(--accent2);
-    color: #000;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    font-weight: 900;
-    padding: 4px 10px;
-    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-  }
-  .header h1 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 26px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
+  .header { background: #000; border-bottom: 3px solid var(--accent); padding: 20px 32px; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; }
+  .header-badge { background: var(--accent2); color: #000; font-family: 'Share Tech Mono'; font-size: 11px; font-weight: 900; padding: 4px 10px; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); }
+  .header h1 { font-family: 'Barlow Condensed'; font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
   .header h1 span { color: var(--accent); }
 
-  /* ── TABS ── */
-  .tab-nav { display: flex; max-width: 900px; margin: 28px auto 0; padding: 0 24px; }
-  .tab-btn {
-    flex: 1; padding: 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    position: relative;
-  }
-  .tab-btn.active { color: var(--accent); border-color: var(--accent); background: var(--surface2); }
-  .tab-indicator { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: transparent; }
-  .tab-btn.active .tab-indicator { background: var(--accent); }
+  .tab-nav { display: flex; max-width: 900px; margin: 20px auto 0; padding: 0 20px; }
+  .tab-btn { flex: 1; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s; position: relative; }
+  .tab-btn.active { color: var(--accent); border-color: var(--accent); }
+  .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--accent); }
 
-  /* ── FORM ELEMENTS ── */
-  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
-  
-  .team-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent2);
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    margin-bottom: 24px;
-  }
-
-  .section { background: var(--surface); border: 1px solid var(--border); margin-bottom: 24px; }
-  .section-header {
-    padding: 15px 20px;
-    background: linear-gradient(90deg, rgba(255, 45, 85, 0.15), transparent);
-    border-bottom: 1px solid var(--border);
-    color: var(--accent);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-
-  .field-group { display: flex; flex-direction: column; gap: 5px; padding: 15px; }
-  label { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; }
-  
-  input, select, textarea {
-    background: #000;
-    border: 1px solid var(--border);
-    color: #fff;
-    padding: 12px;
-    font-family: 'Barlow', sans-serif;
-    outline: none;
-  }
-  input:focus { border-color: var(--accent); }
-
-  .actions { display: flex; justify-content: flex-end; gap: 10px; padding: 20px; }
-  .btn {
-    padding: 12px 24px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    text-transform: uppercase;
-    cursor: pointer;
-    border: none;
-  }
-  .btn-submit { background: var(--accent); color: white; }
-  .btn-clear { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
   .panel { display: none; }
   .panel.active { display: block; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 20px; padding: 20px; border-left: 4px solid var(--accent); }
+  .card-white { border-left-color: var(--accent2); }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  label { font-family: 'Share Tech Mono'; font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  
+  input, select, textarea { background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; font-family: 'Barlow'; outline: none; width: 100%; }
+  input:focus { border-color: var(--accent); }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .chip { padding: 6px 12px; background: #000; border: 1px solid var(--border); font-size: 12px; cursor: pointer; color: var(--muted); transition: 0.2s; }
+  .chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .actions { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-save { flex: 3; padding: 15px; background: var(--accent); color: white; font-family: 'Barlow Condensed'; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; }
+  .btn-clear { flex: 1; background: transparent; border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-family: 'Barlow Condensed'; }
+
+  #toast { position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000; padding: 15px 25px; font-family: 'Share Tech Mono'; display: none; z-index: 1000; font-weight: bold; }
+  .status-tag { color: var(--win); font-family: 'Share Tech Mono'; font-size: 10px; margin-bottom: 5px; display: block; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-badge">SCRAPsight</div>
+  <div class="header-badge">S.C.R.A.P.</div>
+  <h1>SCRAP<span>SIGHT</span></h1>
 </div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('ei')">01 // Engineering Inspiration<div class="tab-indicator"></div></button>
-  <button class="tab-btn" onclick="switchTab('perf')">02 // Performance<div class="tab-indicator"></div></button>
+  <button class="tab-btn active" id="t1" onclick="switchTab('ei')">01 // DCMP EI QUALIFIERS</button>
+  <button class="tab-btn" id="t2" onclick="switchTab('perf')">02 // PERFORMANCE</button>
 </div>
 
 <div class="container">
-  <div class="team-bar">
-    <div class="field-group">
-      <label>Team Number</label>
-      <input type="number" id="teamNum" placeholder="0000">
-    </div>
-    <div class="field-group">
-      <label>Scout Name</label>
-      <input type="text" id="scoutName" placeholder="Name">
+  <div class="card card-white">
+    <div class="grid-2">
+      <div class="field-group"><label>Team #</label><input type="number" id="teamNum" placeholder="4272"></div>
+      <div class="field-group"><label>Scout</label><input type="text" id="scoutName"></div>
     </div>
   </div>
 
   <div id="panelEI" class="panel active">
-    <div class="section">
-      <div class="section-header">Community & Outreach Impact</div>
+    <div class="card">
+      <span class="status-tag">[!] DISTRICT EVENT WINNER DETECTED</span>
       <div class="field-group">
-        <label>Outreach Notes</label>
-        <textarea id="eiNotes" placeholder="What makes their program stand out?"></textarea>
+        <label>Qualifying District Event</label>
+        <select id="eiEvent">
+          <option value="">-- Select Event --</option>
+          <option>WPI</option><option>Granite State</option><option>Greater Boston</option>
+          <option>Southern NH</option><option>North Shore</option><option>Rhode Island</option>
+          <option>SE Mass</option><option>Western NE</option><option>Waterbury</option>
+          <option>Hartford</option><option>Pine Tree</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Outreach Pillars</label>
+        <div class="chip-group" id="eiChips">
+          <div class="chip" onclick="toggleChip(this)">FLL/FTC Pipeline</div>
+          <div class="chip" onclick="toggleChip(this)">STEM Integration</div>
+          <div class="chip" onclick="toggleChip(this)">Corporate Partnerships</div>
+          <div class="chip" onclick="toggleChip(this)">DEI Initiatives</div>
+          <div class="chip" onclick="toggleChip(this)">Rookie Support</div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>DCMP Edge Pitch</label>
+        <textarea id="eiNotes" rows="4"></textarea>
       </div>
     </div>
   </div>
 
   <div id="panelPerf" class="panel">
-    <div class="section">
-      <div class="section-header">Robot Capabilities</div>
-      <div class="field-group">
-        <label>Primary Role</label>
-        <select id="role">
-          <option>High Scorer</option>
-          <option>Defense</option>
-          <option>Support/Feeder</option>
-        </select>
+    <div class="card">
+      <div class="grid-2">
+        <div class="field-group"><label>Qual Rank</label><input type="text" id="rank"></div>
+        <div class="field-group"><label>EPA Score</label><input type="number" id="epa"></div>
       </div>
+      <div class="field-group">
+        <label>Robot Strengths</label>
+        <div class="chip-group" id="perfChips">
+          <div class="chip" onclick="toggleChip(this)">Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Stage</div>
+          <div class="chip" onclick="toggleChip(this)">Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Driver</div>
+        </div>
+      </div>
+      <div class="field-group"><label>Notes</label><textarea id="perfNotes" rows="3"></textarea></div>
     </div>
   </div>
 
   <div class="actions">
-    <button class="btn btn-clear">Reset</button>
-    <button class="btn btn-submit">Save to Firebase</button>
+    <button class="btn-clear" onclick="clearForm()">CLEAR</button>
+    <button class="btn-save" onclick="saveToFirebase()">SYNC TO SCRAPSIGHT</button>
   </div>
 </div>
+
+<div id="toast">SYNC SUCCESSFUL // DATABASE UPDATED</div>
 
 <script>
   function switchTab(tab) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
     if(tab === 'ei') {
       document.getElementById('panelEI').classList.add('active');
-      event.currentTarget.classList.add('active');
+      document.getElementById('t1').classList.add('active');
     } else {
       document.getElementById('panelPerf').classList.add('active');
-      event.currentTarget.classList.add('active');
+      document.getElementById('t2').classList.add('active');
     }
   }
-</script>
 
+  function toggleChip(el) { el.classList.toggle('active'); }
+
+  async function saveToFirebase() {
+    const btn = document.querySelector('.btn-save');
+    btn.disabled = true;
+    btn.innerText = "SYNCING...";
+
+    const getActiveChips = (id) => Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
+
+    const data = {
+      team: document.getElementById('teamNum').value,
+      scout: document.getElementById('scoutName').value,
+      ei: {
+        event: document.getElementById('eiEvent').value,
+        pillars: getActiveChips('eiChips'),
+        notes: document.getElementById('eiNotes').value
+      },
+      performance: {
+        rank: document.getElementById('rank').value,
+        epa: document.getElementById('epa').value,
+        strengths: getActiveChips('perfChips'),
+        notes: document.getElementById('perfNotes').value
+      },
+      timestamp: window.serverTimestamp()
+    };
+
+    try {
+      await window.addDoc(window.collection(window.db, "scouts"), data);
+      showToast("SYNC SUCCESSFUL // DATA SECURED");
+      clearForm(true);
+    } catch (e) {
+      alert("Error syncing: " + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "SYNC TO SCRAPSIGHT";
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  function clearForm(force = false) {
+    if(!force && !confirm("Clear all unsaved data?")) return;
+    document.querySelectorAll('input, select, textarea').forEach(i => i.value = '');
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  }
+</script>
 </body>
 </html>
