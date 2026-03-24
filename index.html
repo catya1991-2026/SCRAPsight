@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEDCMP Pre-Scouting Form | Cyber Pink</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT.firebaseapp.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID",
+    measurementId:     "YOUR_MEASUREMENT_ID"
+  };
+
+  const app       = initializeApp(firebaseConfig);
+  const db        = getFirestore(app);
+  const analytics = getAnalytics(app);
+
+  window._db        = db;
+  window._analytics = analytics;
+  window._fbFns     = { collection, addDoc, getDocs, query, orderBy, serverTimestamp, logEvent };
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
+
+<style>
+  :root {
+    --bg: #050505;        /* Deep Black */
+    --surface: #121212;   /* Dark Gray */
+    --surface2: #1a1a1a;  /* Slightly lighter gray */
+    --border: #333333;    /* Subtle borders */
+    --accent: #ff2d55;    /* Vibrant Pink */
+    --accent2: #ffffff;   /* Clean White */
+    --text: #ffffff;      /* White Text */
+    --muted: #888888;     /* Muted Silver */
+    --good: #00ffa3;      /* Cyber Green */
+    --warn: #ffcc00;      /* Alert Yellow */
+    --bad: #ff3b30;       /* Danger Red */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    /* Updated background grid to subtle pink/white */
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.05) 39px, rgba(255, 45, 85, 0.05) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.03) 39px, rgba(255, 255, 255, 0.03) 40px);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #000;
+    border-bottom: 3px solid var(--accent);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(255, 45, 85, 0.2);
+  }
+  .header-badge {
+    background: var(--accent2);
+    color: #000;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 4px 10px;
+    letter-spacing: 2px;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-right {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* ── FIREBASE STATUS ── */
+  .fb-status-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .fb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+  .fb-dot.connected { background: var(--good); box-shadow: 0 0 8px var(--good); }
+
+  /* ── TAB NAV ── */
+  .tab-nav { display: flex; max-width: 900px; margin: 28px auto 0; padding: 0 24px; }
+  .tab-btn {
+    flex: 1; padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+  }
+  .tab-btn.active-ei, .tab-btn.active-perf {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .tab-indicator {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: transparent;
+  }
+  .active-ei .tab-indicator, .active-perf .tab-indicator { background: var(--accent); }
+
+  /* ── CONTAINERS & CARDS ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 24px 60px; }
+  .team-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent2);
+    padding: 18px 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .section-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, rgba(255, 45, 85, 0.1), transparent);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+  }
+
+  /* ── INPUTS ── */
+  input, select, textarea {
+    background: #000;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 10px;
+    font-family: 'Barlow', sans-serif;
+    outline: none;
+  }
+  input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 45, 85, 0.2); }
+
+  label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* ── CHIPS & BUTTONS ── */
+  .chip {
+    padding: 6px 12px;
+    background: #000;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--accent2);
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  }
+  .chip.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  .btn {
+    padding: 12px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 1px;
+  }
+  .btn-submit { background: var(--accent); color: #fff; }
+  .btn-submit:hover { filter: brightness(1.2); box-shadow: 0 0 20px rgba(255, 45, 85, 0.4); }
+  .btn-export { background: #fff; color: #000; }
+  
+  /* Modal & Toast Styling */
+  .modal { background: var(--surface); border: 2px solid var(--accent); }
+  .toast { background: var(--accent); color: #fff; font-family: 'Share Tech Mono', monospace; }
+
+  @media (max-width: 640px) {
+    .team-bar { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
