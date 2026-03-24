@@ -10,16 +10,10 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   
-  // ── FIREBASE CONFIG (Project: scrapsight-8d40c) ──
-  const firebaseConfig = {
-    projectId: "scrapsight-8d40c",
-    // Note: Use your full config from Firebase Settings for complete Auth/Analytics
-  };
-
+  const firebaseConfig = { projectId: "scrapsight-8d40c" };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   
-  // Global mapping for the Save function
   window.db = db;
   window.addDoc = addDoc;
   window.collection = collection;
@@ -28,137 +22,115 @@
 
 <style>
   :root {
-    --bg: #050505;
-    --surface: #121212;
-    --border: #333333;
-    --accent: #ff2d55; 
-    --accent2: #ffffff; 
-    --text: #ffffff;
-    --muted: #888888;
-    --win: #00ffa3;
+    --bg: #050505; --surface: #121212; --border: #333; --accent: #ff2d55; 
+    --accent2: #fff; --text: #fff; --muted: #888; --win: #00ffa3;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif;
-    background-image: 
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.03) 39px, rgba(255, 45, 85, 0.03) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.02) 39px, rgba(255, 255, 255, 0.02) 40px);
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.03) 39px, rgba(255, 45, 85, 0.03) 40px),
+                      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.02) 39px, rgba(255, 255, 255, 0.02) 40px);
   }
-
-  .header { background: #000; border-bottom: 3px solid var(--accent); padding: 20px 32px; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; }
-  .header-badge { background: var(--accent2); color: #000; font-family: 'Share Tech Mono'; font-size: 11px; font-weight: 900; padding: 4px 10px; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); }
-  .header h1 { font-family: 'Barlow Condensed'; font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
-  .header h1 span { color: var(--accent); }
-
+  .header { background: #000; border-bottom: 3px solid var(--accent); padding: 15px 30px; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; }
+  .header-badge { background: var(--accent2); color: #000; font-family: 'Share Tech Mono'; font-size: 11px; font-weight: 900; padding: 4px 10px; }
   .tab-nav { display: flex; max-width: 900px; margin: 20px auto 0; padding: 0 20px; }
-  .tab-btn { flex: 1; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s; position: relative; }
-  .tab-btn.active { color: var(--accent); border-color: var(--accent); }
-  .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--accent); }
-
+  .tab-btn { flex: 1; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; cursor: pointer; }
+  .tab-btn.active { color: var(--accent); border-color: var(--accent); position: relative; }
   .container { max-width: 900px; margin: 0 auto; padding: 20px; }
   .panel { display: none; }
   .panel.active { display: block; }
-
   .card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 20px; padding: 20px; border-left: 4px solid var(--accent); }
   .card-white { border-left-color: var(--accent2); }
-
-  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+  .section-title { font-family: 'Barlow Condensed'; color: var(--accent); font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #333; }
+  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-  label { font-family: 'Share Tech Mono'; font-size: 11px; color: var(--muted); text-transform: uppercase; }
-  
-  input, select, textarea { background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; font-family: 'Barlow'; outline: none; width: 100%; }
-  input:focus { border-color: var(--accent); }
-
-  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-  .chip { padding: 6px 12px; background: #000; border: 1px solid var(--border); font-size: 12px; cursor: pointer; color: var(--muted); transition: 0.2s; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  label { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  input, select, textarea { background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; font-family: 'Barlow'; width: 100%; outline: none; }
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 5px 0; }
+  .chip { padding: 6px 10px; background: #000; border: 1px solid var(--border); font-size: 11px; cursor: pointer; color: var(--muted); text-transform: uppercase; }
   .chip.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-  .actions { display: flex; gap: 10px; margin-top: 20px; }
-  .btn-save { flex: 3; padding: 15px; background: var(--accent); color: white; font-family: 'Barlow Condensed'; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; }
-  .btn-clear { flex: 1; background: transparent; border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-family: 'Barlow Condensed'; }
-
-  #toast { position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000; padding: 15px 25px; font-family: 'Share Tech Mono'; display: none; z-index: 1000; font-weight: bold; }
-  .status-tag { color: var(--win); font-family: 'Share Tech Mono'; font-size: 10px; margin-bottom: 5px; display: block; }
+  .btn-save { width: 100%; padding: 18px; background: var(--accent); color: white; font-family: 'Barlow Condensed'; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+  #toast { position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000; padding: 15px; font-family: 'Share Tech Mono'; display: none; z-index: 1000; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-badge">S.C.R.A.P.</div>
-  <h1>SCRAP<span>SIGHT</span></h1>
+  <h1>SCRAP<span>SIGHT_DCMP</span></h1>
 </div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" id="t1" onclick="switchTab('ei')">01 // DCMP EI QUALIFIERS</button>
-  <button class="tab-btn" id="t2" onclick="switchTab('perf')">02 // PERFORMANCE</button>
+  <button class="tab-btn active" id="t1" onclick="switchTab('ei')">01 // IMPACT & OUTREACH</button>
+  <button class="tab-btn" id="t2" onclick="switchTab('perf')">02 // PERFORMANCE DATA</button>
 </div>
 
 <div class="container">
   <div class="card card-white">
     <div class="grid-2">
       <div class="field-group"><label>Team #</label><input type="number" id="teamNum" placeholder="4272"></div>
-      <div class="field-group"><label>Scout</label><input type="text" id="scoutName"></div>
+      <div class="field-group"><label>Scout Name</label><input type="text" id="scoutName"></div>
     </div>
   </div>
 
   <div id="panelEI" class="panel active">
     <div class="card">
-      <span class="status-tag">[!] DISTRICT EVENT WINNER DETECTED</span>
-      <div class="field-group">
-        <label>Qualifying District Event</label>
-        <select id="eiEvent">
-          <option value="">-- Select Event --</option>
-          <option>WPI</option><option>Granite State</option><option>Greater Boston</option>
-          <option>Southern NH</option><option>North Shore</option><option>Rhode Island</option>
-          <option>SE Mass</option><option>Western NE</option><option>Waterbury</option>
-          <option>Hartford</option><option>Pine Tree</option>
-        </select>
+      <div class="section-title">Social Presence</div>
+      <div class="grid-3">
+        <div class="field-group"><label>Instagram</label><input type="text" id="ig" placeholder="@..."></div>
+        <div class="field-group"><label>Twitter/X</label><input type="text" id="tw" placeholder="@..."></div>
+        <div class="field-group"><label>TikTok/Other</label><input type="text" id="tk" placeholder="@..."></div>
       </div>
-      <div class="field-group">
-        <label>Outreach Pillars</label>
-        <div class="chip-group" id="eiChips">
-          <div class="chip" onclick="toggleChip(this)">FLL/FTC Pipeline</div>
-          <div class="chip" onclick="toggleChip(this)">STEM Integration</div>
-          <div class="chip" onclick="toggleChip(this)">Corporate Partnerships</div>
-          <div class="chip" onclick="toggleChip(this)">DEI Initiatives</div>
-          <div class="chip" onclick="toggleChip(this)">Rookie Support</div>
-        </div>
+      
+      <div class="section-title" style="margin-top:20px;">Engagement Portfolio</div>
+      <div class="chip-group" id="eiChips">
+        <div class="chip" onclick="toggleChip(this)">FLL Mentoring</div>
+        <div class="chip" onclick="toggleChip(this)">FTC Mentoring</div>
+        <div class="chip" onclick="toggleChip(this)">Hosting Tournaments</div>
+        <div class="chip" onclick="toggleChip(this)">Summer Camps</div>
+        <div class="chip" onclick="toggleChip(this)">STEM Kits / Grants</div>
+        <div class="chip" onclick="toggleChip(this)">Sponsor Demos</div>
+        <div class="chip" onclick="toggleChip(this)">School Board Advocacy</div>
+        <div class="chip" onclick="toggleChip(this)">Non-Profit Partners</div>
+        <div class="chip" onclick="toggleChip(this)">International Outreach</div>
+        <div class="chip" onclick="toggleChip(this)">Media Appearances</div>
       </div>
-      <div class="field-group">
-        <label>DCMP Edge Pitch</label>
-        <textarea id="eiNotes" rows="4"></textarea>
+      <div class="field-group" style="margin-top:15px;">
+        <label>Impact Summary</label>
+        <textarea id="eiNotes" rows="3" placeholder="Core theme of their EI win..."></textarea>
       </div>
     </div>
   </div>
 
   <div id="panelPerf" class="panel">
     <div class="card">
-      <div class="grid-2">
-        <div class="field-group"><label>Qual Rank</label><input type="text" id="rank"></div>
-        <div class="field-group"><label>EPA Score</label><input type="number" id="epa"></div>
+      <div class="section-title">Event 01 Analysis</div>
+      <div class="grid-3">
+        <div class="field-group"><label>Event Name</label><input type="text" id="e1_name"></div>
+        <div class="field-group"><label>EPA</label><input type="number" id="e1_epa"></div>
+        <div class="field-group"><label>OPR</label><input type="number" id="e1_opr"></div>
       </div>
-      <div class="field-group">
-        <label>Robot Strengths</label>
-        <div class="chip-group" id="perfChips">
-          <div class="chip" onclick="toggleChip(this)">Cycles</div>
-          <div class="chip" onclick="toggleChip(this)">Auto</div>
-          <div class="chip" onclick="toggleChip(this)">Stage</div>
-          <div class="chip" onclick="toggleChip(this)">Defense</div>
-          <div class="chip" onclick="toggleChip(this)">Driver</div>
-        </div>
+      <div class="field-group"><label>Auto Strategy</label><textarea id="e1_auto" rows="2"></textarea></div>
+      <div class="field-group"><label>Teleop Strategy</label><textarea id="e1_tele" rows="2"></textarea></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Event 02 Analysis</div>
+      <div class="grid-3">
+        <div class="field-group"><label>Event Name</label><input type="text" id="e2_name"></div>
+        <div class="field-group"><label>EPA</label><input type="number" id="e2_epa"></div>
+        <div class="field-group"><label>OPR</label><input type="number" id="e2_opr"></div>
       </div>
-      <div class="field-group"><label>Notes</label><textarea id="perfNotes" rows="3"></textarea></div>
+      <div class="field-group"><label>Auto Strategy</label><textarea id="e2_auto" rows="2"></textarea></div>
+      <div class="field-group"><label>Teleop Strategy</label><textarea id="e2_tele" rows="2"></textarea></div>
     </div>
   </div>
 
-  <div class="actions">
-    <button class="btn-clear" onclick="clearForm()">CLEAR</button>
-    <button class="btn-save" onclick="saveToFirebase()">SYNC TO SCRAPSIGHT</button>
-  </div>
+  <button class="btn-save" onclick="saveToFirebase()">Transmit to SCRAPsight</button>
 </div>
 
-<div id="toast">SYNC SUCCESSFUL // DATABASE UPDATED</div>
+<div id="toast">DATA UPLOADED // SYSTEM STABLE</div>
 
 <script>
   function switchTab(tab) {
@@ -177,51 +149,46 @@
 
   async function saveToFirebase() {
     const btn = document.querySelector('.btn-save');
-    btn.disabled = true;
-    btn.innerText = "SYNCING...";
+    btn.innerText = "UPLOADING...";
+    
+    const getChips = (id) => Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
 
-    const getActiveChips = (id) => Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
-
-    const data = {
+    const scoutData = {
       team: document.getElementById('teamNum').value,
       scout: document.getElementById('scoutName').value,
-      ei: {
-        event: document.getElementById('eiEvent').value,
-        pillars: getActiveChips('eiChips'),
-        notes: document.getElementById('eiNotes').value
+      socials: {
+        ig: document.getElementById('ig').value,
+        tw: document.getElementById('tw').value,
+        tk: document.getElementById('tk').value
       },
-      performance: {
-        rank: document.getElementById('rank').value,
-        epa: document.getElementById('epa').value,
-        strengths: getActiveChips('perfChips'),
-        notes: document.getElementById('perfNotes').value
+      ei_actions: getChips('eiChips'),
+      ei_notes: document.getElementById('eiNotes').value,
+      event1: {
+        name: document.getElementById('e1_name').value,
+        epa: document.getElementById('e1_epa').value,
+        opr: document.getElementById('e1_opr').value,
+        auto: document.getElementById('e1_auto').value,
+        tele: document.getElementById('e1_tele').value
+      },
+      event2: {
+        name: document.getElementById('e2_name').value,
+        epa: document.getElementById('e2_epa').value,
+        opr: document.getElementById('e2_opr').value,
+        auto: document.getElementById('e2_auto').value,
+        tele: document.getElementById('e2_tele').value
       },
       timestamp: window.serverTimestamp()
     };
 
     try {
-      await window.addDoc(window.collection(window.db, "scouts"), data);
-      showToast("SYNC SUCCESSFUL // DATA SECURED");
-      clearForm(true);
+      await window.addDoc(window.collection(window.db, "scouts"), scoutData);
+      const t = document.getElementById('toast');
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; location.reload(); }, 2500);
     } catch (e) {
-      alert("Error syncing: " + e.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerText = "SYNC TO SCRAPSIGHT";
+      alert("Error: " + e.message);
+      btn.innerText = "TRANSMIT TO SCRAPSIGHT";
     }
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 3000);
-  }
-
-  function clearForm(force = false) {
-    if(!force && !confirm("Clear all unsaved data?")) return;
-    document.querySelectorAll('input, select, textarea').forEach(i => i.value = '');
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   }
 </script>
 </body>
