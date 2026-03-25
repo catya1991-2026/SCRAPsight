@@ -3,19 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCRAPSIGHT | 2026 Intelligence</title>
+<title>SCRAPsight | DCMP Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  
-  // Your Firebase Config
   const firebaseConfig = { projectId: "scrapsight-8d40c" };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  
-  // Exporting to window so standard JS functions can access them
   window.db = db;
   window.addDoc = addDoc;
   window.collection = collection;
@@ -24,43 +20,170 @@
 
 <style>
   :root {
-    --bg: #050505; --surface: #121212; --border: #333; --accent: #ff2d55; 
-    --accent2: #fff; --text: #fff; --muted: #888; --win: #00ffa3;
+    --bg: #050505; --surface: #0e0e0e; --surface2: #161616; --border: #2a2a2a;
+    --accent: #ff2d55; --accent2: #fff; --text: #f0f0f0; --muted: #666;
+    --win: #00ffa3; --gold: #ffd700; --blue: #00b4ff;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif;
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.03) 39px, rgba(255, 45, 85, 0.03) 40px),
-                      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.02) 39px, rgba(255, 255, 255, 0.02) 40px);
+    background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,45,85,0.025) 39px, rgba(255,45,85,0.025) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
   }
-  .header { background: #000; border-bottom: 3px solid var(--accent); padding: 15px 30px; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; }
-  .header-badge { background: var(--accent2); color: #000; font-family: 'Share Tech Mono'; font-size: 11px; font-weight: 900; padding: 4px 10px; }
-  .tab-nav { display: flex; max-width: 900px; margin: 20px auto 0; padding: 0 20px; }
-  .tab-btn { flex: 1; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; cursor: pointer; transition: 0.2s; }
-  .tab-btn.active { color: var(--accent); border-color: var(--accent); border-bottom: 2px solid var(--accent); }
-  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  /* HEADER */
+  .header {
+    background: #000; border-bottom: 3px solid var(--accent); padding: 12px 30px;
+    display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
+  }
+  .header-badge {
+    background: var(--accent); color: #fff; font-family: 'Share Tech Mono'; font-size: 10px;
+    font-weight: 900; padding: 4px 10px; letter-spacing: 2px;
+  }
+  .header h1 { font-family: 'Barlow Condensed'; font-weight: 900; font-size: 22px; letter-spacing: 2px; }
+  .header h1 span { color: var(--accent); }
+  .header-right { margin-left: auto; font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); }
+
+  /* TABS */
+  .tab-nav { display: flex; max-width: 960px; margin: 20px auto 0; padding: 0 20px; gap: 4px; }
+  .tab-btn {
+    flex: 1; padding: 13px 10px; background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; font-size: 13px;
+    cursor: pointer; transition: all .15s; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .tab-btn:hover { color: #ccc; border-color: #444; }
+  .tab-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(255,45,85,0.06); }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
   .panel { display: none; }
   .panel.active { display: block; }
-  .card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 20px; padding: 20px; border-left: 4px solid var(--accent); }
-  .card-white { border-left-color: var(--accent2); }
-  .section-title { font-family: 'Barlow Condensed'; color: var(--accent); font-weight: 900; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #333; }
-  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    margin-bottom: 16px; padding: 20px; border-left: 3px solid var(--accent);
+  }
+  .card-white { border-left-color: #444; }
+  .card-blue { border-left-color: var(--blue); }
+  .card-gold { border-left-color: var(--gold); }
+  .card-green { border-left-color: var(--win); }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Barlow Condensed'; color: var(--accent); font-weight: 900; font-size: 13px;
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px;
+    border-bottom: 1px solid #1e1e1e; padding-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-title.blue { color: var(--blue); }
+  .section-title.gold { color: var(--gold); }
+  .section-title.green { color: var(--win); }
+  .section-title .tag {
+    font-size: 9px; padding: 2px 6px; background: rgba(255,45,85,0.15);
+    border: 1px solid rgba(255,45,85,0.3); color: var(--accent); margin-left: auto;
+  }
+
+  /* FIELDS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  label { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 10px; display: block; }
-  input, select, textarea { background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; font-family: 'Barlow'; width: 100%; outline: none; }
-  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-  .chip { padding: 6px 10px; background: #000; border: 1px solid var(--border); font-size: 10px; cursor: pointer; color: var(--muted); text-transform: uppercase; border-radius: 2px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+  .field-group:last-child { margin-bottom: 0; }
+  label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  input, select, textarea {
+    background: #000; border: 1px solid var(--border); color: #fff;
+    padding: 9px 10px; font-family: 'Barlow'; font-size: 13px; width: 100%; outline: none;
+    transition: border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: #111; }
+  textarea { resize: vertical; line-height: 1.5; }
+
+  /* CHIPS */
+  .chip-label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 5px; }
+  .chip-group { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .chip {
+    padding: 5px 9px; background: #000; border: 1px solid var(--border);
+    font-size: 10px; cursor: pointer; color: var(--muted); text-transform: uppercase;
+    border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; letter-spacing: 0.5px;
+    transition: all .12s; user-select: none;
+  }
+  .chip:hover { border-color: #555; color: #aaa; }
   .chip.active { background: var(--accent); color: white; border-color: var(--accent); }
-  .btn-save { width: 100%; padding: 18px; background: var(--accent); color: white; font-family: 'Barlow Condensed'; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
-  #toast { position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000; padding: 15px; font-family: 'Share Tech Mono'; display: none; z-index: 1000; }
+  .chip.blue.active { background: var(--blue); border-color: var(--blue); }
+  .chip.gold.active { background: var(--gold); border-color: var(--gold); color: #000; }
+  .chip.green.active { background: var(--win); border-color: var(--win); color: #000; }
+
+  /* EVENT BLOCK */
+  .event-block { border: 1px solid var(--border); background: var(--surface2); margin-bottom: 12px; }
+  .event-header {
+    background: #0a0a0a; padding: 10px 15px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border); cursor: pointer; user-select: none;
+  }
+  .event-header:hover { background: #111; }
+  .event-num { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--accent); }
+  .event-name-sel { background: none; border: none; color: #fff; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 15px; cursor: pointer; flex: 1; }
+  .event-name-sel option { background: #111; font-family: 'Barlow', sans-serif; font-size: 13px; }
+  .event-toggle { margin-left: auto; font-family: 'Share Tech Mono'; font-size: 11px; color: var(--muted); }
+  .event-body { padding: 15px; display: block; }
+  .event-body.collapsed { display: none; }
+
+  /* PERFORMANCE SUMMARY BAR */
+  .perf-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+  .perf-stat {
+    flex: 1; background: #000; border: 1px solid var(--border); padding: 10px;
+    text-align: center;
+  }
+  .perf-stat .val { font-family: 'Barlow Condensed'; font-size: 24px; font-weight: 900; color: var(--blue); }
+  .perf-stat .lbl { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+  /* AWARDS */
+  .award-chip { padding: 6px 10px; background: #100d00; border: 1px solid #3a2a00; font-size: 10px; cursor: pointer; color: #888; text-transform: uppercase; border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; transition: all .12s; }
+  .award-chip.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+  /* SAVE BTN */
+  .btn-save {
+    width: 100%; padding: 18px; background: var(--accent); color: white;
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 18px; border: none;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 3px; margin-top: 8px;
+    transition: opacity .15s;
+  }
+  .btn-save:hover { opacity: 0.9; }
+  .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000;
+    padding: 15px 20px; font-family: 'Share Tech Mono'; font-size: 12px; display: none; z-index: 1000;
+    border-left: 4px solid #00cc80;
+  }
+
+  /* INLINE INPUT IN TITLE */
+  .inline-input {
+    background: none; border: none; border-bottom: 1px solid #333; color: #fff;
+    font-family: 'Share Tech Mono'; font-size: 10px; width: 100px; padding: 1px 3px; outline: none;
+  }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 15px 0; }
+
+  /* SUBSECTION */
+  .sub-title { font-family: 'Share Tech Mono'; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 6px; }
+
+  @media(max-width:600px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .perf-bar { flex-wrap: wrap; }
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-badge">DCMP.INTEL</div>
-  <h1>SCRAP<span>SIGHT_2026</span></h1>
+  <div class="header-badge">S.C.R.A.P.</div>
+  <h1>SCRAP<span>SIGHT</span> // DCMP</h1>
+  <div class="header-right" id="clockEl"></div>
 </div>
 
 <div class="tab-nav">
@@ -69,117 +192,541 @@
 </div>
 
 <div class="container">
-  <div class="card card-white">
-    <div class="grid-2">
+
+  <!-- GLOBAL HEADER CARD -->
+  <div class="card card-white" style="margin-bottom:16px;">
+    <div class="grid-3">
       <div class="field-group"><label>Team #</label><input type="number" id="teamNum" placeholder="4272"></div>
-      <div class="field-group"><label>Scout ID</label><input type="text" id="scoutName" placeholder="Unit-01"></div>
+      <div class="field-group"><label>Team Name</label><input type="text" id="teamName" placeholder="Optional"></div>
+      <div class="field-group"><label>Scout ID</label><input type="text" id="scoutName"></div>
     </div>
   </div>
 
+  <!-- ===================== EI ANALYSIS PANEL ===================== -->
   <div id="panelEI" class="panel active">
+
+    <!-- Social & Web -->
     <div class="card">
-      <div class="section-title">Impact & Outreach Inventory</div>
-      
-      <label>Youth / pipeline</label>
-      <div class="chip-group" id="ei_youth">
-        <div class="chip" onclick="toggleChip(this)">FLL Mentor</div>
-        <div class="chip" onclick="toggleChip(this)">FTC Mentor</div>
-        <div class="chip" onclick="toggleChip(this)">Girl Scouts</div>
-        <div class="chip" onclick="toggleChip(this)">Boy Scouts / 4-H</div>
-        <div class="chip" onclick="toggleChip(this)">Unified Robotics</div>
-        <div class="chip" onclick="toggleChip(this)">Summer Camps</div>
+      <div class="section-title">Social & Web Presence</div>
+      <div class="grid-4">
+        <div class="field-group"><label>Instagram</label><input type="text" id="ig" placeholder="@handle"></div>
+        <div class="field-group"><label>Website</label><input type="text" id="web" placeholder="url"></div>
+        <div class="field-group"><label>TikTok</label><input type="text" id="tiktok" placeholder="@handle"></div>
+        <div class="field-group"><label>X / Twitter</label><input type="text" id="twitter" placeholder="@handle"></div>
       </div>
-
-      <label>Community Integration</label>
-      <div class="chip-group" id="ei_comm">
-        <div class="chip" onclick="toggleChip(this)">Community Days</div>
-        <div class="chip" onclick="toggleChip(this)">Library Demos</div>
-        <div class="chip" onclick="toggleChip(this)">Gov Advocacy</div>
-        <div class="chip" onclick="toggleChip(this)">Rotary/Lions Club</div>
-        <div class="chip" onclick="toggleChip(this)">DEI Initiatives</div>
-        <div class="chip" onclick="toggleChip(this)">Open Alliance</div>
-      </div>
-
-      <div class="field-group" style="margin-top:15px;">
-        <label>EI Award Announcement Script / Narrative Hook</label>
-        <textarea id="eiScript" rows="3" placeholder="Key phrases used in their script (e.g., 'From small sparks to a forest fire of innovation...')"></textarea>
-      </div>
-
-      <div class="grid-3">
-        <div class="field-group"><label>Instagram</label><input type="text" id="ig"></div>
-        <div class="field-group"><label>Website</label><input type="text" id="web"></div>
-        <div class="field-group"><label>TikTok/X</label><input type="text" id="socialOther"></div>
+      <div class="grid-4">
+        <div class="field-group"><label>YouTube</label><input type="text" id="youtube" placeholder="url"></div>
+        <div class="field-group"><label>LinkedIn</label><input type="text" id="linkedin" placeholder="url"></div>
+        <div class="field-group"><label>GitHub</label><input type="text" id="github" placeholder="url"></div>
+        <div class="field-group"><label>Other</label><input type="text" id="socialOther" placeholder=""></div>
       </div>
     </div>
-  </div>
 
-  <div id="panelPerf" class="panel">
+    <!-- Outreach Tactics -->
     <div class="card">
-      <div class="section-title">NE Performance Profile</div>
-      
+      <div class="section-title">Outreach & Community Impact</div>
+
+      <div class="sub-title">FIRST Ecosystem</div>
+      <div class="chip-group" id="eiChips_first">
+        <div class="chip" onclick="toggleChip(this)">FLL Mentor</div>
+        <div class="chip" onclick="toggleChip(this)">FLL Volunteer</div>
+        <div class="chip" onclick="toggleChip(this)">FLL Event Host</div>
+        <div class="chip" onclick="toggleChip(this)">FTC Mentor</div>
+        <div class="chip" onclick="toggleChip(this)">FTC Volunteer</div>
+        <div class="chip" onclick="toggleChip(this)">FRC Rookie Mentorship</div>
+        <div class="chip" onclick="toggleChip(this)">VEX Support</div>
+        <div class="chip" onclick="toggleChip(this)">TSA/SkillsUSA</div>
+        <div class="chip" onclick="toggleChip(this)">FIRST Alum Network</div>
+      </div>
+
+      <div class="sub-title">Education & STEM</div>
+      <div class="chip-group" id="eiChips_edu">
+        <div class="chip" onclick="toggleChip(this)">School Demos</div>
+        <div class="chip" onclick="toggleChip(this)">Classroom Visits</div>
+        <div class="chip" onclick="toggleChip(this)">STEM Nights</div>
+        <div class="chip" onclick="toggleChip(this)">Summer Camp Host</div>
+        <div class="chip" onclick="toggleChip(this)">After-School Club</div>
+        <div class="chip" onclick="toggleChip(this)">Workshop Host</div>
+        <div class="chip" onclick="toggleChip(this)">Hackathon Host</div>
+        <div class="chip" onclick="toggleChip(this)">Library Programs</div>
+        <div class="chip" onclick="toggleChip(this)">Museum Outreach</div>
+        <div class="chip" onclick="toggleChip(this)">Science Fair Judge</div>
+      </div>
+
+      <div class="sub-title">Community & Public</div>
+      <div class="chip-group" id="eiChips_community">
+        <div class="chip" onclick="toggleChip(this)">Community Days</div>
+        <div class="chip" onclick="toggleChip(this)">Town Fairs/Festivals</div>
+        <div class="chip" onclick="toggleChip(this)">Girl Scouts</div>
+        <div class="chip" onclick="toggleChip(this)">Boy Scouts / Scouts BSA</div>
+        <div class="chip" onclick="toggleChip(this)">4-H Clubs</div>
+        <div class="chip" onclick="toggleChip(this)">Boys & Girls Club</div>
+        <div class="chip" onclick="toggleChip(this)">Youth Sports Partnerships</div>
+        <div class="chip" onclick="toggleChip(this)">Local Business Partnerships</div>
+        <div class="chip" onclick="toggleChip(this)">Farmers Markets</div>
+        <div class="chip" onclick="toggleChip(this)">Food Drives / Volunteering</div>
+        <div class="chip" onclick="toggleChip(this)">Senior Centers</div>
+        <div class="chip" onclick="toggleChip(this)">Churches/Faith Orgs</div>
+      </div>
+
+      <div class="sub-title">Diversity, Equity & Inclusion</div>
+      <div class="chip-group" id="eiChips_dei">
+        <div class="chip" onclick="toggleChip(this)">DEI Focus</div>
+        <div class="chip" onclick="toggleChip(this)">Girls in STEM</div>
+        <div class="chip" onclick="toggleChip(this)">Underserved Communities</div>
+        <div class="chip" onclick="toggleChip(this)">Unified Robotics</div>
+        <div class="chip" onclick="toggleChip(this)">Special Needs Programs</div>
+        <div class="chip" onclick="toggleChip(this)">Title I Schools</div>
+        <div class="chip" onclick="toggleChip(this)">International Outreach</div>
+        <div class="chip" onclick="toggleChip(this)">Rural Outreach</div>
+        <div class="chip" onclick="toggleChip(this)">Multilingual Outreach</div>
+      </div>
+
+      <div class="sub-title">Funding & Advocacy</div>
+      <div class="chip-group" id="eiChips_funding">
+        <div class="chip" onclick="toggleChip(this)">Rookie Grants</div>
+        <div class="chip" onclick="toggleChip(this)">Grant Writing Assistance</div>
+        <div class="chip" onclick="toggleChip(this)">Sponsor Integration</div>
+        <div class="chip" onclick="toggleChip(this)">Gov. Advocacy</div>
+        <div class="chip" onclick="toggleChip(this)">State/Fed Recognition</div>
+        <div class="chip" onclick="toggleChip(this)">Media / Press Coverage</div>
+        <div class="chip" onclick="toggleChip(this)">Fundraiser Events</div>
+        <div class="chip" onclick="toggleChip(this)">Corporate Partnership Programs</div>
+      </div>
+    </div>
+
+    <!-- Awards Won -->
+    <div class="card card-gold">
+      <div class="section-title gold">Awards Portfolio</div>
+      <div class="sub-title">FIRST Impact & Chairman's</div>
+      <div class="chip-group" id="awardsChips_impact">
+        <div class="chip award-chip" onclick="toggleChip(this)">Chairman's Award</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">FIRST Impact</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">EI Finalist</div>
+      </div>
+      <div class="sub-title">Excellence & Judged Awards</div>
+      <div class="chip-group" id="awardsChips_judged">
+        <div class="chip award-chip" onclick="toggleChip(this)">Engineering Excellence</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Engineering Inspiration</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Entrepreneurship</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Innovation in Control</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Quality</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Safety</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Imagery</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Industrial Design</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Gracious Professionalism</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Judges' Award</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Rookie All-Star</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Rookie Inspiration</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Sustainability</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Team Spirit</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Deans List</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Woodie Flowers</div>
+      </div>
+      <div class="sub-title">Competition Awards</div>
+      <div class="chip-group" id="awardsChips_comp">
+        <div class="chip award-chip" onclick="toggleChip(this)">Winner</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Finalist</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">Semi-Finalist</div>
+        <div class="chip award-chip" onclick="toggleChip(this)">3rd Pick Alliance</div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <label>Additional Awards / Notes</label>
+        <input type="text" id="awardsOther" placeholder="e.g. 2x Regional Champions 2023-24">
+      </div>
+    </div>
+
+    <!-- EI Script / Presentation -->
+    <div class="card card-blue">
+      <div class="section-title blue">Award Announcement Script</div>
+      <div class="field-group">
+        <label>Emcee Script Used During Award Ceremony (copy verbatim if possible)</label>
+        <textarea id="eiScript" rows="5" placeholder="Paste or transcribe their announcement script here — exact language used when they were called for their award..."></textarea>
+      </div>
+      <div class="field-group">
+        <label>Presentation Style / Delivery Notes</label>
+        <textarea id="eiPresentationNotes" rows="3" placeholder="e.g. Slide deck, video, skit, props, interviewee style, energy level..."></textarea>
+      </div>
+      <div class="field-group">
+        <label>Key Impact Numbers / Stats Mentioned</label>
+        <input type="text" id="eiStats" placeholder="e.g. 3000 students reached, 12 FLL teams mentored, 47 events...">
+      </div>
+    </div>
+
+    <!-- EI Narrative -->
+    <div class="card">
+      <div class="section-title">Scout Notes — EI Narrative</div>
+      <div class="field-group">
+        <label>Overall EI Winning Narrative & Observations</label>
+        <textarea id="eiNotes" rows="4" placeholder="What's their story? What makes judges pick them? Themes, emotional hooks, unique angles..."></textarea>
+      </div>
       <div class="grid-2">
         <div class="field-group">
-          <label>District Event</label>
-          <select id="event_name">
-            <option value="">Select NE Event...</option>
-            <option>Minuteman (MABIL)</option>
-            <option>Pine Tree (MEFAL)</option>
-            <option>North Shore (MAREA)</option>
-            <option>Western NE (MAWNE)</option>
-            <option>Granite State (NHBED)</option>
-            <option>URI (RIKIN)</option>
-            <option>Waterbury (CTWAT)</option>
-            <option>Hartford (CTHAR)</option>
-            <option>UNH (NHDUR)</option>
-            <option>Greater Boston (MABOS)</option>
-            <option>UVM (VTBUR)</option>
-            <option>WPI (MAWOR)</option>
-          </select>
+          <label>Strengths</label>
+          <textarea id="eiStrengths" rows="3" placeholder="Strong community reach, compelling stats, polished presentation..."></textarea>
         </div>
-        <div class="field-group"><label>Rank</label><input type="text" id="perf_rank"></div>
-      </div>
-
-      <div class="grid-3">
-        <div class="field-group"><label>EPA</label><input type="number" id="perf_epa"></div>
-        <div class="field-group"><label>OPR</label><input type="number" id="perf_opr"></div>
-        <div class="field-group"><label>Awards Won</label><input type="text" id="perf_awards"></div>
-      </div>
-
-      <label>2026 Auto Strategies</label>
-      <div class="chip-group" id="auto_chips">
-        <div class="chip" onclick="toggleChip(this)">8 Preload + Shoot</div>
-        <div class="chip" onclick="toggleChip(this)">8 Preload + 1 Cycle</div>
-        <div class="chip" onclick="toggleChip(this)">8 Preload + 2 Cycle</div>
-        <div class="chip" onclick="toggleChip(this)">Centerline Steal</div>
-        <div class="chip" onclick="toggleChip(this)">Cross-Field Shuttle</div>
-        <div class="chip" onclick="toggleChip(this)">Denial / Defense</div>
-        <div class="chip" onclick="toggleChip(this)">Mobility Only</div>
-      </div>
-
-      <label>Robot Capability / Endgame</label>
-      <div class="chip-group" id="cap_chips">
-        <div class="chip" onclick="toggleChip(this)">Solo Climb</div>
-        <div class="chip" onclick="toggleChip(this)">Harmonized</div>
-        <div class="chip" onclick="toggleChip(this)">Deep Climb</div>
-        <div class="chip" onclick="toggleChip(this)">Shallow Climb</div>
-        <div class="chip" onclick="toggleChip(this)">Trap Score</div>
-        <div class="chip" onclick="toggleChip(this)">Park Only</div>
+        <div class="field-group">
+          <label>Potential Vulnerabilities</label>
+          <textarea id="eiWeaknesses" rows="3" placeholder="Repetitive year-over-year, thin on DEI, weak digital presence..."></textarea>
+        </div>
       </div>
     </div>
-  </div>
 
-  <button class="btn-save" onclick="saveToFirebase()">Transmit to SCRAPSIGHT</button>
+  </div><!-- end panelEI -->
+
+
+  <!-- ===================== EVENT ANALYTICS PANEL ===================== -->
+  <div id="panelPerf" class="panel">
+
+    <!-- Event 1 -->
+    <div id="eventBlock1" class="event-block">
+      <div class="event-header" onclick="toggleEvent(1)">
+        <span class="event-num">EVENT 01</span>
+        <select class="event-name-sel" id="e1_name">
+          <option value="">— Select NE Event —</option>
+          <optgroup label="New England District Events 2026">
+            <option>NE District — Greater Boston</option>
+            <option>NE District — Hartford</option>
+            <option>NE District — WPI</option>
+            <option>NE District — Pine Tree</option>
+            <option>NE District — Rhode Island</option>
+            <option>NE District — Southern NH</option>
+            <option>NE District — Granite State</option>
+            <option>NE District — Vermont</option>
+            <option>NE District — Connecticut</option>
+            <option>NE District — North Shore</option>
+            <option>NE District — Westfield</option>
+            <option>NE District — SE Mass</option>
+            <option>NE District — Central Mass</option>
+            <option>NE District — Worcester</option>
+            <option>NE District — Bridgewater State</option>
+            <option>NE District — UNH</option>
+            <option>NE District — Northeastern</option>
+            <option>NE District — Cape Cod</option>
+            <option>NE District — Maine</option>
+            <option>NE DCMP — New England Championship</option>
+          </optgroup>
+        </select>
+        <span class="event-toggle" id="et1">[ — ]</span>
+      </div>
+      <div class="event-body" id="eb1">
+        <!-- Perf Stats -->
+        <div class="perf-bar">
+          <div class="perf-stat"><div class="val" id="e1_epa_display">—</div><div class="lbl">EPA</div></div>
+          <div class="perf-stat"><div class="val" id="e1_opr_display">—</div><div class="lbl">OPR</div></div>
+          <div class="perf-stat"><div class="val" id="e1_rank_display">—</div><div class="lbl">Rank</div></div>
+          <div class="perf-stat"><div class="val" id="e1_record_display">—</div><div class="lbl">Record</div></div>
+        </div>
+        <div class="grid-4">
+          <div class="field-group"><label>EPA</label><input type="number" id="e1_epa" oninput="liveUpdate('e1_epa','e1_epa_display')"></div>
+          <div class="field-group"><label>OPR</label><input type="number" id="e1_opr" oninput="liveUpdate('e1_opr','e1_opr_display')"></div>
+          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e1_rank" oninput="liveUpdate('e1_rank','e1_rank_display')"></div>
+          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e1_record" placeholder="8-4-0" oninput="liveUpdate('e1_record','e1_record_display')"></div>
+        </div>
+        <div class="grid-3">
+          <div class="field-group"><label>Alliance Captain?</label>
+            <select id="e1_captain"><option value="">—</option><option>Yes – 1st Pick</option><option>Yes – 2nd Pick</option><option>Yes – 3rd Pick</option><option>No – Was Picked</option><option>No – Didn't Alliance</option></select>
+          </div>
+          <div class="field-group"><label>Alliance Result</label>
+            <select id="e1_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option></select>
+          </div>
+          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e1_avgpts" placeholder="0"></div>
+        </div>
+        <hr class="divider">
+
+        <!-- AUTO -->
+        <div class="section-title">Auto Strategy</div>
+        <div class="sub-title">Starting Position</div>
+        <div class="chip-group" id="e1_pos_chips">
+          <div class="chip blue" onclick="toggleChip(this)">Amp Side</div>
+          <div class="chip blue" onclick="toggleChip(this)">Center</div>
+          <div class="chip blue" onclick="toggleChip(this)">Source Side</div>
+          <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
+        </div>
+
+        <div class="sub-title">2026 Auto Routines</div>
+        <div class="chip-group" id="e1_auto_chips">
+          <div class="chip" onclick="toggleChip(this)">8 Preload + Shoot Only</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload + 1 Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload + 2 Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload + 3 Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">4 Preload + Shoot</div>
+          <div class="chip" onclick="toggleChip(this)">4 Preload + 1 Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">2 Preload + Shoot</div>
+          <div class="chip" onclick="toggleChip(this)">1 Preload + Shoot</div>
+          <div class="chip" onclick="toggleChip(this)">Centerline Rush</div>
+          <div class="chip" onclick="toggleChip(this)">Centerline Steal (Defensive)</div>
+          <div class="chip" onclick="toggleChip(this)">Mobility Only</div>
+          <div class="chip" onclick="toggleChip(this)">No Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
+          <div class="chip" onclick="toggleChip(this)">Notes from Floor</div>
+          <div class="chip" onclick="toggleChip(this)">Vision-Based Auto</div>
+        </div>
+
+        <div class="sub-title">Auto Climb / Park</div>
+        <div class="chip-group" id="e1_autoclimb_chips">
+          <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Auto Park</div>
+          <div class="chip green" onclick="toggleChip(this)">Neither</div>
+        </div>
+        <div class="field-group"><label>Auto Notes</label><input type="text" id="e1_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
+        <hr class="divider">
+
+        <!-- TELEOP -->
+        <div class="section-title">Teleop Strategy</div>
+        <div class="sub-title">Primary Scoring Role</div>
+        <div class="chip-group" id="e1_role_chips">
+          <div class="chip" onclick="toggleChip(this)">Primary Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Secondary Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Support / Feeder</div>
+          <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Flexible</div>
+        </div>
+
+        <div class="sub-title">Scoring Locations</div>
+        <div class="chip-group" id="e1_tele_chips">
+          <div class="chip" onclick="toggleChip(this)">Speaker — Close</div>
+          <div class="chip" onclick="toggleChip(this)">Speaker — Far/Podium</div>
+          <div class="chip" onclick="toggleChip(this)">Speaker — Anywhere</div>
+          <div class="chip" onclick="toggleChip(this)">Amp Primary</div>
+          <div class="chip" onclick="toggleChip(this)">Amp + Speaker Combo</div>
+          <div class="chip" onclick="toggleChip(this)">Trap Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Shuttle / Pass Only</div>
+          <div class="chip" onclick="toggleChip(this)">Floor Intake</div>
+          <div class="chip" onclick="toggleChip(this)">Source Intake</div>
+          <div class="chip" onclick="toggleChip(this)">Both Intakes</div>
+        </div>
+
+        <div class="sub-title">Cycle Speed</div>
+        <div class="chip-group" id="e1_cycle_chips">
+          <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">5–8s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
+        </div>
+
+        <div class="sub-title">Defense</div>
+        <div class="chip-group" id="e1_def_chips">
+          <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Dedicated Defender</div>
+          <div class="chip" onclick="toggleChip(this)">Good Defense Resistance</div>
+          <div class="chip" onclick="toggleChip(this)">Susceptible to Defense</div>
+          <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
+        </div>
+        <hr class="divider">
+
+        <!-- ENDGAME -->
+        <div class="section-title">Endgame / Climb</div>
+        <div class="chip-group" id="e1_climb_chips">
+          <div class="chip green" onclick="toggleChip(this)">Onstage (Climb)</div>
+          <div class="chip green" onclick="toggleChip(this)">Park</div>
+          <div class="chip green" onclick="toggleChip(this)">Spotlit Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Trap Score</div>
+          <div class="chip green" onclick="toggleChip(this)">Harmony (2)</div>
+          <div class="chip green" onclick="toggleChip(this)">Harmony (3)</div>
+          <div class="chip green" onclick="toggleChip(this)">Early Climb (&lt;20s)</div>
+          <div class="chip green" onclick="toggleChip(this)">Last Possible Second</div>
+          <div class="chip green" onclick="toggleChip(this)">Fails Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
+        </div>
+        <div class="field-group"><label>Teleop / Endgame Notes</label><input type="text" id="e1_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
+      </div>
+    </div><!-- end event 1 -->
+
+    <!-- Event 2 -->
+    <div id="eventBlock2" class="event-block">
+      <div class="event-header" onclick="toggleEvent(2)">
+        <span class="event-num">EVENT 02</span>
+        <select class="event-name-sel" id="e2_name">
+          <option value="">— Select NE Event —</option>
+          <optgroup label="New England District Events 2026">
+            <option>NE District — Greater Boston</option>
+            <option>NE District — Hartford</option>
+            <option>NE District — WPI</option>
+            <option>NE District — Pine Tree</option>
+            <option>NE District — Rhode Island</option>
+            <option>NE District — Southern NH</option>
+            <option>NE District — Granite State</option>
+            <option>NE District — Vermont</option>
+            <option>NE District — Connecticut</option>
+            <option>NE District — North Shore</option>
+            <option>NE District — Westfield</option>
+            <option>NE District — SE Mass</option>
+            <option>NE District — Central Mass</option>
+            <option>NE District — Worcester</option>
+            <option>NE District — Bridgewater State</option>
+            <option>NE District — UNH</option>
+            <option>NE District — Northeastern</option>
+            <option>NE District — Cape Cod</option>
+            <option>NE District — Maine</option>
+            <option>NE DCMP — New England Championship</option>
+          </optgroup>
+        </select>
+        <span class="event-toggle" id="et2">[ — ]</span>
+      </div>
+      <div class="event-body" id="eb2">
+        <div class="perf-bar">
+          <div class="perf-stat"><div class="val" id="e2_epa_display">—</div><div class="lbl">EPA</div></div>
+          <div class="perf-stat"><div class="val" id="e2_opr_display">—</div><div class="lbl">OPR</div></div>
+          <div class="perf-stat"><div class="val" id="e2_rank_display">—</div><div class="lbl">Rank</div></div>
+          <div class="perf-stat"><div class="val" id="e2_record_display">—</div><div class="lbl">Record</div></div>
+        </div>
+        <div class="grid-4">
+          <div class="field-group"><label>EPA</label><input type="number" id="e2_epa" oninput="liveUpdate('e2_epa','e2_epa_display')"></div>
+          <div class="field-group"><label>OPR</label><input type="number" id="e2_opr" oninput="liveUpdate('e2_opr','e2_opr_display')"></div>
+          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e2_rank" oninput="liveUpdate('e2_rank','e2_rank_display')"></div>
+          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e2_record" placeholder="8-4-0" oninput="liveUpdate('e2_record','e2_record_display')"></div>
+        </div>
+        <div class="grid-3">
+          <div class="field-group"><label>Alliance Captain?</label>
+            <select id="e2_captain"><option value="">—</option><option>Yes – 1st Pick</option><option>Yes – 2nd Pick</option><option>Yes – 3rd Pick</option><option>No – Was Picked</option><option>No – Didn't Alliance</option></select>
+          </div>
+          <div class="field-group"><label>Alliance Result</label>
+            <select id="e2_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option></select>
+          </div>
+          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e2_avgpts" placeholder="0"></div>
+        </div>
+        <hr class="divider">
+
+        <div class="section-title">Auto Strategy</div>
+        <div class="sub-title">Starting Position</div>
+        <div class="chip-group" id="e2_pos_chips">
+          <div class="chip blue" onclick="toggleChip(this)">Amp Side</div>
+          <div class="chip blue" onclick="toggleChip(this)">Center</div>
+          <div class="chip blue" onclick="toggleChip(this)">Source Side</div>
+          <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
+        </div>
+
+        <div class="sub-title">2026 Auto Routines</div>
+        <div class="chip-group" id="e2_auto_chips">
+          <div class="chip" onclick="toggleChip(this)">8 Preload + Shoot Only</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload + 1 Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload + 2 Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload + 3 Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">4 Preload + Shoot</div>
+          <div class="chip" onclick="toggleChip(this)">4 Preload + 1 Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">2 Preload + Shoot</div>
+          <div class="chip" onclick="toggleChip(this)">1 Preload + Shoot</div>
+          <div class="chip" onclick="toggleChip(this)">Centerline Rush</div>
+          <div class="chip" onclick="toggleChip(this)">Centerline Steal (Defensive)</div>
+          <div class="chip" onclick="toggleChip(this)">Mobility Only</div>
+          <div class="chip" onclick="toggleChip(this)">No Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
+          <div class="chip" onclick="toggleChip(this)">Notes from Floor</div>
+          <div class="chip" onclick="toggleChip(this)">Vision-Based Auto</div>
+        </div>
+
+        <div class="sub-title">Auto Climb / Park</div>
+        <div class="chip-group" id="e2_autoclimb_chips">
+          <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Auto Park</div>
+          <div class="chip green" onclick="toggleChip(this)">Neither</div>
+        </div>
+        <div class="field-group"><label>Auto Notes</label><input type="text" id="e2_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
+        <hr class="divider">
+
+        <div class="section-title">Teleop Strategy</div>
+        <div class="sub-title">Primary Scoring Role</div>
+        <div class="chip-group" id="e2_role_chips">
+          <div class="chip" onclick="toggleChip(this)">Primary Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Secondary Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Support / Feeder</div>
+          <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Flexible</div>
+        </div>
+
+        <div class="sub-title">Scoring Locations</div>
+        <div class="chip-group" id="e2_tele_chips">
+          <div class="chip" onclick="toggleChip(this)">Speaker — Close</div>
+          <div class="chip" onclick="toggleChip(this)">Speaker — Far/Podium</div>
+          <div class="chip" onclick="toggleChip(this)">Speaker — Anywhere</div>
+          <div class="chip" onclick="toggleChip(this)">Amp Primary</div>
+          <div class="chip" onclick="toggleChip(this)">Amp + Speaker Combo</div>
+          <div class="chip" onclick="toggleChip(this)">Trap Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Shuttle / Pass Only</div>
+          <div class="chip" onclick="toggleChip(this)">Floor Intake</div>
+          <div class="chip" onclick="toggleChip(this)">Source Intake</div>
+          <div class="chip" onclick="toggleChip(this)">Both Intakes</div>
+        </div>
+
+        <div class="sub-title">Cycle Speed</div>
+        <div class="chip-group" id="e2_cycle_chips">
+          <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">5–8s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
+        </div>
+
+        <div class="sub-title">Defense</div>
+        <div class="chip-group" id="e2_def_chips">
+          <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Dedicated Defender</div>
+          <div class="chip" onclick="toggleChip(this)">Good Defense Resistance</div>
+          <div class="chip" onclick="toggleChip(this)">Susceptible to Defense</div>
+          <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
+        </div>
+        <hr class="divider">
+
+        <div class="section-title">Endgame / Climb</div>
+        <div class="chip-group" id="e2_climb_chips">
+          <div class="chip green" onclick="toggleChip(this)">Onstage (Climb)</div>
+          <div class="chip green" onclick="toggleChip(this)">Park</div>
+          <div class="chip green" onclick="toggleChip(this)">Spotlit Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Trap Score</div>
+          <div class="chip green" onclick="toggleChip(this)">Harmony (2)</div>
+          <div class="chip green" onclick="toggleChip(this)">Harmony (3)</div>
+          <div class="chip green" onclick="toggleChip(this)">Early Climb (&lt;20s)</div>
+          <div class="chip green" onclick="toggleChip(this)">Last Possible Second</div>
+          <div class="chip green" onclick="toggleChip(this)">Fails Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
+        </div>
+        <div class="field-group"><label>Teleop / Endgame Notes</label><input type="text" id="e2_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
+      </div>
+    </div><!-- end event 2 -->
+
+    <!-- Overall Performance Notes -->
+    <div class="card card-blue">
+      <div class="section-title blue">Overall Performance Assessment</div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label>Robot Description / Build Notes</label>
+          <textarea id="robotDesc" rows="3" placeholder="Drivetrain, shooter type, climb mechanism, unique features..."></textarea>
+        </div>
+        <div class="field-group">
+          <label>Trend Across Events (improving / declining / consistent?)</label>
+          <textarea id="trendNotes" rows="3" placeholder="Noticeable changes between events, upgrades, reliability issues..."></textarea>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>DCMP Alliance Fit Assessment</label>
+        <textarea id="allianceFit" rows="2" placeholder="Best role in a DCMP alliance, who they'd complement, red flags..."></textarea>
+      </div>
+    </div>
+
+  </div><!-- end panelPerf -->
+
+  <button class="btn-save" onclick="saveToFirebase()">▶ Transmit to SCRAPSIGHT</button>
 </div>
 
-<div id="toast">DATA UPLOADED // SYSTEM STABLE</div>
+<div id="toast">▲ DATA UPLOADED // SYSTEM STABLE</div>
 
 <script>
-  // Tab Switching Logic
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clockEl').textContent =
+      now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  setInterval(updateClock, 1000); updateClock();
+
+  // Tab switching
   function switchTab(tab) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
-    if(tab === 'ei') {
+    if (tab === 'ei') {
       document.getElementById('panelEI').classList.add('active');
       document.getElementById('t1').classList.add('active');
     } else {
@@ -188,55 +735,125 @@
     }
   }
 
-  // Chip Toggle Logic
-  function toggleChip(el) { 
-    el.classList.toggle('active'); 
+  // Chip toggle
+  function toggleChip(el) { el.classList.toggle('active'); }
+
+  // Live stat bar update
+  function liveUpdate(inputId, displayId) {
+    const val = document.getElementById(inputId).value;
+    document.getElementById(displayId).textContent = val || '—';
   }
 
-  // Firebase Submit Logic
+  // Event block collapse
+  function toggleEvent(n) {
+    const body = document.getElementById('eb' + n);
+    const toggle = document.getElementById('et' + n);
+    const collapsed = body.classList.toggle('collapsed');
+    toggle.textContent = collapsed ? '[ + ]' : '[ — ]';
+  }
+
+  // Get active chips
+  function getChips(id) {
+    return Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
+  }
+
+  // Save
   async function saveToFirebase() {
     const btn = document.querySelector('.btn-save');
-    const getChips = (id) => Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
-    
     btn.innerText = "UPLOADING...";
     btn.disabled = true;
 
     const scoutData = {
       team: document.getElementById('teamNum').value,
+      teamName: document.getElementById('teamName').value,
       scout: document.getElementById('scoutName').value,
       ei: {
-        youth: getChips('ei_youth'),
-        community: getChips('ei_comm'),
+        socials: {
+          ig: document.getElementById('ig').value,
+          web: document.getElementById('web').value,
+          tiktok: document.getElementById('tiktok').value,
+          twitter: document.getElementById('twitter').value,
+          youtube: document.getElementById('youtube').value,
+          linkedin: document.getElementById('linkedin').value,
+          github: document.getElementById('github').value,
+          other: document.getElementById('socialOther').value
+        },
+        outreach: {
+          first: getChips('eiChips_first'),
+          education: getChips('eiChips_edu'),
+          community: getChips('eiChips_community'),
+          dei: getChips('eiChips_dei'),
+          funding: getChips('eiChips_funding')
+        },
+        awards: {
+          impact: getChips('awardsChips_impact'),
+          judged: getChips('awardsChips_judged'),
+          comp: getChips('awardsChips_comp'),
+          other: document.getElementById('awardsOther').value
+        },
         script: document.getElementById('eiScript').value,
-        socials: { 
-          ig: document.getElementById('ig').value, 
-          web: document.getElementById('web').value, 
-          other: document.getElementById('socialOther').value 
-        }
+        presentationNotes: document.getElementById('eiPresentationNotes').value,
+        stats: document.getElementById('eiStats').value,
+        notes: document.getElementById('eiNotes').value,
+        strengths: document.getElementById('eiStrengths').value,
+        weaknesses: document.getElementById('eiWeaknesses').value
+      },
+      e1: {
+        name: document.getElementById('e1_name').value,
+        epa: document.getElementById('e1_epa').value,
+        opr: document.getElementById('e1_opr').value,
+        rank: document.getElementById('e1_rank').value,
+        record: document.getElementById('e1_record').value,
+        captain: document.getElementById('e1_captain').value,
+        result: document.getElementById('e1_result').value,
+        avgpts: document.getElementById('e1_avgpts').value,
+        autoPos: getChips('e1_pos_chips'),
+        auto: getChips('e1_auto_chips'),
+        autoClimb: getChips('e1_autoclimb_chips'),
+        autoNotes: document.getElementById('e1_autonotes').value,
+        role: getChips('e1_role_chips'),
+        tele: getChips('e1_tele_chips'),
+        cycles: getChips('e1_cycle_chips'),
+        defense: getChips('e1_def_chips'),
+        teleNotes: document.getElementById('e1_telenotes').value,
+        climb: getChips('e1_climb_chips')
+      },
+      e2: {
+        name: document.getElementById('e2_name').value,
+        epa: document.getElementById('e2_epa').value,
+        opr: document.getElementById('e2_opr').value,
+        rank: document.getElementById('e2_rank').value,
+        record: document.getElementById('e2_record').value,
+        captain: document.getElementById('e2_captain').value,
+        result: document.getElementById('e2_result').value,
+        avgpts: document.getElementById('e2_avgpts').value,
+        autoPos: getChips('e2_pos_chips'),
+        auto: getChips('e2_auto_chips'),
+        autoClimb: getChips('e2_autoclimb_chips'),
+        autoNotes: document.getElementById('e2_autonotes').value,
+        role: getChips('e2_role_chips'),
+        tele: getChips('e2_tele_chips'),
+        cycles: getChips('e2_cycle_chips'),
+        defense: getChips('e2_def_chips'),
+        teleNotes: document.getElementById('e2_telenotes').value,
+        climb: getChips('e2_climb_chips')
       },
       performance: {
-        event: document.getElementById('event_name').value,
-        rank: document.getElementById('perf_rank').value,
-        epa: document.getElementById('perf_epa').value,
-        opr: document.getElementById('perf_opr').value,
-        awards: document.getElementById('perf_awards').value,
-        autoStrategies: getChips('auto_chips'),
-        capabilities: getChips('cap_chips')
+        robotDesc: document.getElementById('robotDesc').value,
+        trendNotes: document.getElementById('trendNotes').value,
+        allianceFit: document.getElementById('allianceFit').value
       },
       timestamp: window.serverTimestamp()
     };
 
     try {
       await window.addDoc(window.collection(window.db, "scouts"), scoutData);
-      
-      // Success Feedback
       const t = document.getElementById('toast');
       t.style.display = 'block';
-      setTimeout(() => { location.reload(); }, 2000);
-      
+      setTimeout(() => { location.reload(); }, 2800);
     } catch (e) {
       alert("Firebase Error: " + e.message);
-      btn.innerText = "TRANSMIT TO SCRAPSIGHT";
+      btn.innerText = "▶ TRANSMIT TO SCRAPSIGHT";
       btn.disabled = false;
     }
   }
