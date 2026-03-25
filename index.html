@@ -8,14 +8,19 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   const firebaseConfig = { projectId: "scrapsight-8d40c" };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   window.db = db;
   window.addDoc = addDoc;
+  window.getDocs = getDocs;
   window.collection = collection;
+  window.query = query;
+  window.orderBy = orderBy;
   window.serverTimestamp = serverTimestamp;
+  window.firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
 </script>
 
 <style>
@@ -36,6 +41,7 @@
   .header {
     background: #000; border-bottom: 3px solid var(--accent); padding: 12px 30px;
     display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
+    flex-wrap: wrap;
   }
   .header-badge {
     background: var(--accent); color: #fff; font-family: 'Share Tech Mono'; font-size: 10px;
@@ -43,7 +49,62 @@
   }
   .header h1 { font-family: 'Barlow Condensed'; font-weight: 900; font-size: 22px; letter-spacing: 2px; }
   .header h1 span { color: var(--accent); }
-  .header-right { margin-left: auto; font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .header-clock { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); }
+
+  .btn-analytics {
+    background: transparent; border: 1px solid var(--blue); color: var(--blue);
+    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 12px; padding: 7px 14px;
+    cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all .15s;
+  }
+  .btn-analytics:hover { background: var(--blue); color: #000; }
+  .btn-analytics.active { background: var(--blue); color: #000; }
+
+  /* EVENT SELECTOR BANNER — only shows on perf tab */
+  .event-selector-banner {
+    background: #000; border-bottom: 2px solid #1a1a1a; padding: 10px 30px;
+    display: none; /* hidden by default, shown when on perf tab */
+    align-items: center; gap: 20px; position: sticky; top: 55px; z-index: 99;
+    flex-wrap: wrap;
+  }
+  .event-selector-banner.visible { display: flex; }
+  .event-selector-label {
+    font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 2px; white-space: nowrap;
+  }
+  .event-selector-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .event-pill {
+    padding: 6px 16px; background: #0a0a0a; border: 1px solid #333;
+    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 13px;
+    cursor: pointer; color: #777; text-transform: uppercase; letter-spacing: 1px;
+    transition: all .15s; white-space: nowrap;
+  }
+  .event-pill:hover { border-color: #555; color: #aaa; }
+  .event-pill.active-unh { background: rgba(0,180,255,0.1); border-color: var(--blue); color: var(--blue); }
+  .event-pill.active-hartford { background: rgba(255,215,0,0.08); border-color: var(--gold); color: var(--gold); }
+  .event-pill.active-dcmp { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
+  .event-indicator {
+    margin-left: auto; font-family: 'Share Tech Mono'; font-size: 9px;
+    padding: 3px 10px; border: 1px solid #333; color: #555;
+  }
+  .event-indicator.set { border-color: var(--win); color: var(--win); background: rgba(0,255,163,0.05); }
+
+  /* EI mode badge — shows on EI tab */
+  .ei-mode-banner {
+    background: rgba(255,45,85,0.06); border-bottom: 2px solid rgba(255,45,85,0.2);
+    padding: 8px 30px; display: flex; align-items: center; gap: 10px;
+    position: sticky; top: 55px; z-index: 99;
+  }
+  .ei-mode-banner .badge {
+    font-family: 'Share Tech Mono'; font-size: 9px; color: var(--accent);
+    padding: 3px 10px; border: 1px solid rgba(255,45,85,0.4);
+    background: rgba(255,45,85,0.1); letter-spacing: 2px; text-transform: uppercase;
+  }
+  .ei-mode-banner .label {
+    font-family: 'Share Tech Mono'; font-size: 10px; color: #888;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .ei-mode-banner.hidden { display: none; }
 
   /* TABS */
   .tab-nav { display: flex; max-width: 960px; margin: 20px auto 0; padding: 0 20px; gap: 4px; }
@@ -111,7 +172,7 @@
   }
   .chip:hover { border-color: #555; color: #aaa; }
   .chip.active { background: var(--accent); color: white; border-color: var(--accent); }
-  .chip.blue.active { background: var(--blue); border-color: var(--blue); }
+  .chip.blue.active { background: var(--blue); border-color: var(--blue); color: #000; }
   .chip.gold.active { background: var(--gold); border-color: var(--gold); color: #000; }
   .chip.green.active { background: var(--win); border-color: var(--win); color: #000; }
 
@@ -159,22 +220,129 @@
     border-left: 4px solid #00cc80;
   }
 
-  /* INLINE INPUT IN TITLE */
-  .inline-input {
-    background: none; border: none; border-bottom: 1px solid #333; color: #fff;
-    font-family: 'Share Tech Mono'; font-size: 10px; width: 100px; padding: 1px 3px; outline: none;
-  }
-
   /* DIVIDER */
   .divider { border: none; border-top: 1px solid var(--border); margin: 15px 0; }
 
   /* SUBSECTION */
   .sub-title { font-family: 'Share Tech Mono'; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 6px; }
 
+  /* ===== ANALYTICS PAGE ===== */
+  #panelAnalytics { display: none; }
+  #panelAnalytics.active { display: block; }
+
+  .analytics-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .analytics-title {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 28px;
+    color: var(--blue); letter-spacing: 3px; text-transform: uppercase;
+  }
+  .analytics-subtitle { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  .analytics-filter { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .analytics-filter-label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
+  .filter-pill {
+    padding: 6px 14px; background: #0a0a0a; border: 1px solid #333;
+    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 12px;
+    cursor: pointer; color: #666; text-transform: uppercase; letter-spacing: 1px;
+    transition: all .15s;
+  }
+  .filter-pill:hover { border-color: #555; color: #aaa; }
+  .filter-pill.active-unh { background: rgba(0,180,255,0.1); border-color: var(--blue); color: var(--blue); }
+  .filter-pill.active-hartford { background: rgba(255,215,0,0.08); border-color: var(--gold); color: var(--gold); }
+  .filter-pill.active-dcmp { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
+
+  .btn-refresh {
+    margin-left: auto; padding: 7px 14px; background: transparent; border: 1px solid #333;
+    color: var(--muted); font-family: 'Share Tech Mono'; font-size: 10px; cursor: pointer;
+    transition: all .15s; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .btn-refresh:hover { border-color: var(--win); color: var(--win); }
+
+  /* TEAM CARDS IN ANALYTICS */
+  .team-card {
+    background: var(--surface); border: 1px solid var(--border);
+    margin-bottom: 12px; overflow: hidden;
+  }
+  .team-card-header {
+    background: #0a0a0a; padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+    cursor: pointer; border-bottom: 1px solid var(--border); transition: background .12s;
+  }
+  .team-card-header:hover { background: #111; }
+  .team-card-num {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 28px; color: var(--accent);
+    min-width: 70px;
+  }
+  .team-card-info { flex: 1; }
+  .team-card-name { font-family: 'Barlow Condensed'; font-weight: 700; font-size: 16px; color: #fff; }
+  .team-card-scout { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
+  .team-card-stats { display: flex; gap: 16px; }
+  .team-stat-mini { text-align: center; }
+  .team-stat-mini .v { font-family: 'Barlow Condensed'; font-size: 20px; font-weight: 900; color: var(--blue); }
+  .team-stat-mini .l { font-family: 'Share Tech Mono'; font-size: 8px; color: var(--muted); }
+  .team-card-toggle { font-family: 'Share Tech Mono'; font-size: 11px; color: var(--muted); }
+
+  .team-card-body { padding: 16px 18px; display: none; }
+  .team-card-body.open { display: block; }
+
+  .analytics-section { margin-bottom: 14px; }
+  .analytics-section-label {
+    font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;
+    border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;
+  }
+  .chip-display { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip-display-item {
+    padding: 3px 8px; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid;
+  }
+  .chip-auto { color: var(--blue); border-color: rgba(0,180,255,0.3); background: rgba(0,180,255,0.06); }
+  .chip-tele { color: #fff; border-color: #333; background: #111; }
+  .chip-climb { color: var(--win); border-color: rgba(0,255,163,0.3); background: rgba(0,255,163,0.06); }
+  .chip-def { color: #ff8c00; border-color: rgba(255,140,0,0.3); background: rgba(255,140,0,0.06); }
+  .chip-role { color: var(--accent); border-color: rgba(255,45,85,0.3); background: rgba(255,45,85,0.06); }
+  .chip-outreach { color: var(--gold); border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.06); }
+
+  .analytics-note {
+    font-family: 'Barlow'; font-size: 12px; color: #aaa; line-height: 1.5;
+    padding: 8px 12px; background: #0a0a0a; border-left: 2px solid #333;
+    margin-top: 4px;
+  }
+
+  .event-tag {
+    font-family: 'Share Tech Mono'; font-size: 8px; padding: 2px 8px;
+    border: 1px solid; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .event-tag.unh { color: var(--blue); border-color: rgba(0,180,255,0.4); background: rgba(0,180,255,0.08); }
+  .event-tag.hartford { color: var(--gold); border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.06); }
+  .event-tag.dcmp { color: var(--accent); border-color: rgba(255,45,85,0.4); background: rgba(255,45,85,0.08); }
+
+  .loading-state { text-align: center; padding: 60px 20px; font-family: 'Share Tech Mono'; font-size: 12px; color: var(--muted); }
+  .loading-state .spinner {
+    width: 30px; height: 30px; border: 2px solid #222; border-top-color: var(--accent);
+    border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state { text-align: center; padding: 60px 20px; }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
+  .empty-state p { font-family: 'Share Tech Mono'; font-size: 11px; color: var(--muted); }
+
+  .analytics-meta-bar {
+    display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .meta-stat {
+    background: var(--surface); border: 1px solid var(--border); padding: 12px 18px;
+    flex: 1; min-width: 100px;
+  }
+  .meta-stat .mv { font-family: 'Barlow Condensed'; font-size: 28px; font-weight: 900; color: var(--win); }
+  .meta-stat .ml { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
+
   @media(max-width:600px) {
     .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     .perf-bar { flex-wrap: wrap; }
+    .team-card-stats { display: none; }
   }
 </style>
 </head>
@@ -183,15 +351,35 @@
 <div class="header">
   <div class="header-badge">S.C.R.A.P.</div>
   <h1>SCRAP<span>SIGHT</span> // DCMP</h1>
-  <div class="header-right" id="clockEl"></div>
+  <div class="header-right">
+    <button class="btn-analytics" id="btnAnalytics" onclick="openAnalytics()">⬡ ANALYTICS DASHBOARD</button>
+    <div class="header-clock" id="clockEl"></div>
+  </div>
 </div>
 
-<div class="tab-nav">
+<!-- EI MODE BANNER — only shows on EI tab -->
+<div class="ei-mode-banner" id="eiBanner">
+  <span class="badge">▲ NE DCMP</span>
+  <span class="label">EI Analysis always saved to DCMP database</span>
+</div>
+
+<!-- EVENT SELECTOR BANNER — only shows on Event Analytics tab -->
+<div class="event-selector-banner" id="eventBanner">
+  <span class="event-selector-label">Scouting For:</span>
+  <div class="event-selector-pills">
+    <div class="event-pill" id="pill-unh" onclick="selectScoutingEvent('unh')">🔵 NE District — UNH</div>
+    <div class="event-pill" id="pill-hartford" onclick="selectScoutingEvent('hartford')">🟡 NE District — Hartford</div>
+    <div class="event-pill" id="pill-dcmp" onclick="selectScoutingEvent('dcmp')">🔴 NE DCMP</div>
+  </div>
+  <div class="event-indicator" id="eventIndicator">NO EVENT SELECTED</div>
+</div>
+
+<div class="tab-nav" id="mainTabNav">
   <button class="tab-btn active" id="t1" onclick="switchTab('ei')">01 // EI ANALYSIS</button>
   <button class="tab-btn" id="t2" onclick="switchTab('perf')">02 // EVENT ANALYTICS</button>
 </div>
 
-<div class="container">
+<div class="container" id="mainContainer">
 
   <!-- GLOBAL HEADER CARD -->
   <div class="card card-white" style="margin-bottom:16px;">
@@ -205,9 +393,8 @@
   <!-- ===================== EI ANALYSIS PANEL ===================== -->
   <div id="panelEI" class="panel active">
 
-    <!-- Social & Web -->
     <div class="card">
-      <div class="section-title">Social & Web Presence</div>
+      <div class="section-title">Social &amp; Web Presence</div>
       <div class="grid-4">
         <div class="field-group"><label>Instagram</label><input type="text" id="ig" placeholder="@handle"></div>
         <div class="field-group"><label>Website</label><input type="text" id="web" placeholder="url"></div>
@@ -222,10 +409,8 @@
       </div>
     </div>
 
-    <!-- Outreach Tactics -->
     <div class="card">
-      <div class="section-title">Outreach & Community Impact</div>
-
+      <div class="section-title">Outreach &amp; Community Impact</div>
       <div class="sub-title">FIRST Ecosystem</div>
       <div class="chip-group" id="eiChips_first">
         <div class="chip" onclick="toggleChip(this)">FLL Mentor</div>
@@ -238,8 +423,7 @@
         <div class="chip" onclick="toggleChip(this)">TSA/SkillsUSA</div>
         <div class="chip" onclick="toggleChip(this)">FIRST Alum Network</div>
       </div>
-
-      <div class="sub-title">Education & STEM</div>
+      <div class="sub-title">Education &amp; STEM</div>
       <div class="chip-group" id="eiChips_edu">
         <div class="chip" onclick="toggleChip(this)">School Demos</div>
         <div class="chip" onclick="toggleChip(this)">Classroom Visits</div>
@@ -252,15 +436,14 @@
         <div class="chip" onclick="toggleChip(this)">Museum Outreach</div>
         <div class="chip" onclick="toggleChip(this)">Science Fair Judge</div>
       </div>
-
-      <div class="sub-title">Community & Public</div>
+      <div class="sub-title">Community &amp; Public</div>
       <div class="chip-group" id="eiChips_community">
         <div class="chip" onclick="toggleChip(this)">Community Days</div>
         <div class="chip" onclick="toggleChip(this)">Town Fairs/Festivals</div>
         <div class="chip" onclick="toggleChip(this)">Girl Scouts</div>
         <div class="chip" onclick="toggleChip(this)">Boy Scouts / Scouts BSA</div>
         <div class="chip" onclick="toggleChip(this)">4-H Clubs</div>
-        <div class="chip" onclick="toggleChip(this)">Boys & Girls Club</div>
+        <div class="chip" onclick="toggleChip(this)">Boys &amp; Girls Club</div>
         <div class="chip" onclick="toggleChip(this)">Youth Sports Partnerships</div>
         <div class="chip" onclick="toggleChip(this)">Local Business Partnerships</div>
         <div class="chip" onclick="toggleChip(this)">Farmers Markets</div>
@@ -268,8 +451,7 @@
         <div class="chip" onclick="toggleChip(this)">Senior Centers</div>
         <div class="chip" onclick="toggleChip(this)">Churches/Faith Orgs</div>
       </div>
-
-      <div class="sub-title">Diversity, Equity & Inclusion</div>
+      <div class="sub-title">Diversity, Equity &amp; Inclusion</div>
       <div class="chip-group" id="eiChips_dei">
         <div class="chip" onclick="toggleChip(this)">DEI Focus</div>
         <div class="chip" onclick="toggleChip(this)">Girls in STEM</div>
@@ -281,8 +463,7 @@
         <div class="chip" onclick="toggleChip(this)">Rural Outreach</div>
         <div class="chip" onclick="toggleChip(this)">Multilingual Outreach</div>
       </div>
-
-      <div class="sub-title">Funding & Advocacy</div>
+      <div class="sub-title">Funding &amp; Advocacy</div>
       <div class="chip-group" id="eiChips_funding">
         <div class="chip" onclick="toggleChip(this)">Rookie Grants</div>
         <div class="chip" onclick="toggleChip(this)">Grant Writing Assistance</div>
@@ -295,16 +476,15 @@
       </div>
     </div>
 
-    <!-- Awards Won -->
     <div class="card card-gold">
       <div class="section-title gold">Awards Portfolio (Past 3 Years)</div>
-      <div class="sub-title">FIRST Impact & Chairman's</div>
+      <div class="sub-title">FIRST Impact &amp; Chairman's</div>
       <div class="chip-group" id="awardsChips_impact">
         <div class="chip award-chip" onclick="toggleChip(this)">Chairman's Award</div>
         <div class="chip award-chip" onclick="toggleChip(this)">FIRST Impact</div>
         <div class="chip award-chip" onclick="toggleChip(this)">EI Finalist</div>
       </div>
-      <div class="sub-title">Excellence & Judged Awards</div>
+      <div class="sub-title">Excellence &amp; Judged Awards</div>
       <div class="chip-group" id="awardsChips_judged">
         <div class="chip award-chip" onclick="toggleChip(this)">Engineering Excellence</div>
         <div class="chip award-chip" onclick="toggleChip(this)">Engineering Inspiration</div>
@@ -337,7 +517,6 @@
       </div>
     </div>
 
-    <!-- EI Script / Presentation -->
     <div class="card card-blue">
       <div class="section-title blue">Award Announcement Script</div>
       <div class="field-group">
@@ -354,11 +533,10 @@
       </div>
     </div>
 
-    <!-- EI Narrative -->
     <div class="card">
       <div class="section-title">Scout Notes — EI Narrative</div>
       <div class="field-group">
-        <label>Overall EI Winning Narrative & Observations</label>
+        <label>Overall EI Winning Narrative &amp; Observations</label>
         <textarea id="eiNotes" rows="4" placeholder="What's their story? What makes judges pick them? Themes, emotional hooks, unique angles..."></textarea>
       </div>
       <div class="grid-2">
@@ -373,18 +551,22 @@
       </div>
     </div>
 
-    <button class="btn-save" onclick="saveToFirebase()">▶ Transmit to SCRAPSIGHT</button>
-</div><!-- end panelEI -->
-
+    <button class="btn-save" onclick="saveEI()">▶ Transmit EI to DCMP Database</button>
+  </div><!-- end panelEI -->
 
   <!-- ===================== EVENT ANALYTICS PANEL ===================== -->
   <div id="panelPerf" class="panel">
 
+    <!-- No-event-selected warning -->
+    <div id="perfNoEventWarn" style="display:none; margin-bottom:16px; padding:18px 20px; border:1px solid #3a2a00; background:rgba(255,215,0,0.04); font-family:'Share Tech Mono'; font-size:11px; color:var(--gold); letter-spacing:1px;">
+      ⚠ SELECT AN EVENT ABOVE (UNH, HARTFORD, OR DCMP) BEFORE ENTERING MATCH DATA
+    </div>
+
     <!-- Event 1 -->
     <div id="eventBlock1" class="event-block">
       <div class="event-header" onclick="toggleEvent(1)">
-        <span class="event-num">EVENT 01</span>
-        <select class="event-name-sel" id="e1_name">
+        <span class="event-num" id="e1_label">EVENT 01</span>
+        <select class="event-name-sel" id="e1_name" onclick="event.stopPropagation()">
           <option value="">— Select NE Event —</option>
           <optgroup label="New England District Events 2026">
             <option>NE District - Minuteman</option>
@@ -404,7 +586,6 @@
         <span class="event-toggle" id="et1">[ — ]</span>
       </div>
       <div class="event-body" id="eb1">
-        <!-- Perf Stats -->
         <div class="perf-bar">
           <div class="perf-stat"><div class="val" id="e1_epa_display">—</div><div class="lbl">EPA</div></div>
           <div class="perf-stat"><div class="val" id="e1_opr_display">—</div><div class="lbl">OPR</div></div>
@@ -419,7 +600,7 @@
         </div>
         <div class="grid-3">
           <div class="field-group"><label>Part of Alliance?</label>
-            <select id="e1_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option>option>No Participation in Playoffs</option></select>
+            <select id="e1_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option><option>No Participation in Playoffs</option></select>
           </div>
           <div class="field-group"><label>Alliance Result</label>
             <select id="e1_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option><option>Didn't Participate in Playoffs</option></select>
@@ -427,8 +608,6 @@
           <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e1_avgpts" placeholder="0"></div>
         </div>
         <hr class="divider">
-
-        <!-- AUTO -->
         <div class="section-title">Auto Strategy</div>
         <div class="sub-title">Starting Position</div>
         <div class="chip-group" id="e1_pos_chips">
@@ -437,7 +616,6 @@
           <div class="chip blue" onclick="toggleChip(this)">Right Trench</div>
           <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
         </div>
-
         <div class="sub-title">2026 Auto Routines</div>
         <div class="chip-group" id="e1_auto_chips">
           <div class="chip" onclick="toggleChip(this)">Shoot 8 Preload</div>
@@ -454,7 +632,6 @@
           <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
           <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
         </div>
-
         <div class="sub-title">Auto Climb / Park</div>
         <div class="chip-group" id="e1_autoclimb_chips">
           <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
@@ -463,8 +640,6 @@
         </div>
         <div class="field-group"><label>Auto Notes</label><input type="text" id="e1_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
         <hr class="divider">
-
-        <!-- TELEOP -->
         <div class="section-title">Teleop Strategy</div>
         <div class="sub-title">Primary Scoring Role</div>
         <div class="chip-group" id="e1_role_chips">
@@ -474,7 +649,6 @@
           <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
           <div class="chip" onclick="toggleChip(this)">Flexible</div>
         </div>
-
         <div class="sub-title">Scoring Locations</div>
         <div class="chip-group" id="e1_tele_chips">
           <div class="chip" onclick="toggleChip(this)">Directly Against Hub</div>
@@ -483,14 +657,13 @@
           <div class="chip" onclick="toggleChip(this)">Left corner</div>
           <div class="chip" onclick="toggleChip(this)">Right Corner</div>
           <div class="chip" onclick="toggleChip(this)">Shuttle only</div>
-        </ div>
-
+        </div>
         <div class="sub-title">Intake Locations</div>
+        <div class="chip-group" id="e1_intake_chips">
           <div class="chip" onclick="toggleChip(this)">Neutral Zone Intake</div>
           <div class="chip" onclick="toggleChip(this)">Depot Intake</div>
           <div class="chip" onclick="toggleChip(this)">Outpost Intake</div>
         </div>
-
         <div class="sub-title">Cycle Speed</div>
         <div class="chip-group" id="e1_cycle_chips">
           <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
@@ -498,7 +671,6 @@
           <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
           <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
         </div>
-
         <div class="sub-title">Defense</div>
         <div class="chip-group" id="e1_def_chips">
           <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
@@ -508,8 +680,6 @@
           <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
         </div>
         <hr class="divider">
-
-        <!-- ENDGAME -->
         <div class="section-title">Endgame / Climb</div>
         <div class="chip-group" id="e1_climb_chips">
           <div class="chip green" onclick="toggleChip(this)">No Climb</div>
@@ -526,11 +696,11 @@
       </div>
     </div><!-- end event 1 -->
 
-    <!-- Event 2 -->
-   <div id="eventBlock1" class="event-block">
-      <div class="event-header" onclick="toggleEvent(1)">
-        <span class="event-num">EVENT 01</span>
-        <select class="event-name-sel" id="e1_name">
+    <!-- Event 2 — only shown for DCMP -->
+    <div id="eventBlock2" class="event-block" style="display:none;">
+      <div class="event-header" onclick="toggleEvent(2)">
+        <span class="event-num">EVENT 02</span>
+        <select class="event-name-sel" id="e2_name" onclick="event.stopPropagation()">
           <option value="">— Select NE Event —</option>
           <optgroup label="New England District Events 2026">
             <option>NE District - Minuteman</option>
@@ -547,45 +717,41 @@
             <option>NE District — UVM</option>
           </optgroup>
         </select>
-        <span class="event-toggle" id="et1">[ — ]</span>
+        <span class="event-toggle" id="et2">[ — ]</span>
       </div>
-      <div class="event-body" id="eb1">
-        <!-- Perf Stats -->
+      <div class="event-body" id="eb2">
         <div class="perf-bar">
-          <div class="perf-stat"><div class="val" id="e1_epa_display">—</div><div class="lbl">EPA</div></div>
-          <div class="perf-stat"><div class="val" id="e1_opr_display">—</div><div class="lbl">OPR</div></div>
-          <div class="perf-stat"><div class="val" id="e1_rank_display">—</div><div class="lbl">Rank</div></div>
-          <div class="perf-stat"><div class="val" id="e1_record_display">—</div><div class="lbl">Record</div></div>
+          <div class="perf-stat"><div class="val" id="e2_epa_display">—</div><div class="lbl">EPA</div></div>
+          <div class="perf-stat"><div class="val" id="e2_opr_display">—</div><div class="lbl">OPR</div></div>
+          <div class="perf-stat"><div class="val" id="e2_rank_display">—</div><div class="lbl">Rank</div></div>
+          <div class="perf-stat"><div class="val" id="e2_record_display">—</div><div class="lbl">Record</div></div>
         </div>
         <div class="grid-4">
-          <div class="field-group"><label>EPA</label><input type="number" id="e1_epa" oninput="liveUpdate('e1_epa','e1_epa_display')"></div>
-          <div class="field-group"><label>OPR</label><input type="number" id="e1_opr" oninput="liveUpdate('e1_opr','e1_opr_display')"></div>
-          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e1_rank" oninput="liveUpdate('e1_rank','e1_rank_display')"></div>
-          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e1_record" placeholder="8-4-0" oninput="liveUpdate('e1_record','e1_record_display')"></div>
+          <div class="field-group"><label>EPA</label><input type="number" id="e2_epa" oninput="liveUpdate('e2_epa','e2_epa_display')"></div>
+          <div class="field-group"><label>OPR</label><input type="number" id="e2_opr" oninput="liveUpdate('e2_opr','e2_opr_display')"></div>
+          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e2_rank" oninput="liveUpdate('e2_rank','e2_rank_display')"></div>
+          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e2_record" placeholder="8-4-0" oninput="liveUpdate('e2_record','e2_record_display')"></div>
         </div>
         <div class="grid-3">
           <div class="field-group"><label>Part of Alliance?</label>
-            <select id="e1_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option>option>No Participation in Playoffs</option></select>
+            <select id="e2_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option><option>No Participation in Playoffs</option></select>
           </div>
           <div class="field-group"><label>Alliance Result</label>
-            <select id="e1_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option><option>Didn't Participate in Playoffs</option></select>
+            <select id="e2_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option><option>Didn't Participate in Playoffs</option></select>
           </div>
-          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e1_avgpts" placeholder="0"></div>
+          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e2_avgpts" placeholder="0"></div>
         </div>
         <hr class="divider">
-
-        <!-- AUTO -->
         <div class="section-title">Auto Strategy</div>
         <div class="sub-title">Starting Position</div>
-        <div class="chip-group" id="e1_pos_chips">
+        <div class="chip-group" id="e2_pos_chips">
           <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
           <div class="chip blue" onclick="toggleChip(this)">Center</div>
           <div class="chip blue" onclick="toggleChip(this)">Right Trench</div>
           <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
         </div>
-
         <div class="sub-title">2026 Auto Routines</div>
-        <div class="chip-group" id="e1_auto_chips">
+        <div class="chip-group" id="e2_auto_chips">
           <div class="chip" onclick="toggleChip(this)">Shoot 8 Preload</div>
           <div class="chip" onclick="toggleChip(this)">1 Cycle</div>
           <div class="chip" onclick="toggleChip(this)">2 Cycles</div>
@@ -600,53 +766,47 @@
           <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
           <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
         </div>
-
         <div class="sub-title">Auto Climb / Park</div>
-        <div class="chip-group" id="e1_autoclimb_chips">
+        <div class="chip-group" id="e2_autoclimb_chips">
           <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
           <div class="chip green" onclick="toggleChip(this)">Auto Park</div>
           <div class="chip green" onclick="toggleChip(this)">Neither</div>
         </div>
-        <div class="field-group"><label>Auto Notes</label><input type="text" id="e1_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
+        <div class="field-group"><label>Auto Notes</label><input type="text" id="e2_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
         <hr class="divider">
-
-        <!-- TELEOP -->
         <div class="section-title">Teleop Strategy</div>
         <div class="sub-title">Primary Scoring Role</div>
-        <div class="chip-group" id="e1_role_chips">
+        <div class="chip-group" id="e2_role_chips">
           <div class="chip" onclick="toggleChip(this)">Primary Scorer</div>
           <div class="chip" onclick="toggleChip(this)">Secondary Scorer</div>
           <div class="chip" onclick="toggleChip(this)">Shuttling</div>
           <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
           <div class="chip" onclick="toggleChip(this)">Flexible</div>
         </div>
-
         <div class="sub-title">Scoring Locations</div>
-        <div class="chip-group" id="e1_tele_chips">
+        <div class="chip-group" id="e2_tele_chips">
           <div class="chip" onclick="toggleChip(this)">Directly Against Hub</div>
           <div class="chip" onclick="toggleChip(this)">Under Left Trench</div>
           <div class="chip" onclick="toggleChip(this)">Under Right Trench</div>
           <div class="chip" onclick="toggleChip(this)">Left corner</div>
           <div class="chip" onclick="toggleChip(this)">Right Corner</div>
           <div class="chip" onclick="toggleChip(this)">Shuttle only</div>
-        </ div>
-
+        </div>
         <div class="sub-title">Intake Locations</div>
+        <div class="chip-group" id="e2_intake_chips">
           <div class="chip" onclick="toggleChip(this)">Neutral Zone Intake</div>
           <div class="chip" onclick="toggleChip(this)">Depot Intake</div>
           <div class="chip" onclick="toggleChip(this)">Outpost Intake</div>
         </div>
-
         <div class="sub-title">Cycle Speed</div>
-        <div class="chip-group" id="e1_cycle_chips">
+        <div class="chip-group" id="e2_cycle_chips">
           <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
           <div class="chip" onclick="toggleChip(this)">5–8s Cycle</div>
           <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
           <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
         </div>
-
         <div class="sub-title">Defense</div>
-        <div class="chip-group" id="e1_def_chips">
+        <div class="chip-group" id="e2_def_chips">
           <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
           <div class="chip" onclick="toggleChip(this)">Dedicated Defender</div>
           <div class="chip" onclick="toggleChip(this)">Good Defense Resistance</div>
@@ -654,10 +814,8 @@
           <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
         </div>
         <hr class="divider">
-
-        <!-- ENDGAME -->
         <div class="section-title">Endgame / Climb</div>
-        <div class="chip-group" id="e1_climb_chips">
+        <div class="chip-group" id="e2_climb_chips">
           <div class="chip green" onclick="toggleChip(this)">No Climb</div>
           <div class="chip green" onclick="toggleChip(this)">L1 Climb</div>
           <div class="chip green" onclick="toggleChip(this)">L2 Climb</div>
@@ -668,16 +826,52 @@
           <div class="chip green" onclick="toggleChip(this)">Last Possible Second</div>
           <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
         </div>
-        <div class="field-group"><label>Strategy Notes</label><input type="text" id="e1_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
+        <div class="field-group"><label>Strategy Notes</label><input type="text" id="e2_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
       </div>
-    </div><!-- end panelPerf -->
+    </div><!-- end event 2 -->
 
-  <button class="btn-save" onclick="saveToFirebase()">▶ Transmit to SCRAPSIGHT</button>
+    <button class="btn-save" onclick="savePerf()">▶ Transmit to SCRAPSIGHT</button>
+  </div><!-- end panelPerf -->
+
+</div><!-- end mainContainer -->
+
+<!-- ===================== ANALYTICS PAGE ===================== -->
+<div class="container" id="analyticsContainer" style="display:none;">
+  <div class="analytics-header">
+    <div>
+      <div class="analytics-title">⬡ Strategy Intelligence</div>
+      <div class="analytics-subtitle">SCRAPSIGHT // DCMP SCOUT DATABASE</div>
+    </div>
+  </div>
+
+  <div class="analytics-filter">
+    <span class="analytics-filter-label">Filter Event:</span>
+    <div class="filter-pill" id="apill-all" onclick="filterAnalytics('all')">ALL EVENTS</div>
+    <div class="filter-pill" id="apill-unh" onclick="filterAnalytics('unh')">UNH</div>
+    <div class="filter-pill" id="apill-hartford" onclick="filterAnalytics('hartford')">HARTFORD</div>
+    <div class="filter-pill" id="apill-dcmp" onclick="filterAnalytics('dcmp')">DCMP</div>
+    <button class="btn-refresh" onclick="loadAnalytics()">↻ REFRESH</button>
+  </div>
+
+  <div class="analytics-meta-bar" id="metaBar"></div>
+
+  <div id="analyticsContent">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      SELECT AN EVENT FILTER TO LOAD SCOUT DATA
+    </div>
+  </div>
 </div>
 
 <div id="toast">▲ DATA UPLOADED // SYSTEM STABLE</div>
 
 <script>
+  // State
+  let currentScoutingEvent = null; // only used for event analytics tab
+  let analyticsFilter = 'all';
+  let allScoutData = [];
+  let currentTab = 'ei';
+
   // Clock
   function updateClock() {
     const now = new Date();
@@ -686,16 +880,91 @@
   }
   setInterval(updateClock, 1000); updateClock();
 
+  // Event selection — only relevant for perf tab
+  function selectScoutingEvent(ev) {
+    currentScoutingEvent = ev;
+    ['unh','hartford','dcmp'].forEach(e => {
+      document.getElementById('pill-' + e).className = 'event-pill';
+    });
+    document.getElementById('pill-' + ev).className = 'event-pill active-' + ev;
+    const labels = { unh: 'NE DIST — UNH', hartford: 'NE DIST — HARTFORD', dcmp: 'NE DCMP' };
+    const ind = document.getElementById('eventIndicator');
+    ind.textContent = '▲ ' + labels[ev];
+    ind.className = 'event-indicator set';
+
+    // Show/hide event block 2 based on selection
+    const block2 = document.getElementById('eventBlock2');
+    const warn = document.getElementById('perfNoEventWarn');
+    warn.style.display = 'none';
+
+    if (ev === 'dcmp') {
+      block2.style.display = 'block';
+      document.getElementById('e1_label').textContent = 'EVENT 01';
+    } else {
+      // UNH or Hartford — only 1 event
+      block2.style.display = 'none';
+      const labelMap = { unh: 'UNH EVENT', hartford: 'HARTFORD EVENT' };
+      document.getElementById('e1_label').textContent = labelMap[ev] || 'EVENT 01';
+    }
+  }
+
   // Tab switching
   function switchTab(tab) {
+    currentTab = tab;
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+    const eiBanner = document.getElementById('eiBanner');
+    const eventBanner = document.getElementById('eventBanner');
+
     if (tab === 'ei') {
       document.getElementById('panelEI').classList.add('active');
       document.getElementById('t1').classList.add('active');
+      eiBanner.classList.remove('hidden');
+      eventBanner.classList.remove('visible');
     } else {
       document.getElementById('panelPerf').classList.add('active');
       document.getElementById('t2').classList.add('active');
+      eiBanner.classList.add('hidden');
+      eventBanner.classList.add('visible');
+
+      // Show warning if no event selected yet
+      if (!currentScoutingEvent) {
+        document.getElementById('perfNoEventWarn').style.display = 'block';
+      }
+    }
+  }
+
+  // Analytics page toggle
+  function openAnalytics() {
+    const mainC = document.getElementById('mainContainer');
+    const analyticsC = document.getElementById('analyticsContainer');
+    const tabNav = document.getElementById('mainTabNav');
+    const btn = document.getElementById('btnAnalytics');
+    const eiBanner = document.getElementById('eiBanner');
+    const eventBanner = document.getElementById('eventBanner');
+
+    if (analyticsC.style.display === 'none') {
+      mainC.style.display = 'none';
+      tabNav.style.display = 'none';
+      analyticsC.style.display = 'block';
+      eiBanner.classList.add('hidden');
+      eventBanner.classList.remove('visible');
+      btn.classList.add('active');
+      btn.textContent = '← BACK TO SCOUTING';
+      loadAnalytics();
+    } else {
+      mainC.style.display = 'block';
+      tabNav.style.display = 'flex';
+      analyticsC.style.display = 'none';
+      btn.classList.remove('active');
+      btn.textContent = '⬡ ANALYTICS DASHBOARD';
+      // Restore correct banner
+      if (currentTab === 'ei') {
+        eiBanner.classList.remove('hidden');
+      } else {
+        eventBanner.classList.add('visible');
+      }
     }
   }
 
@@ -718,12 +987,12 @@
 
   // Get active chips
   function getChips(id) {
-    return Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
+    return Array.from(document.querySelectorAll('#' + id + ' .chip.active')).map(c => c.innerText);
   }
 
-  // Save
-  async function saveToFirebase() {
-    const btn = document.querySelector('.btn-save');
+  // EI always saves to dcmp collection
+  async function saveEI() {
+    const btn = document.querySelector('#panelEI .btn-save');
     btn.innerText = "UPLOADING...";
     btn.disabled = true;
 
@@ -731,6 +1000,8 @@
       team: document.getElementById('teamNum').value,
       teamName: document.getElementById('teamName').value,
       scout: document.getElementById('scoutName').value,
+      scoutingEvent: 'dcmp',
+      type: 'ei_only',
       ei: {
         socials: {
           ig: document.getElementById('ig').value,
@@ -762,6 +1033,43 @@
         strengths: document.getElementById('eiStrengths').value,
         weaknesses: document.getElementById('eiWeaknesses').value
       },
+      timestamp: window.serverTimestamp()
+    };
+
+    try {
+      await window.addDoc(window.collection(window.db, 'scouts_dcmp'), scoutData);
+      const t = document.getElementById('toast');
+      t.innerHTML = '▲ EI TRANSMITTED TO SCOUTS_DCMP // STABLE';
+      t.style.display = 'block';
+      setTimeout(() => { location.reload(); }, 2800);
+    } catch (e) {
+      alert("Firebase Error: " + e.message);
+      btn.innerText = "▶ Transmit EI to DCMP Database";
+      btn.disabled = false;
+    }
+  }
+
+  // Perf save — requires event selection
+  async function savePerf() {
+    if (!currentScoutingEvent) {
+      document.getElementById('perfNoEventWarn').style.display = 'block';
+      document.getElementById('perfNoEventWarn').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    const btn = document.querySelector('#panelPerf .btn-save');
+    btn.innerText = "UPLOADING...";
+    btn.disabled = true;
+
+    const collectionMap = { unh: 'scouts_unh', hartford: 'scouts_hartford', dcmp: 'scouts_dcmp' };
+    const collectionName = collectionMap[currentScoutingEvent];
+
+    const scoutData = {
+      team: document.getElementById('teamNum').value,
+      teamName: document.getElementById('teamName').value,
+      scout: document.getElementById('scoutName').value,
+      scoutingEvent: currentScoutingEvent,
+      type: 'perf_only',
       e1: {
         name: document.getElementById('e1_name').value,
         epa: document.getElementById('e1_epa').value,
@@ -777,12 +1085,18 @@
         autoNotes: document.getElementById('e1_autonotes').value,
         role: getChips('e1_role_chips'),
         tele: getChips('e1_tele_chips'),
+        intake: getChips('e1_intake_chips'),
         cycles: getChips('e1_cycle_chips'),
         defense: getChips('e1_def_chips'),
         teleNotes: document.getElementById('e1_telenotes').value,
         climb: getChips('e1_climb_chips')
       },
-      e2: {
+      timestamp: window.serverTimestamp()
+    };
+
+    // Only include e2 if DCMP
+    if (currentScoutingEvent === 'dcmp') {
+      scoutData.e2 = {
         name: document.getElementById('e2_name').value,
         epa: document.getElementById('e2_epa').value,
         opr: document.getElementById('e2_opr').value,
@@ -797,28 +1111,244 @@
         autoNotes: document.getElementById('e2_autonotes').value,
         role: getChips('e2_role_chips'),
         tele: getChips('e2_tele_chips'),
+        intake: getChips('e2_intake_chips'),
         cycles: getChips('e2_cycle_chips'),
         defense: getChips('e2_def_chips'),
         teleNotes: document.getElementById('e2_telenotes').value,
         climb: getChips('e2_climb_chips')
-      },
-      performance: {
-        robotDesc: document.getElementById('robotDesc').value,
-        trendNotes: document.getElementById('trendNotes').value,
-        allianceFit: document.getElementById('allianceFit').value
-      },
-      timestamp: window.serverTimestamp()
-    };
+      };
+    }
 
     try {
-      await window.addDoc(window.collection(window.db, "scouts"), scoutData);
+      await window.addDoc(window.collection(window.db, collectionName), scoutData);
       const t = document.getElementById('toast');
+      t.innerHTML = '▲ TRANSMITTED TO ' + collectionName.toUpperCase() + ' // STABLE';
       t.style.display = 'block';
       setTimeout(() => { location.reload(); }, 2800);
     } catch (e) {
       alert("Firebase Error: " + e.message);
-      btn.innerText = "▶ TRANSMIT TO SCRAPSIGHT";
+      btn.innerText = "▶ Transmit to SCRAPSIGHT";
       btn.disabled = false;
+    }
+  }
+
+  // ===== ANALYTICS =====
+  async function loadAnalytics() {
+    const content = document.getElementById('analyticsContent');
+    content.innerHTML = '<div class="loading-state"><div class="spinner"></div>PULLING INTEL FROM DATABASE...</div>';
+
+    const collections = analyticsFilter === 'all'
+      ? ['scouts_unh', 'scouts_hartford', 'scouts_dcmp']
+      : ['scouts_' + analyticsFilter];
+
+    allScoutData = [];
+
+    try {
+      for (const col of collections) {
+        const snap = await window.getDocs(window.collection(window.db, col));
+        snap.forEach(doc => {
+          allScoutData.push({ id: doc.id, collection: col, ...doc.data() });
+        });
+      }
+      if (analyticsFilter === 'all') {
+        const snap = await window.getDocs(window.collection(window.db, 'scouts'));
+        snap.forEach(doc => {
+          allScoutData.push({ id: doc.id, collection: 'scouts', ...doc.data() });
+        });
+      }
+      renderAnalytics();
+    } catch(e) {
+      content.innerHTML = '<div class="empty-state"><div class="icon">⚠</div><p>FIREBASE ERROR: ' + e.message + '</p></div>';
+    }
+  }
+
+  function filterAnalytics(ev) {
+    analyticsFilter = ev;
+    ['all','unh','hartford','dcmp'].forEach(e => {
+      const pill = document.getElementById('apill-' + e);
+      if (pill) pill.className = 'filter-pill';
+    });
+    const activePill = document.getElementById('apill-' + ev);
+    if (activePill) {
+      activePill.className = ev === 'all' ? 'filter-pill active-dcmp' : 'filter-pill active-' + ev;
+    }
+    loadAnalytics();
+  }
+
+  function getEventBadge(col) {
+    if (col === 'scouts_unh') return '<span class="event-tag unh">UNH</span>';
+    if (col === 'scouts_hartford') return '<span class="event-tag hartford">HARTFORD</span>';
+    if (col === 'scouts_dcmp') return '<span class="event-tag dcmp">DCMP</span>';
+    return '<span class="event-tag" style="color:#555;border-color:#333;">LEGACY</span>';
+  }
+
+  function renderChips(arr, cls) {
+    if (!arr || arr.length === 0) return '<span style="color:#444;font-family:\'Share Tech Mono\';font-size:9px;">NONE RECORDED</span>';
+    return arr.map(c => `<span class="chip-display-item ${cls}">${c}</span>`).join('');
+  }
+
+  function renderAnalytics() {
+    const content = document.getElementById('analyticsContent');
+    const metaBar = document.getElementById('metaBar');
+
+    if (allScoutData.length === 0) {
+      metaBar.innerHTML = '';
+      content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO SCOUT DATA FOUND FOR THIS FILTER<br>SUBMIT REPORTS TO POPULATE THE DATABASE</p></div>';
+      return;
+    }
+
+    const teams = {};
+    allScoutData.forEach(d => {
+      const key = d.team || 'unknown';
+      if (!teams[key]) teams[key] = [];
+      teams[key].push(d);
+    });
+
+    const teamCount = Object.keys(teams).length;
+    const recordCount = allScoutData.length;
+    const epas = allScoutData.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
+    const avgEpa = epas.length ? (epas.reduce((a,b) => a+b,0) / epas.length).toFixed(1) : '—';
+
+    metaBar.innerHTML = `
+      <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
+      <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">Total Reports</div></div>
+      <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
+    `;
+
+    let html = '';
+    Object.entries(teams).sort((a,b) => {
+      const na = parseInt(a[0]) || 9999;
+      const nb = parseInt(b[0]) || 9999;
+      return na - nb;
+    }).forEach(([teamNum, records]) => {
+      const d = records[records.length - 1];
+      const epa1 = d.e1?.epa || '—';
+      const opr1 = d.e1?.opr || '—';
+      const rank1 = d.e1?.rank || '—';
+
+      html += `
+        <div class="team-card">
+          <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
+            <div class="team-card-num">#${teamNum}</div>
+            <div class="team-card-info">
+              <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
+              <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s)</div>
+            </div>
+            <div class="team-card-stats">
+              <div class="team-stat-mini"><div class="v">${epa1}</div><div class="l">EPA</div></div>
+              <div class="team-stat-mini"><div class="v">${opr1}</div><div class="l">OPR</div></div>
+              <div class="team-stat-mini"><div class="v">${rank1}</div><div class="l">Rank</div></div>
+            </div>
+            <span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span>
+          </div>
+          <div class="team-card-body" id="tc_${teamNum}">
+            ${renderTeamBody(records)}
+          </div>
+        </div>
+      `;
+    });
+
+    content.innerHTML = html;
+  }
+
+  function renderTeamBody(records) {
+    let html = '';
+    records.forEach((d, idx) => {
+      if (records.length > 1) {
+        html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">
+          Report ${idx+1} — Scout: ${d.scout || 'Unknown'} ${getEventBadge(d.collection)}
+        </div>`;
+      }
+
+      const e1 = d.e1 || {};
+      const e2 = d.e2 || {};
+      const hasE2 = d.e2 && (d.e2.name || d.e2.epa);
+
+      if (hasE2) {
+        html += `
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+              <div class="analytics-section-label">EVENT 01 // ${e1.name || 'N/A'}</div>
+              <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+                ${statMini('EPA', e1.epa)} ${statMini('OPR', e1.opr)} ${statMini('Rank', e1.rank)} ${statMini('Record', e1.record)}
+              </div>
+              <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
+              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">
+                ${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}
+              </div>
+            </div>
+            <div>
+              <div class="analytics-section-label">EVENT 02 // ${e2.name || 'N/A'}</div>
+              <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+                ${statMini('EPA', e2.epa)} ${statMini('OPR', e2.opr)} ${statMini('Rank', e2.rank)} ${statMini('Record', e2.record)}
+              </div>
+              <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
+              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">
+                ${e2.captain || '—'} &nbsp;›&nbsp; ${e2.result || '—'}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (e1.name || e1.epa) {
+        html += `
+          <div style="margin-bottom:16px;">
+            <div class="analytics-section-label">EVENT // ${e1.name || 'N/A'}</div>
+            <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+              ${statMini('EPA', e1.epa)} ${statMini('OPR', e1.opr)} ${statMini('Rank', e1.rank)} ${statMini('Record', e1.record)}
+            </div>
+            <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
+            <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">
+              ${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}
+            </div>
+          </div>
+        `;
+      }
+
+      if (e1.auto || e1.autoPos || e1.autoClimb) {
+        html += `<div class="analytics-section"><div class="analytics-section-label">Auto Routines (E1)</div><div class="chip-display">${renderChips([...(e1.autoPos||[]), ...(e1.auto||[]), ...(e1.autoClimb||[])], 'chip-auto')}</div></div>`;
+      }
+      if (e1.role || e1.tele || e1.intake) {
+        html += `<div class="analytics-section"><div class="analytics-section-label">Teleop Role & Scoring (E1)</div><div class="chip-display">${renderChips([...(e1.role||[]), ...(e1.tele||[]), ...(e1.intake||[])], 'chip-tele')}</div></div>`;
+      }
+      if (e1.cycles?.length) {
+        html += `<div class="analytics-section"><div class="analytics-section-label">Cycle Speed (E1)</div><div class="chip-display">${renderChips(e1.cycles, 'chip-role')}</div></div>`;
+      }
+      if (e1.defense?.length) {
+        html += `<div class="analytics-section"><div class="analytics-section-label">Defense Profile (E1)</div><div class="chip-display">${renderChips(e1.defense, 'chip-def')}</div></div>`;
+      }
+      if (e1.climb?.length) {
+        html += `<div class="analytics-section"><div class="analytics-section-label">Endgame / Climb (E1)</div><div class="chip-display">${renderChips(e1.climb, 'chip-climb')}</div></div>`;
+      }
+      if (e1.autoNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Auto Notes</div><div class="analytics-note">${e1.autoNotes}</div></div>`;
+      if (e1.teleNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Strategy Notes</div><div class="analytics-note">${e1.teleNotes}</div></div>`;
+
+      const ei = d.ei || {};
+      const outreach = [...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]), ...(ei.outreach?.community||[])];
+      if (outreach.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities</div><div class="chip-display">${renderChips(outreach, 'chip-outreach')}</div></div>`;
+      if (ei.notes) html += `<div class="analytics-section"><div class="analytics-section-label">EI Narrative</div><div class="analytics-note">${ei.notes}</div></div>`;
+      if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
+      if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
+
+      if (idx < records.length - 1) html += '<hr class="divider" style="margin:20px 0;">';
+    });
+    return html;
+  }
+
+  function statMini(label, val) {
+    return `<div style="text-align:center;">
+      <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:900;color:var(--blue);">${val || '—'}</div>
+      <div style="font-family:'Share Tech Mono';font-size:8px;color:var(--muted);">${label}</div>
+    </div>`;
+  }
+
+  function toggleTeamCard(id) {
+    const body = document.getElementById(id);
+    const teamNum = id.replace('tc_', '');
+    const toggle = document.getElementById('tct_' + teamNum);
+    if (body.classList.toggle('open')) {
+      toggle.textContent = '[ — ]';
+    } else {
+      toggle.textContent = '[ + ]';
     }
   }
 </script>
