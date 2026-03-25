@@ -1,144 +1,128 @@
-<div id="panelEI" class="panel active">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCRAPSIGHT | 2026 Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  
+  const firebaseConfig = { projectId: "scrapsight-8d40c" };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
+  window.db = db;
+  window.addDoc = addDoc;
+  window.collection = collection;
+  window.serverTimestamp = serverTimestamp;
+</script>
+
+<style>
+  :root {
+    --bg: #050505; --surface: #121212; --border: #333; --accent: #ff2d55; 
+    --accent2: #fff; --text: #fff; --muted: #888; --win: #00ffa3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 45, 85, 0.03) 39px, rgba(255, 45, 85, 0.03) 40px),
+                      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.02) 39px, rgba(255, 255, 255, 0.02) 40px);
+  }
+  .header { background: #000; border-bottom: 3px solid var(--accent); padding: 15px 30px; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; }
+  .header-badge { background: var(--accent2); color: #000; font-family: 'Share Tech Mono'; font-size: 11px; font-weight: 900; padding: 4px 10px; }
+  .tab-nav { display: flex; max-width: 900px; margin: 20px auto 0; padding: 0 20px; }
+  .tab-btn { flex: 1; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Barlow Condensed'; font-weight: 700; cursor: pointer; border-bottom: none; }
+  .tab-btn.active { color: var(--accent); border-color: var(--accent); border-bottom: 2px solid var(--accent); position: relative; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 20px; padding: 20px; border-left: 4px solid var(--accent); }
+  .card-white { border-left-color: var(--accent2); }
+  .section-title { font-family: 'Barlow Condensed'; color: var(--accent); font-weight: 900; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #333; }
+  .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  label { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 10px; display: block; }
+  input, select, textarea { background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; font-family: 'Barlow'; width: 100%; outline: none; border-radius: 2px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .chip { padding: 6px 10px; background: #000; border: 1px solid var(--border); font-size: 10px; cursor: pointer; color: var(--muted); text-transform: uppercase; border-radius: 2px; transition: 0.2s; }
+  .chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-save { width: 100%; padding: 18px; background: var(--accent); color: white; font-family: 'Barlow Condensed'; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+  #toast { position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000; padding: 15px; font-family: 'Share Tech Mono'; display: none; z-index: 1000; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">SYSTEM.ID</div>
+  <h1>SCRAP<span>SIGHT_2026</span></h1>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" id="t1" onclick="switchTab('ei')">01 // EI ANALYSIS</button>
+  <button class="tab-btn" id="t2" onclick="switchTab('perf')">02 // EVENT ANALYTICS</button>
+</div>
+
+<div class="container">
+  <div class="card card-white">
+    <div class="grid-2">
+      <div class="field-group"><label>Team #</label><input type="number" id="teamNum" placeholder="4272"></div>
+      <div class="field-group"><label>Scout ID</label><input type="text" id="scoutName" placeholder="Unit-01"></div>
+    </div>
+  </div>
+
+  <div id="panelEI" class="panel active">
     <div class="card">
-      <div class="section-title">Outreach & Impact Portfolio</div>
-      <label>Youth & Education</label>
-      <div class="chip-group" id="ei_youth_chips">
+      <div class="section-title">Outreach Infrastructure</div>
+      
+      <label>Youth & Educational Programs</label>
+      <div class="chip-group" id="ei_youth">
         <div class="chip" onclick="toggleChip(this)">FLL Mentor</div>
         <div class="chip" onclick="toggleChip(this)">FTC Mentor</div>
         <div class="chip" onclick="toggleChip(this)">Girl Scouts</div>
-        <div class="chip" onclick="toggleChip(this)">Boy Scouts/4-H</div>
+        <div class="chip" onclick="toggleChip(this)">Boy Scouts / 4-H</div>
         <div class="chip" onclick="toggleChip(this)">Summer Camps</div>
-        <div class="chip" onclick="toggleChip(this)">School Board Rep</div>
+        <div class="chip" onclick="toggleChip(this)">Unified Robotics</div>
       </div>
 
-      <label>Community & Advocacy</label>
-      <div class="chip-group" id="ei_comm_chips">
+      <label>Community Integration</label>
+      <div class="chip-group" id="ei_comm">
         <div class="chip" onclick="toggleChip(this)">Community Days</div>
         <div class="chip" onclick="toggleChip(this)">Library Demos</div>
         <div class="chip" onclick="toggleChip(this)">Gov Advocacy</div>
         <div class="chip" onclick="toggleChip(this)">Rotary/Lions Club</div>
-        <div class="chip" onclick="toggleChip(this)">DEI Initiatives</div>
         <div class="chip" onclick="toggleChip(this)">Sustainability Focus</div>
-        <div class="chip" onclick="toggleChip(this)">Non-Profit Collab</div>
+        <div class="chip" onclick="toggleChip(this)">DEI Initiatives</div>
+        <div class="chip" onclick="toggleChip(this)">International Outreach</div>
       </div>
 
-      <label>Technical & Peer Support</label>
-      <div class="chip-group" id="ei_tech_chips">
+      <label>Technical Leadership</label>
+      <div class="chip-group" id="ei_tech">
         <div class="chip" onclick="toggleChip(this)">Rookie Grants</div>
-        <div class="chip" onclick="toggleChip(this)">Open Alliance</div>
         <div class="chip" onclick="toggleChip(this)">Workshop Host</div>
+        <div class="chip" onclick="toggleChip(this)">Open Alliance</div>
         <div class="chip" onclick="toggleChip(this)">CAD/Code Release</div>
-        <div class="chip" onclick="toggleChip(this)">Bilingual Docs</div>
-      </div>
-      
-      <div class="field-group" style="margin-top:15px;">
-        <label>EI Award Script / "The Hook"</label>
-        <textarea id="eiScript" rows="3" placeholder="Paste the unique phrase used in their award script (e.g., 'This team electrified their local...')"></textarea>
+        <div class="chip" onclick="toggleChip(this)">Sponsor Integration</div>
       </div>
 
-      <div class="section-title" style="margin-top:20px;">Digital Presence</div>
+      <div class="field-group" style="margin-top:15px;">
+        <label>Award Script Snippet (Narrative Hook)</label>
+        <textarea id="eiScript" rows="3" placeholder="Notes on their unique narrative or specific phrasing used by judges..."></textarea>
+      </div>
+
+      <div class="section-title" style="margin-top:20px;">Digital & Socials</div>
       <div class="grid-3">
         <div class="field-group"><label>Instagram</label><input type="text" id="ig"></div>
         <div class="field-group"><label>Website</label><input type="text" id="web"></div>
-        <div class="field-group"><label>TikTok/X</label><input type="text" id="socialOther"></div>
+        <div class="field-group"><label>TikTok / Other</label><input type="text" id="socialOther"></div>
       </div>
     </div>
   </div>
 
   <div id="panelPerf" class="panel">
     <div class="card">
-      <div class="section-title">Performance History</div>
-      <div class="grid-2">
-        <div class="field-group">
-          <label>NE District Event</label>
-          <select id="event_select">
-            <option>Select NE Event...</option>
-            <option>Granite State (NHGRA)</option>
-            <option>Pine Tree (MEPOR)</option>
-            <option>SE Mass (MASAB)</option>
-            <option>North Shore (MAREA)</option>
-            <option>Western NE (MASPO)</option>
-            <option>Greater Boston (MABOS)</option>
-            <option>Hartford (CTHAR)</option>
-            <option>Rhode Island (PVD)</option>
-            <option>UNH (NHDUR)</option>
-            <option>WPI (MAWOR)</option>
-            <option>NE District Championship</option>
-          </select>
-        </div>
-        <div class="field-group"><label>Rank</label><input type="text" id="perf_rank"></div>
-      </div>
-
-      <div class="grid-3">
-        <div class="field-group"><label>EPA</label><input type="number" id="perf_epa"></div>
-        <div class="field-group"><label>OPR</label><input type="number" id="perf_opr"></div>
-        <div class="field-group"><label>Awards Won</label><input type="text" id="perf_awards" placeholder="Impact, EI, etc."></div>
-      </div>
-
-      <label>2026 Auto Strategies (Observed)</label>
-      <div class="chip-group" id="auto_chips">
-        <div class="chip" onclick="toggleChip(this)">8 Preload + Shoot</div>
-        <div class="chip" onclick="toggleChip(this)">8 Preload + 1 Cycle</div>
-        <div class="chip" onclick="toggleChip(this)">8 Preload + 2 Cycle</div>
-        <div class="chip" onclick="toggleChip(this)">Centerline Steal</div>
-        <div class="chip" onclick="toggleChip(this)">Denial/Defense</div>
-        <div class="chip" onclick="toggleChip(this)">Mobility Only</div>
-        <div class="chip" onclick="toggleChip(this)">Cross-Field Shuttle</div>
-      </div>
-
-      <label>Robot Capabilities</label>
-      <div class="chip-group" id="cap_chips">
-        <div class="chip" onclick="toggleChip(this)">Solo Climb</div>
-        <div class="chip" onclick="toggleChip(this)">Harmonized</div>
-        <div class="chip" onclick="toggleChip(this)">Deep Climb</div>
-        <div class="chip" onclick="toggleChip(this)">Shallow Climb</div>
-        <div class="chip" onclick="toggleChip(this)">Park Only</div>
-        <div class="chip" onclick="toggleChip(this)">Trap/Stage Score</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  // Updated save function to capture the new chip groups
-  async function saveToFirebase() {
-    const btn = document.querySelector('.btn-save');
-    btn.innerText = "UPLOADING...";
-    
-    const getChips = (id) => Array.from(document.querySelectorAll(`#${id} .chip.active`)).map(c => c.innerText);
-
-    const scoutData = {
-      team: document.getElementById('teamNum').value,
-      scout: document.getElementById('scoutName').value,
-      eiAnalysis: {
-        youth: getChips('ei_youth_chips'),
-        community: getChips('ei_comm_chips'),
-        technical: getChips('ei_tech_chips'),
-        script: document.getElementById('eiScript').value,
-        socials: { 
-            ig: document.getElementById('ig').value, 
-            web: document.getElementById('web').value, 
-            other: document.getElementById('socialOther').value 
-        }
-      },
-      performance: {
-        event: document.getElementById('event_select').value,
-        rank: document.getElementById('perf_rank').value,
-        epa: document.getElementById('perf_epa').value,
-        opr: document.getElementById('perf_opr').value,
-        awards: document.getElementById('perf_awards').value,
-        autoStrategies: getChips('auto_chips'),
-        capabilities: getChips('cap_chips')
-      },
-      timestamp: window.serverTimestamp()
-    };
-
-    try {
-      await window.addDoc(window.collection(window.db, "scouts"), scoutData);
-      document.getElementById('toast').style.display = 'block';
-      setTimeout(() => { location.reload(); }, 2500);
-    } catch (e) {
-      alert("System Error: " + e.message);
-      btn.innerText = "TRANSMIT TO SCRAPSIGHT";
-    }
-  }
-</script>
+      <div class="section-title
