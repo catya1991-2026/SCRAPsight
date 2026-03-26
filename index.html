@@ -959,29 +959,22 @@
   }
 
   function clearEIForm() {
-    // Text/input fields
     ['ig','web','tiktok','twitter','youtube','linkedin','github','socialOther',
      'outreachOther','awardsOther','eiScript','eiPresentationNotes','eiStrengths','eiWeaknesses']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    // All chips in EI panel
     document.querySelectorAll('#panelEI .chip.active').forEach(c => c.classList.remove('active'));
   }
 
   function clearPerfForm() {
-    // Text/number inputs
     ['e1_epa','e1_opr','e1_rank','e1_record','e1_avgpts','e1_autonotes','e1_telenotes',
      'e2_epa','e2_opr','e2_rank','e2_record','e2_avgpts','e2_autonotes','e2_telenotes']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    // Selects
     ['e1_name','e1_captain','e1_result','e2_name','e2_captain','e2_result']
       .forEach(id => { const el = document.getElementById(id); if (el) el.selectedIndex = 0; });
-    // Live display bars
     ['e1_epa_display','e1_opr_display','e1_rank_display','e1_record_display',
      'e2_epa_display','e2_opr_display','e2_rank_display','e2_record_display']
       .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
-    // All chips in perf panel
     document.querySelectorAll('#panelPerf .chip.active').forEach(c => c.classList.remove('active'));
-    // Reset event selection state
     currentScoutingEvent = null;
     ['unh','hartford','dcmp'].forEach(e => {
       const p = document.getElementById('pill-' + e);
@@ -994,7 +987,6 @@
   }
 
   function switchTab(tab) {
-    // Clear the form we're leaving so data doesn't bleed between tabs
     if (tab === 'perf' && currentTab === 'ei') clearEIForm();
     if (tab === 'ei' && currentTab === 'perf') clearPerfForm();
     currentTab = tab;
@@ -1280,24 +1272,34 @@
       return;
     }
 
+    // ── KEY CHANGE: filter records by report type before building team groups ──
+    const viewRecords = analyticsView === 'ei'
+      ? allScoutData.filter(d => d.type === 'ei_only')
+      : allScoutData.filter(d => d.type === 'perf_only');
+
     const teams = {};
-    allScoutData.forEach(d => {
+    viewRecords.forEach(d => {
       const key = d.team || 'unknown';
       if (!teams[key]) teams[key] = [];
       teams[key].push(d);
     });
 
     const teamCount = Object.keys(teams).length;
-    const recordCount = allScoutData.length;
+    const recordCount = viewRecords.length;
 
     if (analyticsView === 'ei') {
-      const eiRecords = allScoutData.filter(d => d.ei && (d.ei.strengths || d.ei.weaknesses || d.ei.outreach));
-      const awardRecords = allScoutData.filter(d => d.ei?.awards?.impact?.length > 0 || d.ei?.awards?.judged?.length > 0);
+      const awardRecords = viewRecords.filter(d => d.ei?.awards?.impact?.length > 0 || d.ei?.awards?.judged?.length > 0);
       metaBar.innerHTML = `
         <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
-        <div class="meta-stat"><div class="mv">${eiRecords.length}</div><div class="ml">EI Reports</div></div>
+        <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">EI Reports</div></div>
         <div class="meta-stat"><div class="mv">${awardRecords.length}</div><div class="ml">Teams w/ Awards</div></div>
       `;
+
+      if (teamCount === 0) {
+        content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EI REPORTS FOUND<br>SUBMIT AN EI ANALYSIS REPORT TO POPULATE THIS VIEW</p></div>';
+        return;
+      }
+
       let html = '';
       Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999) - (parseInt(b[0])||9999))
         .forEach(([teamNum, records]) => {
@@ -1328,17 +1330,23 @@
             </div>
           `;
         });
-      content.innerHTML = html || '<div class="empty-state"><div class="icon">📡</div><p>NO EI DATA IN THESE RECORDS</p></div>';
+      content.innerHTML = html;
 
     } else {
       // PERF VIEW
-      const epas = allScoutData.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
+      const epas = viewRecords.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
       const avgEpa = epas.length ? (epas.reduce((a,b)=>a+b,0)/epas.length).toFixed(1) : '—';
       metaBar.innerHTML = `
         <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
         <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">Total Reports</div></div>
         <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
       `;
+
+      if (teamCount === 0) {
+        content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EVENT ANALYTICS REPORTS FOUND<br>SUBMIT AN EVENT ANALYTICS REPORT TO POPULATE THIS VIEW</p></div>';
+        return;
+      }
+
       let html = '';
       Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999) - (parseInt(b[0])||9999))
         .forEach(([teamNum, records]) => {
@@ -1381,29 +1389,24 @@
       }
       const ei = d.ei || {};
 
-      // Socials
       const socials = ei.socials || {};
       const socialLinks = Object.entries(socials).filter(([,v]) => v).map(([k,v]) =>
         `<span class="chip-display-item chip-tele">${k}: ${v}</span>`).join('');
       if (socialLinks) html += `<div class="analytics-section"><div class="analytics-section-label">Social & Web Presence</div><div class="chip-display">${socialLinks}</div></div>`;
 
-      // Outreach
       const allOutreach = [
         ...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]),
         ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
       ];
       if (allOutreach.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities (${allOutreach.length} programs)</div><div class="chip-display">${renderChips(allOutreach, 'chip-outreach')}</div></div>`;
 
-      // Awards
       const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
       if (allAwards.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Awards Portfolio</div><div class="chip-display">${renderChips(allAwards, 'chip-gold')}</div></div>`;
       if (ei.awards?.other) html += `<div class="analytics-section"><div class="analytics-section-label">Additional Awards</div><div class="analytics-note">${ei.awards.other}</div></div>`;
 
-      // Script / Presentation
       if (ei.script) html += `<div class="analytics-section"><div class="analytics-section-label">Emcee Script</div><div class="analytics-note" style="border-left-color:var(--blue);white-space:pre-wrap;">${ei.script}</div></div>`;
       if (ei.presentationNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Presentation Notes</div><div class="analytics-note" style="border-left-color:var(--blue);">${ei.presentationNotes}</div></div>`;
 
-      // Scout notes
       if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
       if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
 
