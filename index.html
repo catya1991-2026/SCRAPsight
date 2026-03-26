@@ -9,7 +9,16 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  const firebaseConfig = { projectId: "scrapsight-8d40c" };
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA0TxRk1JgoYcu8i-y5XDjp3GH-c5QXBk",
+    authDomain: "scrapsight-8d40c.firebaseapp.com",
+    projectId: "scrapsight-8d40c",
+    storageBucket: "scrapsight-8d40c.firebasestorage.app",
+    messagingSenderId: "347079591085",
+    appId: "1:347079591085:web:9833723416770bf21d7224"
+  };
+
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   window.db = db;
@@ -60,10 +69,10 @@
   .btn-analytics:hover { background: var(--blue); color: #000; }
   .btn-analytics.active { background: var(--blue); color: #000; }
 
-  /* EVENT SELECTOR BANNER — only shows on perf tab */
+  /* EVENT SELECTOR BANNER */
   .event-selector-banner {
     background: #000; border-bottom: 2px solid #1a1a1a; padding: 10px 30px;
-    display: none; /* hidden by default, shown when on perf tab */
+    display: none;
     align-items: center; gap: 20px; position: sticky; top: 55px; z-index: 99;
     flex-wrap: wrap;
   }
@@ -89,7 +98,7 @@
   }
   .event-indicator.set { border-color: var(--win); color: var(--win); background: rgba(0,255,163,0.05); }
 
-  /* EI mode badge — shows on EI tab */
+  /* EI MODE BANNER */
   .ei-mode-banner {
     background: rgba(255,45,85,0.06); border-bottom: 2px solid rgba(255,45,85,0.2);
     padding: 8px 30px; display: flex; align-items: center; gap: 10px;
@@ -357,13 +366,13 @@
   </div>
 </div>
 
-<!-- EI MODE BANNER — only shows on EI tab -->
+<!-- EI MODE BANNER -->
 <div class="ei-mode-banner" id="eiBanner">
   <span class="badge">▲ NE DCMP</span>
   <span class="label">EI Analysis always saved to DCMP database</span>
 </div>
 
-<!-- EVENT SELECTOR BANNER — only shows on Event Analytics tab -->
+<!-- EVENT SELECTOR BANNER -->
 <div class="event-selector-banner" id="eventBanner">
   <span class="event-selector-label">Scouting For:</span>
   <div class="event-selector-pills">
@@ -479,7 +488,6 @@
         <div class="chip" onclick="toggleChip(this)">Fundraiser Events</div>
         <div class="chip" onclick="toggleChip(this)">Corporate Partnership Programs</div>
         <div class="chip" onclick="toggleChip(this)">Rookie Donation Boxes</div>
-        
       </div>
       <div class="sub-title">Other</div>
       <input type="text" id="outreachOther" placeholder="Other Outreach">
@@ -558,7 +566,6 @@
   <!-- ===================== EVENT ANALYTICS PANEL ===================== -->
   <div id="panelPerf" class="panel">
 
-    <!-- No-event-selected warning -->
     <div id="perfNoEventWarn" style="display:none; margin-bottom:16px; padding:18px 20px; border:1px solid #3a2a00; background:rgba(255,215,0,0.04); font-family:'Share Tech Mono'; font-size:11px; color:var(--gold); letter-spacing:1px;">
       ⚠ SELECT AN EVENT ABOVE (UNH, HARTFORD, OR DCMP) BEFORE ENTERING MATCH DATA
     </div>
@@ -753,7 +760,7 @@
         <div class="section-title">Auto Strategy</div>
         <div class="sub-title">Starting Position</div>
         <div class="chip-group" id="e2_pos_chips">
-           <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
+          <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
           <div class="chip blue" onclick="toggleChip(this)">Center</div>
           <div class="chip blue" onclick="toggleChip(this)">Right Trench</div>
           <div class="chip blue" onclick="toggleChip(this)">Left Bump</div>
@@ -881,13 +888,11 @@
 <div id="toast">▲ DATA UPLOADED // SYSTEM STABLE</div>
 
 <script>
-  // State
-  let currentScoutingEvent = null; // only used for event analytics tab
+  let currentScoutingEvent = null;
   let analyticsFilter = 'all';
   let allScoutData = [];
   let currentTab = 'ei';
 
-  // Clock
   function updateClock() {
     const now = new Date();
     document.getElementById('clockEl').textContent =
@@ -895,7 +900,6 @@
   }
   setInterval(updateClock, 1000); updateClock();
 
-  // Event selection — only relevant for perf tab
   function selectScoutingEvent(ev) {
     currentScoutingEvent = ev;
     ['unh','hartford','dcmp'].forEach(e => {
@@ -907,7 +911,6 @@
     ind.textContent = '▲ ' + labels[ev];
     ind.className = 'event-indicator set';
 
-    // Show/hide event block 2 based on selection
     const block2 = document.getElementById('eventBlock2');
     const warn = document.getElementById('perfNoEventWarn');
     warn.style.display = 'none';
@@ -916,14 +919,12 @@
       block2.style.display = 'block';
       document.getElementById('e1_label').textContent = 'EVENT 01';
     } else {
-      // UNH or Hartford — only 1 event
       block2.style.display = 'none';
       const labelMap = { unh: 'UNH EVENT', hartford: 'HARTFORD EVENT' };
       document.getElementById('e1_label').textContent = labelMap[ev] || 'EVENT 01';
     }
   }
 
-  // Tab switching
   function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -942,15 +943,12 @@
       document.getElementById('t2').classList.add('active');
       eiBanner.classList.add('hidden');
       eventBanner.classList.add('visible');
-
-      // Show warning if no event selected yet
       if (!currentScoutingEvent) {
         document.getElementById('perfNoEventWarn').style.display = 'block';
       }
     }
   }
 
-  // Analytics page toggle
   function openAnalytics() {
     const mainC = document.getElementById('mainContainer');
     const analyticsC = document.getElementById('analyticsContainer');
@@ -974,7 +972,6 @@
       analyticsC.style.display = 'none';
       btn.classList.remove('active');
       btn.textContent = '⬡ ANALYTICS DASHBOARD';
-      // Restore correct banner
       if (currentTab === 'ei') {
         eiBanner.classList.remove('hidden');
       } else {
@@ -983,16 +980,13 @@
     }
   }
 
-  // Chip toggle
   function toggleChip(el) { el.classList.toggle('active'); }
 
-  // Live stat bar update
   function liveUpdate(inputId, displayId) {
     const val = document.getElementById(inputId).value;
     document.getElementById(displayId).textContent = val || '—';
   }
 
-  // Event block collapse
   function toggleEvent(n) {
     const body = document.getElementById('eb' + n);
     const toggle = document.getElementById('et' + n);
@@ -1000,12 +994,10 @@
     toggle.textContent = collapsed ? '[ + ]' : '[ — ]';
   }
 
-  // Get active chips
   function getChips(id) {
     return Array.from(document.querySelectorAll('#' + id + ' .chip.active')).map(c => c.innerText);
   }
 
-  // EI always saves to dcmp collection
   async function saveEI() {
     const btn = document.querySelector('#panelEI .btn-save');
     btn.innerText = "UPLOADING...";
@@ -1043,8 +1035,6 @@
         },
         script: document.getElementById('eiScript').value,
         presentationNotes: document.getElementById('eiPresentationNotes').value,
-        stats: document.getElementById('eiStats').value,
-        notes: document.getElementById('eiNotes').value,
         strengths: document.getElementById('eiStrengths').value,
         weaknesses: document.getElementById('eiWeaknesses').value
       },
@@ -1064,7 +1054,6 @@
     }
   }
 
-  // Perf save — requires event selection
   async function savePerf() {
     if (!currentScoutingEvent) {
       document.getElementById('perfNoEventWarn').style.display = 'block';
@@ -1109,7 +1098,6 @@
       timestamp: window.serverTimestamp()
     };
 
-    // Only include e2 if DCMP
     if (currentScoutingEvent === 'dcmp') {
       scoutData.e2 = {
         name: document.getElementById('e2_name').value,
@@ -1147,7 +1135,6 @@
     }
   }
 
-  // ===== ANALYTICS =====
   async function loadAnalytics() {
     const content = document.getElementById('analyticsContent');
     content.innerHTML = '<div class="loading-state"><div class="spinner"></div>PULLING INTEL FROM DATABASE...</div>';
@@ -1340,7 +1327,6 @@
       const ei = d.ei || {};
       const outreach = [...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]), ...(ei.outreach?.community||[])];
       if (outreach.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities</div><div class="chip-display">${renderChips(outreach, 'chip-outreach')}</div></div>`;
-      if (ei.notes) html += `<div class="analytics-section"><div class="analytics-section-label">EI Narrative</div><div class="analytics-note">${ei.notes}</div></div>`;
       if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
       if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
 
