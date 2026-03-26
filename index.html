@@ -248,6 +248,25 @@
   }
   .analytics-subtitle { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); margin-top: 3px; }
 
+  /* ANALYTICS VIEW TOGGLE */
+  .analytics-view-toggle {
+    display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); overflow: hidden;
+  }
+  .view-toggle-btn {
+    flex: 1; padding: 14px 20px; background: #0a0a0a; border: none;
+    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px;
+    cursor: pointer; color: #555; text-transform: uppercase; letter-spacing: 2px;
+    transition: all .15s; border-right: 1px solid var(--border);
+  }
+  .view-toggle-btn:last-child { border-right: none; }
+  .view-toggle-btn:hover { color: #aaa; background: #111; }
+  .view-toggle-btn.active-ei { background: rgba(255,215,0,0.07); color: var(--gold); border-bottom: 2px solid var(--gold); }
+  .view-toggle-btn.active-perf { background: rgba(0,180,255,0.07); color: var(--blue); border-bottom: 2px solid var(--blue); }
+  .view-toggle-sub {
+    font-family: 'Share Tech Mono'; font-size: 8px; display: block;
+    margin-top: 3px; opacity: 0.6; letter-spacing: 1px;
+  }
+
   .analytics-filter { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
   .analytics-filter-label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
   .filter-pill {
@@ -311,6 +330,7 @@
   .chip-def { color: #ff8c00; border-color: rgba(255,140,0,0.3); background: rgba(255,140,0,0.06); }
   .chip-role { color: var(--accent); border-color: rgba(255,45,85,0.3); background: rgba(255,45,85,0.06); }
   .chip-outreach { color: var(--gold); border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.06); }
+  .chip-gold { color: var(--gold); border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.1); font-weight: 900; }
 
   .analytics-note {
     font-family: 'Barlow'; font-size: 12px; color: #aaa; line-height: 1.5;
@@ -866,6 +886,18 @@
     </div>
   </div>
 
+  <!-- VIEW MODE TOGGLE -->
+  <div class="analytics-view-toggle">
+    <button class="view-toggle-btn active-ei" id="vbtn-ei" onclick="setAnalyticsView('ei')">
+      ▲ EI ANALYSIS
+      <span class="view-toggle-sub">Outreach · Awards · Presentation</span>
+    </button>
+    <button class="view-toggle-btn" id="vbtn-perf" onclick="setAnalyticsView('perf')">
+      ⬡ EVENT ANALYTICS
+      <span class="view-toggle-sub">EPA · OPR · Auto · Teleop · Climb</span>
+    </button>
+  </div>
+
   <div class="analytics-filter">
     <span class="analytics-filter-label">Filter Event:</span>
     <div class="filter-pill" id="apill-all" onclick="filterAnalytics('all')">ALL EVENTS</div>
@@ -890,6 +922,7 @@
 <script>
   let currentScoutingEvent = null;
   let analyticsFilter = 'all';
+  let analyticsView = 'ei'; // 'ei' or 'perf'
   let allScoutData = [];
   let currentTab = 'ei';
 
@@ -925,7 +958,45 @@
     }
   }
 
+  function clearEIForm() {
+    // Text/input fields
+    ['ig','web','tiktok','twitter','youtube','linkedin','github','socialOther',
+     'outreachOther','awardsOther','eiScript','eiPresentationNotes','eiStrengths','eiWeaknesses']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    // All chips in EI panel
+    document.querySelectorAll('#panelEI .chip.active').forEach(c => c.classList.remove('active'));
+  }
+
+  function clearPerfForm() {
+    // Text/number inputs
+    ['e1_epa','e1_opr','e1_rank','e1_record','e1_avgpts','e1_autonotes','e1_telenotes',
+     'e2_epa','e2_opr','e2_rank','e2_record','e2_avgpts','e2_autonotes','e2_telenotes']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    // Selects
+    ['e1_name','e1_captain','e1_result','e2_name','e2_captain','e2_result']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.selectedIndex = 0; });
+    // Live display bars
+    ['e1_epa_display','e1_opr_display','e1_rank_display','e1_record_display',
+     'e2_epa_display','e2_opr_display','e2_rank_display','e2_record_display']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
+    // All chips in perf panel
+    document.querySelectorAll('#panelPerf .chip.active').forEach(c => c.classList.remove('active'));
+    // Reset event selection state
+    currentScoutingEvent = null;
+    ['unh','hartford','dcmp'].forEach(e => {
+      const p = document.getElementById('pill-' + e);
+      if (p) p.className = 'event-pill';
+    });
+    const ind = document.getElementById('eventIndicator');
+    if (ind) { ind.textContent = 'NO EVENT SELECTED'; ind.className = 'event-indicator'; }
+    document.getElementById('eventBlock2').style.display = 'none';
+    document.getElementById('e1_label').textContent = 'EVENT 01';
+  }
+
   function switchTab(tab) {
+    // Clear the form we're leaving so data doesn't bleed between tabs
+    if (tab === 'perf' && currentTab === 'ei') clearEIForm();
+    if (tab === 'ei' && currentTab === 'perf') clearPerfForm();
     currentTab = tab;
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1164,6 +1235,16 @@
     }
   }
 
+  function setAnalyticsView(view) {
+    analyticsView = view;
+    ['ei','perf'].forEach(v => {
+      const btn = document.getElementById('vbtn-' + v);
+      btn.className = 'view-toggle-btn';
+    });
+    document.getElementById('vbtn-' + view).className = 'view-toggle-btn active-' + view;
+    renderAnalytics();
+  }
+
   function filterAnalytics(ev) {
     analyticsFilter = ev;
     ['all','unh','hartford','dcmp'].forEach(e => {
@@ -1208,52 +1289,89 @@
 
     const teamCount = Object.keys(teams).length;
     const recordCount = allScoutData.length;
-    const epas = allScoutData.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
-    const avgEpa = epas.length ? (epas.reduce((a,b) => a+b,0) / epas.length).toFixed(1) : '—';
 
-    metaBar.innerHTML = `
-      <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
-      <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">Total Reports</div></div>
-      <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
-    `;
-
-    let html = '';
-    Object.entries(teams).sort((a,b) => {
-      const na = parseInt(a[0]) || 9999;
-      const nb = parseInt(b[0]) || 9999;
-      return na - nb;
-    }).forEach(([teamNum, records]) => {
-      const d = records[records.length - 1];
-      const epa1 = d.e1?.epa || '—';
-      const opr1 = d.e1?.opr || '—';
-      const rank1 = d.e1?.rank || '—';
-
-      html += `
-        <div class="team-card">
-          <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
-            <div class="team-card-num">#${teamNum}</div>
-            <div class="team-card-info">
-              <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
-              <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s)</div>
-            </div>
-            <div class="team-card-stats">
-              <div class="team-stat-mini"><div class="v">${epa1}</div><div class="l">EPA</div></div>
-              <div class="team-stat-mini"><div class="v">${opr1}</div><div class="l">OPR</div></div>
-              <div class="team-stat-mini"><div class="v">${rank1}</div><div class="l">Rank</div></div>
-            </div>
-            <span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span>
-          </div>
-          <div class="team-card-body" id="tc_${teamNum}">
-            ${renderTeamBody(records)}
-          </div>
-        </div>
+    if (analyticsView === 'ei') {
+      const eiRecords = allScoutData.filter(d => d.ei && (d.ei.strengths || d.ei.weaknesses || d.ei.outreach));
+      const awardRecords = allScoutData.filter(d => d.ei?.awards?.impact?.length > 0 || d.ei?.awards?.judged?.length > 0);
+      metaBar.innerHTML = `
+        <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
+        <div class="meta-stat"><div class="mv">${eiRecords.length}</div><div class="ml">EI Reports</div></div>
+        <div class="meta-stat"><div class="mv">${awardRecords.length}</div><div class="ml">Teams w/ Awards</div></div>
       `;
-    });
+      let html = '';
+      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999) - (parseInt(b[0])||9999))
+        .forEach(([teamNum, records]) => {
+          const d = records[records.length - 1];
+          const ei = d.ei || {};
+          const allOutreach = [
+            ...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]),
+            ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
+          ];
+          const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
+          html += `
+            <div class="team-card">
+              <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
+                <div class="team-card-num">#${teamNum}</div>
+                <div class="team-card-info">
+                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
+                  <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s) logged</div>
+                </div>
+                <div class="team-card-stats">
+                  <div class="team-stat-mini"><div class="v" style="color:var(--gold);">${allAwards.length}</div><div class="l">Awards</div></div>
+                  <div class="team-stat-mini"><div class="v" style="color:var(--win);">${allOutreach.length}</div><div class="l">Outreach</div></div>
+                </div>
+                <span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span>
+              </div>
+              <div class="team-card-body" id="tc_${teamNum}">
+                ${renderEIBody(records)}
+              </div>
+            </div>
+          `;
+        });
+      content.innerHTML = html || '<div class="empty-state"><div class="icon">📡</div><p>NO EI DATA IN THESE RECORDS</p></div>';
 
-    content.innerHTML = html;
+    } else {
+      // PERF VIEW
+      const epas = allScoutData.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
+      const avgEpa = epas.length ? (epas.reduce((a,b)=>a+b,0)/epas.length).toFixed(1) : '—';
+      metaBar.innerHTML = `
+        <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
+        <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">Total Reports</div></div>
+        <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
+      `;
+      let html = '';
+      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999) - (parseInt(b[0])||9999))
+        .forEach(([teamNum, records]) => {
+          const d = records[records.length - 1];
+          const epa1 = d.e1?.epa || '—';
+          const opr1 = d.e1?.opr || '—';
+          const rank1 = d.e1?.rank || '—';
+          html += `
+            <div class="team-card">
+              <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
+                <div class="team-card-num">#${teamNum}</div>
+                <div class="team-card-info">
+                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
+                  <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s)</div>
+                </div>
+                <div class="team-card-stats">
+                  <div class="team-stat-mini"><div class="v">${epa1}</div><div class="l">EPA</div></div>
+                  <div class="team-stat-mini"><div class="v">${opr1}</div><div class="l">OPR</div></div>
+                  <div class="team-stat-mini"><div class="v">${rank1}</div><div class="l">Rank</div></div>
+                </div>
+                <span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span>
+              </div>
+              <div class="team-card-body" id="tc_${teamNum}">
+                ${renderPerfBody(records)}
+              </div>
+            </div>
+          `;
+        });
+      content.innerHTML = html;
+    }
   }
 
-  function renderTeamBody(records) {
+  function renderEIBody(records) {
     let html = '';
     records.forEach((d, idx) => {
       if (records.length > 1) {
@@ -1261,7 +1379,47 @@
           Report ${idx+1} — Scout: ${d.scout || 'Unknown'} ${getEventBadge(d.collection)}
         </div>`;
       }
+      const ei = d.ei || {};
 
+      // Socials
+      const socials = ei.socials || {};
+      const socialLinks = Object.entries(socials).filter(([,v]) => v).map(([k,v]) =>
+        `<span class="chip-display-item chip-tele">${k}: ${v}</span>`).join('');
+      if (socialLinks) html += `<div class="analytics-section"><div class="analytics-section-label">Social & Web Presence</div><div class="chip-display">${socialLinks}</div></div>`;
+
+      // Outreach
+      const allOutreach = [
+        ...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]),
+        ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
+      ];
+      if (allOutreach.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities (${allOutreach.length} programs)</div><div class="chip-display">${renderChips(allOutreach, 'chip-outreach')}</div></div>`;
+
+      // Awards
+      const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
+      if (allAwards.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Awards Portfolio</div><div class="chip-display">${renderChips(allAwards, 'chip-gold')}</div></div>`;
+      if (ei.awards?.other) html += `<div class="analytics-section"><div class="analytics-section-label">Additional Awards</div><div class="analytics-note">${ei.awards.other}</div></div>`;
+
+      // Script / Presentation
+      if (ei.script) html += `<div class="analytics-section"><div class="analytics-section-label">Emcee Script</div><div class="analytics-note" style="border-left-color:var(--blue);white-space:pre-wrap;">${ei.script}</div></div>`;
+      if (ei.presentationNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Presentation Notes</div><div class="analytics-note" style="border-left-color:var(--blue);">${ei.presentationNotes}</div></div>`;
+
+      // Scout notes
+      if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
+      if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
+
+      if (idx < records.length - 1) html += '<hr class="divider" style="margin:20px 0;">';
+    });
+    return html || '<div style="font-family:\'Share Tech Mono\';font-size:10px;color:#444;padding:10px;">NO EI DATA RECORDED FOR THIS TEAM</div>';
+  }
+
+  function renderPerfBody(records) {
+    let html = '';
+    records.forEach((d, idx) => {
+      if (records.length > 1) {
+        html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">
+          Report ${idx+1} — Scout: ${d.scout || 'Unknown'} ${getEventBadge(d.collection)}
+        </div>`;
+      }
       const e1 = d.e1 || {};
       const e2 = d.e2 || {};
       const hasE2 = d.e2 && (d.e2.name || d.e2.epa);
@@ -1275,9 +1433,7 @@
                 ${statMini('EPA', e1.epa)} ${statMini('OPR', e1.opr)} ${statMini('Rank', e1.rank)} ${statMini('Record', e1.record)}
               </div>
               <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
-              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">
-                ${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}
-              </div>
+              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}</div>
             </div>
             <div>
               <div class="analytics-section-label">EVENT 02 // ${e2.name || 'N/A'}</div>
@@ -1285,9 +1441,7 @@
                 ${statMini('EPA', e2.epa)} ${statMini('OPR', e2.opr)} ${statMini('Rank', e2.rank)} ${statMini('Record', e2.record)}
               </div>
               <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
-              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">
-                ${e2.captain || '—'} &nbsp;›&nbsp; ${e2.result || '—'}
-              </div>
+              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${e2.captain || '—'} &nbsp;›&nbsp; ${e2.result || '—'}</div>
             </div>
           </div>
         `;
@@ -1299,9 +1453,7 @@
               ${statMini('EPA', e1.epa)} ${statMini('OPR', e1.opr)} ${statMini('Rank', e1.rank)} ${statMini('Record', e1.record)}
             </div>
             <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
-            <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">
-              ${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}
-            </div>
+            <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}</div>
           </div>
         `;
       }
@@ -1324,15 +1476,9 @@
       if (e1.autoNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Auto Notes</div><div class="analytics-note">${e1.autoNotes}</div></div>`;
       if (e1.teleNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Strategy Notes</div><div class="analytics-note">${e1.teleNotes}</div></div>`;
 
-      const ei = d.ei || {};
-      const outreach = [...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]), ...(ei.outreach?.community||[])];
-      if (outreach.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities</div><div class="chip-display">${renderChips(outreach, 'chip-outreach')}</div></div>`;
-      if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
-      if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
-
       if (idx < records.length - 1) html += '<hr class="divider" style="margin:20px 0;">';
     });
-    return html;
+    return html || '<div style="font-family:\'Share Tech Mono\';font-size:10px;color:#444;padding:10px;">NO PERFORMANCE DATA RECORDED FOR THIS TEAM</div>';
   }
 
   function statMini(label, val) {
