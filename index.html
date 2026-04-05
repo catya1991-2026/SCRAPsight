@@ -1374,14 +1374,20 @@
             ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
           ];
           const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
-          const eiEventLabel = ei.eiAwardEvent ? `<span class="chip-display-item chip-event" style="font-size:10px;">EI @ ${ei.eiAwardEvent}</span>` : '';
+          const eiEventRow = ei.eiAwardEvent
+            ? `<div style="margin-top:5px;display:flex;align-items:center;gap:6px;">
+                <span style="font-family:'Share Tech Mono';font-size:8px;color:#555;text-transform:uppercase;letter-spacing:1px;">EI Won At:</span>
+                <span style="font-family:'Barlow Condensed';font-weight:700;font-size:13px;color:var(--accent);letter-spacing:1px;padding:2px 8px;border:1px solid rgba(255,45,85,0.4);background:rgba(255,45,85,0.08);">▲ ${ei.eiAwardEvent.toUpperCase()}</span>
+              </div>`
+            : `<div style="margin-top:5px;"><span style="font-family:'Share Tech Mono';font-size:8px;color:#333;text-transform:uppercase;letter-spacing:1px;">EI Event: —</span></div>`;
           html += `
             <div class="team-card">
               <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
                 <div class="team-card-num">#${teamNum}</div>
                 <div class="team-card-info">
-                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)} ${eiEventLabel}</div>
-                  <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s) logged</div>
+                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
+                  ${eiEventRow}
+                  <div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s) logged</div>
                 </div>
                 <div class="team-card-stats">
                   <div class="team-stat-mini"><div class="v" style="color:var(--gold);">${allAwards.length}</div><div class="l">Awards</div></div>
