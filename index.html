@@ -170,6 +170,19 @@
   select option { background: #111; }
   textarea { resize: vertical; line-height: 1.5; }
 
+  /* EI EVENT SELECTOR PILLS */
+  .ei-event-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .ei-event-pill {
+    padding: 7px 14px; background: #000; border: 1px solid #333;
+    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 12px;
+    cursor: pointer; color: #666; text-transform: uppercase; letter-spacing: 1px;
+    transition: all .15s; white-space: nowrap;
+  }
+  .ei-event-pill:hover { border-color: #666; color: #bbb; }
+  .ei-event-pill.selected {
+    background: rgba(255,45,85,0.12); border-color: var(--accent); color: var(--accent);
+  }
+
   /* CHIPS */
   .chip-label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 5px; }
   .chip-group { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
@@ -209,7 +222,7 @@
   .perf-stat .lbl { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
   /* AWARDS */
-  .award-chip { padding: 6px 10px; background: #100d00; border: 1px solid #3a2a00; font-size: 10px; cursor: pointer; color: #888; text-transform: uppercase; border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; transition: all .12s; }
+  .award-chip { padding: 6px 10px; background: #100d00; border: 1px solid #3a2a00; font-size: 10px; cursor: pointer; color: #888; text-transform: uppercase; border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; transition: all .12px; }
   .award-chip.active { background: var(--gold); color: #000; border-color: var(--gold); }
 
   /* SAVE BTN */
@@ -331,6 +344,7 @@
   .chip-role { color: var(--accent); border-color: rgba(255,45,85,0.3); background: rgba(255,45,85,0.06); }
   .chip-outreach { color: var(--gold); border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.06); }
   .chip-gold { color: var(--gold); border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.1); font-weight: 900; }
+  .chip-event { color: var(--accent); border-color: rgba(255,45,85,0.4); background: rgba(255,45,85,0.08); }
 
   .analytics-note {
     font-family: 'Barlow'; font-size: 12px; color: #aaa; line-height: 1.5;
@@ -421,6 +435,28 @@
 
   <!-- ===================== EI ANALYSIS PANEL ===================== -->
   <div id="panelEI" class="panel active">
+
+    <!-- EI EVENT ORIGIN SELECTOR -->
+    <div class="card" style="border-left-color: var(--accent);">
+      <div class="section-title">EI Award — Event Origin</div>
+      <div class="field-group" style="margin-bottom:0;">
+        <label>Which event did this team receive their EI / Engineering Inspiration award at?</label>
+        <div class="ei-event-pills" id="eiEventPills">
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Minuteman')">Minuteman</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Pine Tree')">Pine Tree</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'North Shore')">North Shore</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Western NE')">Western NE</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Granite State')">Granite State</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'URI')">URI</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Waterbury')">Waterbury</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Hartford')">Hartford</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'Greater Boston')">Greater Boston</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'UNH')">UNH</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'UVM')">UVM</div>
+          <div class="ei-event-pill" onclick="selectEIEvent(this, 'WPI')">WPI</div>
+        </div>
+      </div>
+    </div>
 
     <div class="card">
       <div class="section-title">Social &amp; Web Presence</div>
@@ -934,9 +970,10 @@
 <script>
   let currentScoutingEvent = null;
   let analyticsFilter = 'all';
-  let analyticsView = 'ei'; // 'ei' or 'perf'
+  let analyticsView = 'ei';
   let allScoutData = [];
   let currentTab = 'ei';
+  let selectedEIEvent = null; // tracks which event the EI was earned at
 
   function updateClock() {
     const now = new Date();
@@ -944,6 +981,19 @@
       now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
   setInterval(updateClock, 1000); updateClock();
+
+  function selectEIEvent(el, eventName) {
+    // Toggle off if already selected
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      selectedEIEvent = null;
+      return;
+    }
+    // Deselect all, select this one
+    document.querySelectorAll('.ei-event-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedEIEvent = eventName;
+  }
 
   function selectScoutingEvent(ev) {
     currentScoutingEvent = ev;
@@ -975,6 +1025,8 @@
      'outreachOther','awardsOther','eiScript','eiPresentationNotes','eiStrengths','eiWeaknesses']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     document.querySelectorAll('#panelEI .chip.active').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.ei-event-pill.selected').forEach(p => p.classList.remove('selected'));
+    selectedEIEvent = null;
   }
 
   function clearPerfForm() {
@@ -1085,6 +1137,7 @@
       scoutingEvent: 'dcmp',
       type: 'ei_only',
       ei: {
+        eiAwardEvent: selectedEIEvent || null,
         socials: {
           ig: document.getElementById('ig').value,
           web: document.getElementById('web').value,
@@ -1284,7 +1337,6 @@
       return;
     }
 
-    // ── KEY CHANGE: filter records by report type before building team groups ──
     const viewRecords = analyticsView === 'ei'
       ? allScoutData.filter(d => d.type === 'ei_only')
       : allScoutData.filter(d => d.type === 'perf_only');
@@ -1322,12 +1374,13 @@
             ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
           ];
           const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
+          const eiEventLabel = ei.eiAwardEvent ? `<span class="chip-display-item chip-event" style="font-size:10px;">EI @ ${ei.eiAwardEvent}</span>` : '';
           html += `
             <div class="team-card">
               <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
                 <div class="team-card-num">#${teamNum}</div>
                 <div class="team-card-info">
-                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
+                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)} ${eiEventLabel}</div>
                   <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s) logged</div>
                 </div>
                 <div class="team-card-stats">
@@ -1345,7 +1398,6 @@
       content.innerHTML = html;
 
     } else {
-      // PERF VIEW
       const epas = viewRecords.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
       const avgEpa = epas.length ? (epas.reduce((a,b)=>a+b,0)/epas.length).toFixed(1) : '—';
       metaBar.innerHTML = `
@@ -1400,6 +1452,11 @@
         </div>`;
       }
       const ei = d.ei || {};
+
+      // EI Award Event
+      if (ei.eiAwardEvent) {
+        html += `<div class="analytics-section"><div class="analytics-section-label">EI Award Event Origin</div><div class="chip-display"><span class="chip-display-item chip-event">NE District — ${ei.eiAwardEvent}</span></div></div>`;
+      }
 
       const socials = ei.socials || {};
       const socialLinks = Object.entries(socials).filter(([,v]) => v).map(([k,v]) =>
