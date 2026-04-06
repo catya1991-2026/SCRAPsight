@@ -36,7 +36,7 @@
   :root {
     --bg: #050505; --surface: #0e0e0e; --surface2: #161616; --border: #2a2a2a;
     --accent: #ff2d55; --accent2: #fff; --text: #f0f0f0; --muted: #666;
-    --win: #00ffa3; --gold: #ffd700; --blue: #00b4ff;
+    --win: #00ffa3; --gold: #ffd700; --blue: #00b4ff; --purple: #b060ff;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -68,35 +68,6 @@
   }
   .btn-analytics:hover { background: var(--blue); color: #000; }
   .btn-analytics.active { background: var(--blue); color: #000; }
-
-  /* EVENT SELECTOR BANNER */
-  .event-selector-banner {
-    background: #000; border-bottom: 2px solid #1a1a1a; padding: 10px 30px;
-    display: none;
-    align-items: center; gap: 20px; position: sticky; top: 55px; z-index: 99;
-    flex-wrap: wrap;
-  }
-  .event-selector-banner.visible { display: flex; }
-  .event-selector-label {
-    font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 2px; white-space: nowrap;
-  }
-  .event-selector-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-  .event-pill {
-    padding: 6px 16px; background: #0a0a0a; border: 1px solid #333;
-    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 13px;
-    cursor: pointer; color: #777; text-transform: uppercase; letter-spacing: 1px;
-    transition: all .15s; white-space: nowrap;
-  }
-  .event-pill:hover { border-color: #555; color: #aaa; }
-  .event-pill.active-unh { background: rgba(0,180,255,0.1); border-color: var(--blue); color: var(--blue); }
-  .event-pill.active-hartford { background: rgba(255,215,0,0.08); border-color: var(--gold); color: var(--gold); }
-  .event-pill.active-dcmp { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
-  .event-indicator {
-    margin-left: auto; font-family: 'Share Tech Mono'; font-size: 9px;
-    padding: 3px 10px; border: 1px solid #333; color: #555;
-  }
-  .event-indicator.set { border-color: var(--win); color: var(--win); background: rgba(0,255,163,0.05); }
 
   /* EI MODE BANNER */
   .ei-mode-banner {
@@ -158,6 +129,7 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+  .grid-5 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 10px; }
   .field-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
   .field-group:last-child { margin-bottom: 0; }
   label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
@@ -205,12 +177,29 @@
     border-bottom: 1px solid var(--border); cursor: pointer; user-select: none;
   }
   .event-header:hover { background: #111; }
-  .event-num { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--accent); }
+  .event-num { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--accent); min-width: 70px; }
   .event-name-sel { background: none; border: none; color: #fff; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 15px; cursor: pointer; flex: 1; }
   .event-name-sel option { background: #111; font-family: 'Barlow', sans-serif; font-size: 13px; }
   .event-toggle { margin-left: auto; font-family: 'Share Tech Mono'; font-size: 11px; color: var(--muted); }
   .event-body { padding: 15px; display: block; }
   .event-body.collapsed { display: none; }
+
+  /* REMOVE EVENT BTN */
+  .btn-remove-event {
+    background: transparent; border: 1px solid #3a1020; color: #883344;
+    font-family: 'Share Tech Mono'; font-size: 9px; padding: 4px 10px; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 1px; transition: all .15s; margin-left: 8px;
+  }
+  .btn-remove-event:hover { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
+
+  /* ADD EVENT BTN */
+  .btn-add-event {
+    width: 100%; padding: 14px; background: transparent; border: 1px dashed #333;
+    color: #555; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+    transition: all .2s;
+  }
+  .btn-add-event:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,180,255,0.04); }
 
   /* PERFORMANCE SUMMARY BAR */
   .perf-bar { display: flex; gap: 8px; margin-bottom: 12px; }
@@ -222,7 +211,7 @@
   .perf-stat .lbl { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
   /* AWARDS */
-  .award-chip { padding: 6px 10px; background: #100d00; border: 1px solid #3a2a00; font-size: 10px; cursor: pointer; color: #888; text-transform: uppercase; border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; transition: all .12px; }
+  .award-chip { padding: 6px 10px; background: #100d00; border: 1px solid #3a2a00; font-size: 10px; cursor: pointer; color: #888; text-transform: uppercase; border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; transition: all .12s; }
   .award-chip.active { background: var(--gold); color: #000; border-color: var(--gold); }
 
   /* SAVE BTN */
@@ -249,8 +238,7 @@
   .sub-title { font-family: 'Share Tech Mono'; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 6px; }
 
   /* ===== ANALYTICS PAGE ===== */
-  #panelAnalytics { display: none; }
-  #panelAnalytics.active { display: block; }
+  #analyticsContainer { display: none; }
 
   .analytics-header {
     display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
@@ -275,6 +263,7 @@
   .view-toggle-btn:hover { color: #aaa; background: #111; }
   .view-toggle-btn.active-ei { background: rgba(255,215,0,0.07); color: var(--gold); border-bottom: 2px solid var(--gold); }
   .view-toggle-btn.active-perf { background: rgba(0,180,255,0.07); color: var(--blue); border-bottom: 2px solid var(--blue); }
+  .view-toggle-btn.active-div { background: rgba(176,96,255,0.07); color: var(--purple); border-bottom: 2px solid var(--purple); }
   .view-toggle-sub {
     font-family: 'Share Tech Mono'; font-size: 8px; display: block;
     margin-top: 3px; opacity: 0.6; letter-spacing: 1px;
@@ -289,8 +278,7 @@
     transition: all .15s;
   }
   .filter-pill:hover { border-color: #555; color: #aaa; }
-  .filter-pill.active-unh { background: rgba(0,180,255,0.1); border-color: var(--blue); color: var(--blue); }
-  .filter-pill.active-hartford { background: rgba(255,215,0,0.08); border-color: var(--gold); color: var(--gold); }
+  .filter-pill.active-all { background: rgba(0,255,163,0.08); border-color: var(--win); color: var(--win); }
   .filter-pill.active-dcmp { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
 
   .btn-refresh {
@@ -356,8 +344,6 @@
     font-family: 'Share Tech Mono'; font-size: 8px; padding: 2px 8px;
     border: 1px solid; text-transform: uppercase; letter-spacing: 1px;
   }
-  .event-tag.unh { color: var(--blue); border-color: rgba(0,180,255,0.4); background: rgba(0,180,255,0.08); }
-  .event-tag.hartford { color: var(--gold); border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.06); }
   .event-tag.dcmp { color: var(--accent); border-color: rgba(255,45,85,0.4); background: rgba(255,45,85,0.08); }
 
   .loading-state { text-align: center; padding: 60px 20px; font-family: 'Share Tech Mono'; font-size: 12px; color: var(--muted); }
@@ -381,11 +367,111 @@
   .meta-stat .mv { font-family: 'Barlow Condensed'; font-size: 28px; font-weight: 900; color: var(--win); }
   .meta-stat .ml { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
+  /* ===== DIVISION PRESCOUTING ===== */
+  .division-setup-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--purple); padding: 20px; margin-bottom: 16px;
+  }
+  .division-setup-title {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 13px; color: var(--purple);
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px;
+    border-bottom: 1px solid #1e1e1e; padding-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .division-teams-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;
+  }
+  .division-col { }
+  .division-col-header {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 16px;
+    text-transform: uppercase; letter-spacing: 2px; padding: 10px 14px;
+    margin-bottom: 8px; border: 1px solid;
+  }
+  .division-col-header.burns {
+    color: #ff6b35; border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.07);
+  }
+  .division-col-header.newsom {
+    color: #35b0ff; border-color: rgba(53,176,255,0.4); background: rgba(53,176,255,0.07);
+  }
+  .division-team-input {
+    display: flex; gap: 6px; margin-bottom: 6px; align-items: center;
+  }
+  .division-team-input input {
+    background: #000; border: 1px solid #222; color: #fff;
+    padding: 7px 10px; font-family: 'Share Tech Mono'; font-size: 11px; flex: 1; outline: none;
+    transition: border-color .15s;
+  }
+  .division-team-input input:focus { border-color: var(--purple); }
+  .btn-load-divisions {
+    width: 100%; padding: 14px; background: var(--purple); color: #fff;
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 15px; border: none;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: opacity .15s;
+    margin-top: 10px;
+  }
+  .btn-load-divisions:hover { opacity: 0.85; }
+  .btn-save-divisions {
+    padding: 8px 16px; background: transparent; border: 1px solid var(--purple); color: var(--purple);
+    font-family: 'Share Tech Mono'; font-size: 9px; cursor: pointer; text-transform: uppercase;
+    letter-spacing: 1px; transition: all .15s; margin-top: 6px;
+  }
+  .btn-save-divisions:hover { background: rgba(176,96,255,0.12); }
+
+  .division-prescount-section { margin-bottom: 24px; }
+  .division-prescount-header {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 18px;
+    text-transform: uppercase; letter-spacing: 2px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px; border: 1px solid; margin-bottom: 10px;
+  }
+  .division-prescount-header.burns {
+    color: #ff6b35; border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.05);
+  }
+  .division-prescount-header.newsom {
+    color: #35b0ff; border-color: rgba(53,176,255,0.4); background: rgba(53,176,255,0.05);
+  }
+  .division-prescount-header .count-badge {
+    font-family: 'Share Tech Mono'; font-size: 10px; padding: 3px 10px;
+    border: 1px solid; margin-left: auto;
+  }
+  .division-prescount-header.burns .count-badge { border-color: rgba(255,107,53,0.4); color: #ff6b35; background: rgba(255,107,53,0.08); }
+  .division-prescount-header.newsom .count-badge { border-color: rgba(53,176,255,0.4); color: #35b0ff; background: rgba(53,176,255,0.08); }
+
+  .div-team-mini-card {
+    background: #0a0a0a; border: 1px solid var(--border); padding: 12px 16px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 14px;
+    cursor: pointer; transition: all .15s;
+  }
+  .div-team-mini-card:hover { border-color: #444; background: #111; }
+  .div-team-mini-num {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 22px; color: var(--accent);
+    min-width: 60px;
+  }
+  .div-team-mini-info { flex: 1; }
+  .div-team-mini-name { font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px; color: #ddd; }
+  .div-team-mini-meta { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
+  .div-team-mini-stats { display: flex; gap: 14px; }
+  .div-stat { text-align: center; }
+  .div-stat .dv { font-family: 'Barlow Condensed'; font-size: 17px; font-weight: 900; color: var(--blue); }
+  .div-stat .dl { font-family: 'Share Tech Mono'; font-size: 8px; color: #555; }
+  .div-team-expand { padding: 0 16px 16px; display: none; border-top: 1px solid #1a1a1a; }
+  .div-team-expand.open { display: block; }
+  .no-scout-warning {
+    font-family: 'Share Tech Mono'; font-size: 10px; color: #555;
+    padding: 10px; border: 1px dashed #222; text-align: center; text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .district-rank-badge {
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 14px;
+    padding: 3px 10px; border: 1px solid rgba(255,215,0,0.4);
+    background: rgba(255,215,0,0.07); color: var(--gold); letter-spacing: 1px;
+  }
+
   @media(max-width:600px) {
-    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     .perf-bar { flex-wrap: wrap; }
     .team-card-stats { display: none; }
+    .division-teams-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -404,17 +490,6 @@
 <div class="ei-mode-banner" id="eiBanner">
   <span class="badge">▲ NE DCMP</span>
   <span class="label">EI Analysis always saved to DCMP database</span>
-</div>
-
-<!-- EVENT SELECTOR BANNER -->
-<div class="event-selector-banner" id="eventBanner">
-  <span class="event-selector-label">Scouting For:</span>
-  <div class="event-selector-pills">
-    <div class="event-pill" id="pill-unh" onclick="selectScoutingEvent('unh')">🔵 NE District — UNH</div>
-    <div class="event-pill" id="pill-hartford" onclick="selectScoutingEvent('hartford')">🟡 NE District — Hartford</div>
-    <div class="event-pill" id="pill-dcmp" onclick="selectScoutingEvent('dcmp')">🔴 NE DCMP</div>
-  </div>
-  <div class="event-indicator" id="eventIndicator">NO EVENT SELECTED</div>
 </div>
 
 <div class="tab-nav" id="mainTabNav">
@@ -504,7 +579,7 @@
       <div class="sub-title">Community &amp; Public</div>
       <div class="chip-group" id="eiChips_community">
         <div class="chip" onclick="toggleChip(this)">Community Days</div>
-        <div class="chip" onclick="toggleChip(this)">Community Rescources</div>
+        <div class="chip" onclick="toggleChip(this)">Community Resources</div>
         <div class="chip" onclick="toggleChip(this)">Community Volunteering</div>
         <div class="chip" onclick="toggleChip(this)">Town Fairs/Festivals</div>
         <div class="chip" onclick="toggleChip(this)">Girl Scouts</div>
@@ -622,303 +697,33 @@
   <!-- ===================== EVENT ANALYTICS PANEL ===================== -->
   <div id="panelPerf" class="panel">
 
-    <div id="perfNoEventWarn" style="display:none; margin-bottom:16px; padding:18px 20px; border:1px solid #3a2a00; background:rgba(255,215,0,0.04); font-family:'Share Tech Mono'; font-size:11px; color:var(--gold); letter-spacing:1px;">
-      ⚠ SELECT AN EVENT ABOVE (UNH, HARTFORD, OR DCMP) BEFORE ENTERING MATCH DATA
+    <!-- DISTRICT RANK + DIVISION -->
+    <div class="card card-gold" style="margin-bottom:16px;">
+      <div class="section-title gold">District Standing</div>
+      <div class="grid-3">
+        <div class="field-group">
+          <label>District Rank</label>
+          <input type="text" id="districtRank" placeholder="e.g. 12 or 12/400">
+        </div>
+        <div class="field-group">
+          <label>District Points Total</label>
+          <input type="number" id="districtPoints" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label>DCMP Division</label>
+          <select id="dcmpDivision">
+            <option value="">— Not Assigned Yet —</option>
+            <option value="Burns">Burns Division</option>
+            <option value="Newsom">Newsom Division</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <!-- Event 1 -->
-    <div id="eventBlock1" class="event-block">
-      <div class="event-header" onclick="toggleEvent(1)">
-        <span class="event-num" id="e1_label">EVENT 01</span>
-        <select class="event-name-sel" id="e1_name" onclick="event.stopPropagation()">
-          <option value="">— Select NE Event —</option>
-          <optgroup label="New England District Events 2026">
-            <option>NE District - Minuteman</option>
-            <option>NE District — PineTree</option>
-            <option>NE District — North Shore</option>
-            <option>NE District — Granite State</option>
-            <option>NE District — Western NE</option>
-            <option>NE District — URI</option>
-            <option>NE District — Waterbury</option>
-            <option>NE District — UNH</option>
-            <option>NE District — Hartford</option>
-            <option>NE District — Greater Boston</option>
-            <option>NE District — WPI</option>
-            <option>NE District — UVM</option>
-          </optgroup>
-        </select>
-        <span class="event-toggle" id="et1">[ — ]</span>
-      </div>
-      <div class="event-body" id="eb1">
-        <div class="perf-bar">
-          <div class="perf-stat"><div class="val" id="e1_epa_display">—</div><div class="lbl">EPA</div></div>
-          <div class="perf-stat"><div class="val" id="e1_opr_display">—</div><div class="lbl">OPR</div></div>
-          <div class="perf-stat"><div class="val" id="e1_rank_display">—</div><div class="lbl">Rank</div></div>
-          <div class="perf-stat"><div class="val" id="e1_record_display">—</div><div class="lbl">Record</div></div>
-        </div>
-        <div class="grid-4">
-          <div class="field-group"><label>EPA</label><input type="number" id="e1_epa" oninput="liveUpdate('e1_epa','e1_epa_display')"></div>
-          <div class="field-group"><label>OPR</label><input type="number" id="e1_opr" oninput="liveUpdate('e1_opr','e1_opr_display')"></div>
-          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e1_rank" oninput="liveUpdate('e1_rank','e1_rank_display')"></div>
-          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e1_record" placeholder="8-4-0" oninput="liveUpdate('e1_record','e1_record_display')"></div>
-        </div>
-        <div class="grid-3">
-          <div class="field-group"><label>Part of Alliance?</label>
-            <select id="e1_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option><option>No Participation in Playoffs</option></select>
-          </div>
-          <div class="field-group"><label>Alliance Result</label>
-            <select id="e1_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option><option>Didn't Participate in Playoffs</option></select>
-          </div>
-          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e1_avgpts" placeholder="0"></div>
-        </div>
-        <hr class="divider">
-        <div class="section-title">Auto Strategy</div>
-        <div class="sub-title">Starting Position</div>
-        <div class="chip-group" id="e1_pos_chips">
-          <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
-          <div class="chip blue" onclick="toggleChip(this)">Center</div>
-          <div class="chip blue" onclick="toggleChip(this)">Right Trench</div>
-          <div class="chip blue" onclick="toggleChip(this)">Left Bump</div>
-          <div class="chip blue" onclick="toggleChip(this)">Right Bump</div>
-          <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
-        </div>
-        <div class="sub-title">2026 Auto Routines</div>
-        <div class="chip-group" id="e1_auto_chips">
-          <div class="chip" onclick="toggleChip(this)">Shoot Preload</div>
-          <div class="chip" onclick="toggleChip(this)">1 Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">2 Cycles</div>
-          <div class="chip" onclick="toggleChip(this)">3 Cycles</div>
-          <div class="chip" onclick="toggleChip(this)">1 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">2 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">3 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">4 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">5 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">6 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">7 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">8 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">Pickup From Depot</div>
-          <div class="chip" onclick="toggleChip(this)">Go Over Left Bump</div>
-          <div class="chip" onclick="toggleChip(this)">Go Over Right Bump</div>
-          <div class="chip" onclick="toggleChip(this)">Refill Human Player Station</div>
-          <div class="chip" onclick="toggleChip(this)">Immediately Go To Neutral Zone</div>
-          <div class="chip" onclick="toggleChip(this)">Intake From The Human Player Station</div>
-          <div class="chip" onclick="toggleChip(this)">Climb</div>
-          <div class="chip" onclick="toggleChip(this)">End in Neutral Zone</div>
-          <div class="chip" onclick="toggleChip(this)">Move Only</div>
-          <div class="chip" onclick="toggleChip(this)">No Auto</div>
-          <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
-          <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
-        </div>
-        <div class="sub-title">Auto Climb / Park</div>
-        <div class="chip-group" id="e1_autoclimb_chips">
-          <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">Auto Park</div>
-          <div class="chip green" onclick="toggleChip(this)">Neither</div>
-        </div>
-        <div class="field-group"><label>Auto Notes</label><input type="text" id="e1_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
-        <hr class="divider">
-        <div class="section-title">Teleop Strategy</div>
-        <div class="sub-title">Primary Scoring Role</div>
-        <div class="chip-group" id="e1_role_chips">
-          <div class="chip" onclick="toggleChip(this)">Primary Scorer</div>
-          <div class="chip" onclick="toggleChip(this)">Secondary Scorer</div>
-          <div class="chip" onclick="toggleChip(this)">Shuttling</div>
-          <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
-          <div class="chip" onclick="toggleChip(this)">Flexible</div>
-        </div>
-        <div class="sub-title">Scoring Locations</div>
-        <div class="chip-group" id="e1_tele_chips">
-          <div class="chip" onclick="toggleChip(this)">Directly Against Hub</div>
-          <div class="chip" onclick="toggleChip(this)">Under Left Trench</div>
-          <div class="chip" onclick="toggleChip(this)">Under Right Trench</div>
-          <div class="chip" onclick="toggleChip(this)">Left corner</div>
-          <div class="chip" onclick="toggleChip(this)">Right Corner</div>
-          <div class="chip" onclick="toggleChip(this)">Shuttle only</div>
-        </div>
-        <div class="sub-title">Intake Locations</div>
-        <div class="chip-group" id="e1_intake_chips">
-          <div class="chip" onclick="toggleChip(this)">Neutral Zone Intake</div>
-          <div class="chip" onclick="toggleChip(this)">Depot Intake</div>
-          <div class="chip" onclick="toggleChip(this)">Outpost Intake</div>
-        </div>
-        <div class="sub-title">Cycle Speed</div>
-        <div class="chip-group" id="e1_cycle_chips">
-          <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">5–8s Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
-        </div>
-        <div class="sub-title">Defense</div>
-        <div class="chip-group" id="e1_def_chips">
-          <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
-          <div class="chip" onclick="toggleChip(this)">Dedicated Defender</div>
-          <div class="chip" onclick="toggleChip(this)">Good Defense Resistance</div>
-          <div class="chip" onclick="toggleChip(this)">Susceptible to Defense</div>
-          <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
-        </div>
-        <hr class="divider">
-        <div class="section-title">Endgame / Climb</div>
-        <div class="chip-group" id="e1_climb_chips">
-          <div class="chip green" onclick="toggleChip(this)">No Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">L1 Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">L2 Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">L3 Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">Can Shoot While Climbing</div>
-          <div class="chip green" onclick="toggleChip(this)">Shoots instead of climbing</div>
-          <div class="chip green" onclick="toggleChip(this)">Fails Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">Last Possible Second</div>
-          <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
-        </div>
-        <div class="field-group"><label>Strategy Notes</label><input type="text" id="e1_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
-      </div>
-    </div><!-- end event 1 -->
+    <!-- DYNAMIC EVENT BLOCKS -->
+    <div id="eventBlocksContainer"></div>
 
-    <!-- Event 2 — only shown for DCMP -->
-    <div id="eventBlock2" class="event-block" style="display:none;">
-      <div class="event-header" onclick="toggleEvent(2)">
-        <span class="event-num">EVENT 02</span>
-        <select class="event-name-sel" id="e2_name" onclick="event.stopPropagation()">
-          <option value="">— Select NE Event —</option>
-          <optgroup label="New England District Events 2026">
-            <option>NE District - Minuteman</option>
-            <option>NE District — PineTree</option>
-            <option>NE District — North Shore</option>
-            <option>NE District — Granite State</option>
-            <option>NE District — Western NE</option>
-            <option>NE District — URI</option>
-            <option>NE District — Waterbury</option>
-            <option>NE District — UNH</option>
-            <option>NE District — Hartford</option>
-            <option>NE District — Greater Boston</option>
-            <option>NE District — WPI</option>
-            <option>NE District — UVM</option>
-          </optgroup>
-        </select>
-        <span class="event-toggle" id="et2">[ — ]</span>
-      </div>
-      <div class="event-body" id="eb2">
-        <div class="perf-bar">
-          <div class="perf-stat"><div class="val" id="e2_epa_display">—</div><div class="lbl">EPA</div></div>
-          <div class="perf-stat"><div class="val" id="e2_opr_display">—</div><div class="lbl">OPR</div></div>
-          <div class="perf-stat"><div class="val" id="e2_rank_display">—</div><div class="lbl">Rank</div></div>
-          <div class="perf-stat"><div class="val" id="e2_record_display">—</div><div class="lbl">Record</div></div>
-        </div>
-        <div class="grid-4">
-          <div class="field-group"><label>EPA</label><input type="number" id="e2_epa" oninput="liveUpdate('e2_epa','e2_epa_display')"></div>
-          <div class="field-group"><label>OPR</label><input type="number" id="e2_opr" oninput="liveUpdate('e2_opr','e2_opr_display')"></div>
-          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e2_rank" oninput="liveUpdate('e2_rank','e2_rank_display')"></div>
-          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e2_record" placeholder="8-4-0" oninput="liveUpdate('e2_record','e2_record_display')"></div>
-        </div>
-        <div class="grid-3">
-          <div class="field-group"><label>Part of Alliance?</label>
-            <select id="e2_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option><option>No Participation in Playoffs</option></select>
-          </div>
-          <div class="field-group"><label>Alliance Result</label>
-            <select id="e2_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option><option>Didn't Participate in Playoffs</option></select>
-          </div>
-          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e2_avgpts" placeholder="0"></div>
-        </div>
-        <hr class="divider">
-        <div class="section-title">Auto Strategy</div>
-        <div class="sub-title">Starting Position</div>
-        <div class="chip-group" id="e2_pos_chips">
-          <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
-          <div class="chip blue" onclick="toggleChip(this)">Center</div>
-          <div class="chip blue" onclick="toggleChip(this)">Right Trench</div>
-          <div class="chip blue" onclick="toggleChip(this)">Left Bump</div>
-          <div class="chip blue" onclick="toggleChip(this)">Right Bump</div>
-          <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
-        </div>
-        <div class="sub-title">2026 Auto Routines</div>
-        <div class="chip-group" id="e2_auto_chips">
-          <div class="chip" onclick="toggleChip(this)">Shoot Preload</div>
-          <div class="chip" onclick="toggleChip(this)">1 Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">2 Cycles</div>
-          <div class="chip" onclick="toggleChip(this)">3 Cycles</div>
-          <div class="chip" onclick="toggleChip(this)">1 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">2 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">3 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">4 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">5 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">6 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">7 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">8 Preload</div>
-          <div class="chip" onclick="toggleChip(this)">Pickup From Depot</div>
-          <div class="chip" onclick="toggleChip(this)">Go Over Left Bump</div>
-          <div class="chip" onclick="toggleChip(this)">Go Over Right Bump</div>
-          <div class="chip" onclick="toggleChip(this)">Refill Human Player Station</div>
-          <div class="chip" onclick="toggleChip(this)">Intake From The Human Player Station</div>
-          <div class="chip" onclick="toggleChip(this)">Immediately Go To Neutral Zone</div>
-          <div class="chip" onclick="toggleChip(this)">Climb</div>
-          <div class="chip" onclick="toggleChip(this)">End in Neutral Zone</div>
-          <div class="chip" onclick="toggleChip(this)">Move Only</div>
-          <div class="chip" onclick="toggleChip(this)">No Auto</div>
-          <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
-          <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
-        </div>
-        <div class="sub-title">Auto Climb / Park</div>
-        <div class="chip-group" id="e2_autoclimb_chips">
-          <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">Auto Park</div>
-          <div class="chip green" onclick="toggleChip(this)">Neither</div>
-        </div>
-        <div class="field-group"><label>Auto Notes</label><input type="text" id="e2_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
-        <hr class="divider">
-        <div class="section-title">Teleop Strategy</div>
-        <div class="sub-title">Primary Scoring Role</div>
-        <div class="chip-group" id="e2_role_chips">
-          <div class="chip" onclick="toggleChip(this)">Primary Scorer</div>
-          <div class="chip" onclick="toggleChip(this)">Secondary Scorer</div>
-          <div class="chip" onclick="toggleChip(this)">Shuttling</div>
-          <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
-          <div class="chip" onclick="toggleChip(this)">Flexible</div>
-        </div>
-        <div class="sub-title">Scoring Locations</div>
-        <div class="chip-group" id="e2_tele_chips">
-          <div class="chip" onclick="toggleChip(this)">Directly Against Hub</div>
-          <div class="chip" onclick="toggleChip(this)">Under Left Trench</div>
-          <div class="chip" onclick="toggleChip(this)">Under Right Trench</div>
-          <div class="chip" onclick="toggleChip(this)">Left corner</div>
-          <div class="chip" onclick="toggleChip(this)">Right Corner</div>
-          <div class="chip" onclick="toggleChip(this)">Shuttle only</div>
-        </div>
-        <div class="sub-title">Intake Locations</div>
-        <div class="chip-group" id="e2_intake_chips">
-          <div class="chip" onclick="toggleChip(this)">Neutral Zone Intake</div>
-          <div class="chip" onclick="toggleChip(this)">Depot Intake</div>
-          <div class="chip" onclick="toggleChip(this)">Outpost Intake</div>
-        </div>
-        <div class="sub-title">Cycle Speed</div>
-        <div class="chip-group" id="e2_cycle_chips">
-          <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">5–8s Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
-          <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
-        </div>
-        <div class="sub-title">Defense</div>
-        <div class="chip-group" id="e2_def_chips">
-          <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
-          <div class="chip" onclick="toggleChip(this)">Dedicated Defender</div>
-          <div class="chip" onclick="toggleChip(this)">Good Defense Resistance</div>
-          <div class="chip" onclick="toggleChip(this)">Susceptible to Defense</div>
-          <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
-        </div>
-        <hr class="divider">
-        <div class="section-title">Endgame / Climb</div>
-        <div class="chip-group" id="e2_climb_chips">
-          <div class="chip green" onclick="toggleChip(this)">No Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">L1 Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">L2 Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">L3 Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">Can Shoot While Climbing</div>
-          <div class="chip green" onclick="toggleChip(this)">Shoots instead of climbing</div>
-          <div class="chip green" onclick="toggleChip(this)">Fails Climb</div>
-          <div class="chip green" onclick="toggleChip(this)">Last Possible Second</div>
-          <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
-        </div>
-        <div class="field-group"><label>Strategy Notes</label><input type="text" id="e2_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
-      </div>
-    </div><!-- end event 2 -->
+    <button class="btn-add-event" onclick="addEventBlock()">+ ADD ANOTHER EVENT</button>
 
     <button class="btn-save" onclick="savePerf()">▶ Transmit to SCRAPSIGHT</button>
   </div><!-- end panelPerf -->
@@ -944,13 +749,15 @@
       ⬡ EVENT ANALYTICS
       <span class="view-toggle-sub">EPA · OPR · Auto · Teleop · Climb</span>
     </button>
+    <button class="view-toggle-btn" id="vbtn-div" onclick="setAnalyticsView('div')">
+      ⬡ DIVISION PRESCOUTING
+      <span class="view-toggle-sub">Burns · Newsom · Sorted by Division</span>
+    </button>
   </div>
 
-  <div class="analytics-filter">
-    <span class="analytics-filter-label">Filter Event:</span>
-    <div class="filter-pill" id="apill-all" onclick="filterAnalytics('all')">ALL EVENTS</div>
-    <div class="filter-pill" id="apill-unh" onclick="filterAnalytics('unh')">UNH</div>
-    <div class="filter-pill" id="apill-hartford" onclick="filterAnalytics('hartford')">HARTFORD</div>
+  <div class="analytics-filter" id="analyticsFilterBar">
+    <span class="analytics-filter-label">Filter:</span>
+    <div class="filter-pill active-all" id="apill-all" onclick="filterAnalytics('all')">ALL</div>
     <div class="filter-pill" id="apill-dcmp" onclick="filterAnalytics('dcmp')">DCMP</div>
     <button class="btn-refresh" onclick="loadAnalytics()">↻ REFRESH</button>
   </div>
@@ -960,7 +767,7 @@
   <div id="analyticsContent">
     <div class="loading-state">
       <div class="spinner"></div>
-      SELECT AN EVENT FILTER TO LOAD SCOUT DATA
+      PULLING INTEL FROM DATABASE...
     </div>
   </div>
 </div>
@@ -968,12 +775,19 @@
 <div id="toast">▲ DATA UPLOADED // SYSTEM STABLE</div>
 
 <script>
-  let currentScoutingEvent = null;
   let analyticsFilter = 'all';
   let analyticsView = 'ei';
   let allScoutData = [];
   let currentTab = 'ei';
-  let selectedEIEvent = null; // tracks which event the EI was earned at
+  let selectedEIEvent = null;
+  let eventBlockCount = 0;
+
+  // Division state — persisted in localStorage
+  let divisionAssignments = { burns: [], newsom: [] };
+  try {
+    const saved = localStorage.getItem('scrapsight_divisions');
+    if (saved) divisionAssignments = JSON.parse(saved);
+  } catch(e){}
 
   function updateClock() {
     const now = new Date();
@@ -983,41 +797,11 @@
   setInterval(updateClock, 1000); updateClock();
 
   function selectEIEvent(el, eventName) {
-    // Toggle off if already selected
     if (el.classList.contains('selected')) {
-      el.classList.remove('selected');
-      selectedEIEvent = null;
-      return;
+      el.classList.remove('selected'); selectedEIEvent = null; return;
     }
-    // Deselect all, select this one
     document.querySelectorAll('.ei-event-pill').forEach(p => p.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedEIEvent = eventName;
-  }
-
-  function selectScoutingEvent(ev) {
-    currentScoutingEvent = ev;
-    ['unh','hartford','dcmp'].forEach(e => {
-      document.getElementById('pill-' + e).className = 'event-pill';
-    });
-    document.getElementById('pill-' + ev).className = 'event-pill active-' + ev;
-    const labels = { unh: 'NE DIST — UNH', hartford: 'NE DIST — HARTFORD', dcmp: 'NE DCMP' };
-    const ind = document.getElementById('eventIndicator');
-    ind.textContent = '▲ ' + labels[ev];
-    ind.className = 'event-indicator set';
-
-    const block2 = document.getElementById('eventBlock2');
-    const warn = document.getElementById('perfNoEventWarn');
-    warn.style.display = 'none';
-
-    if (ev === 'dcmp') {
-      block2.style.display = 'block';
-      document.getElementById('e1_label').textContent = 'EVENT 01';
-    } else {
-      block2.style.display = 'none';
-      const labelMap = { unh: 'UNH EVENT', hartford: 'HARTFORD EVENT' };
-      document.getElementById('e1_label').textContent = labelMap[ev] || 'EVENT 01';
-    }
+    el.classList.add('selected'); selectedEIEvent = eventName;
   }
 
   function clearEIForm() {
@@ -1030,24 +814,12 @@
   }
 
   function clearPerfForm() {
-    ['e1_epa','e1_opr','e1_rank','e1_record','e1_avgpts','e1_autonotes','e1_telenotes',
-     'e2_epa','e2_opr','e2_rank','e2_record','e2_avgpts','e2_autonotes','e2_telenotes']
-      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    ['e1_name','e1_captain','e1_result','e2_name','e2_captain','e2_result']
-      .forEach(id => { const el = document.getElementById(id); if (el) el.selectedIndex = 0; });
-    ['e1_epa_display','e1_opr_display','e1_rank_display','e1_record_display',
-     'e2_epa_display','e2_opr_display','e2_rank_display','e2_record_display']
-      .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
-    document.querySelectorAll('#panelPerf .chip.active').forEach(c => c.classList.remove('active'));
-    currentScoutingEvent = null;
-    ['unh','hartford','dcmp'].forEach(e => {
-      const p = document.getElementById('pill-' + e);
-      if (p) p.className = 'event-pill';
-    });
-    const ind = document.getElementById('eventIndicator');
-    if (ind) { ind.textContent = 'NO EVENT SELECTED'; ind.className = 'event-indicator'; }
-    document.getElementById('eventBlock2').style.display = 'none';
-    document.getElementById('e1_label').textContent = 'EVENT 01';
+    document.getElementById('districtRank').value = '';
+    document.getElementById('districtPoints').value = '';
+    document.getElementById('dcmpDivision').selectedIndex = 0;
+    document.getElementById('eventBlocksContainer').innerHTML = '';
+    eventBlockCount = 0;
+    addEventBlock(); // start fresh with one block
   }
 
   function switchTab(tab) {
@@ -1058,21 +830,15 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
     const eiBanner = document.getElementById('eiBanner');
-    const eventBanner = document.getElementById('eventBanner');
 
     if (tab === 'ei') {
       document.getElementById('panelEI').classList.add('active');
       document.getElementById('t1').classList.add('active');
       eiBanner.classList.remove('hidden');
-      eventBanner.classList.remove('visible');
     } else {
       document.getElementById('panelPerf').classList.add('active');
       document.getElementById('t2').classList.add('active');
       eiBanner.classList.add('hidden');
-      eventBanner.classList.add('visible');
-      if (!currentScoutingEvent) {
-        document.getElementById('perfNoEventWarn').style.display = 'block';
-      }
     }
   }
 
@@ -1082,14 +848,12 @@
     const tabNav = document.getElementById('mainTabNav');
     const btn = document.getElementById('btnAnalytics');
     const eiBanner = document.getElementById('eiBanner');
-    const eventBanner = document.getElementById('eventBanner');
 
     if (analyticsC.style.display === 'none') {
       mainC.style.display = 'none';
       tabNav.style.display = 'none';
       analyticsC.style.display = 'block';
       eiBanner.classList.add('hidden');
-      eventBanner.classList.remove('visible');
       btn.classList.add('active');
       btn.textContent = '← BACK TO SCOUTING';
       loadAnalytics();
@@ -1099,11 +863,7 @@
       analyticsC.style.display = 'none';
       btn.classList.remove('active');
       btn.textContent = '⬡ ANALYTICS DASHBOARD';
-      if (currentTab === 'ei') {
-        eiBanner.classList.remove('hidden');
-      } else {
-        eventBanner.classList.add('visible');
-      }
+      if (currentTab === 'ei') eiBanner.classList.remove('hidden');
     }
   }
 
@@ -1117,18 +877,207 @@
   function toggleEvent(n) {
     const body = document.getElementById('eb' + n);
     const toggle = document.getElementById('et' + n);
+    if (!body) return;
     const collapsed = body.classList.toggle('collapsed');
     toggle.textContent = collapsed ? '[ + ]' : '[ — ]';
   }
 
   function getChips(id) {
-    return Array.from(document.querySelectorAll('#' + id + ' .chip.active')).map(c => c.innerText);
+    const el = document.getElementById(id);
+    if (!el) return [];
+    return Array.from(el.querySelectorAll('.chip.active')).map(c => c.innerText);
   }
 
+  // ========================= DYNAMIC EVENT BLOCKS =========================
+  const NE_EVENTS = [
+    'NE District — Minuteman',
+    'NE District — Pine Tree',
+    'NE District — North Shore',
+    'NE District — Granite State',
+    'NE District — Western NE',
+    'NE District — URI',
+    'NE District — Waterbury',
+    'NE District — UNH',
+    'NE District — Hartford',
+    'NE District — Greater Boston',
+    'NE District — WPI',
+    'NE District — UVM',
+    'Out-of-District Event'
+  ];
+
+  function buildEventOptions() {
+    return NE_EVENTS.map(e => `<option value="${e}">${e}</option>`).join('');
+  }
+
+  function addEventBlock() {
+    eventBlockCount++;
+    const n = eventBlockCount;
+    const container = document.getElementById('eventBlocksContainer');
+    const div = document.createElement('div');
+    div.className = 'event-block';
+    div.id = 'eventBlock_' + n;
+    div.innerHTML = `
+      <div class="event-header" onclick="toggleEvent(${n})">
+        <span class="event-num" id="e${n}_label">EVENT ${String(n).padStart(2,'0')}</span>
+        <select class="event-name-sel" id="e${n}_name" onclick="event.stopPropagation()">
+          <option value="">— Select Event —</option>
+          <optgroup label="NE District Events 2026">${buildEventOptions()}</optgroup>
+        </select>
+        <button class="btn-remove-event" onclick="removeEventBlock(${n}, event)" title="Remove this event">✕ Remove</button>
+        <span class="event-toggle" id="et${n}">[ — ]</span>
+      </div>
+      <div class="event-body" id="eb${n}">
+        <div class="perf-bar">
+          <div class="perf-stat"><div class="val" id="e${n}_epa_display">—</div><div class="lbl">EPA</div></div>
+          <div class="perf-stat"><div class="val" id="e${n}_opr_display">—</div><div class="lbl">OPR</div></div>
+          <div class="perf-stat"><div class="val" id="e${n}_rank_display">—</div><div class="lbl">Rank</div></div>
+          <div class="perf-stat"><div class="val" id="e${n}_record_display">—</div><div class="lbl">Record</div></div>
+        </div>
+        <div class="grid-4">
+          <div class="field-group"><label>EPA</label><input type="number" id="e${n}_epa" oninput="liveUpdate('e${n}_epa','e${n}_epa_display')"></div>
+          <div class="field-group"><label>OPR</label><input type="number" id="e${n}_opr" oninput="liveUpdate('e${n}_opr','e${n}_opr_display')"></div>
+          <div class="field-group"><label>Rank (e.g. 3/42)</label><input type="text" id="e${n}_rank" oninput="liveUpdate('e${n}_rank','e${n}_rank_display')"></div>
+          <div class="field-group"><label>Record (W-L-T)</label><input type="text" id="e${n}_record" placeholder="8-4-0" oninput="liveUpdate('e${n}_record','e${n}_record_display')"></div>
+        </div>
+        <div class="grid-3">
+          <div class="field-group"><label>Part of Alliance?</label>
+            <select id="e${n}_captain"><option value="">—</option><option>Alliance Captain</option><option>1st Pick</option><option>2nd Pick</option><option>3rd Pick</option><option>No Participation in Playoffs</option></select>
+          </div>
+          <div class="field-group"><label>Alliance Result</label>
+            <select id="e${n}_result"><option value="">—</option><option>Champion</option><option>Finalist</option><option>Semi-Final</option><option>Quarter-Final</option><option>Didn't Advance</option><option>Didn't Participate in Playoffs</option></select>
+          </div>
+          <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e${n}_avgpts" placeholder="0"></div>
+        </div>
+        <hr class="divider">
+        <div class="section-title">Auto Strategy</div>
+        <div class="sub-title">Starting Position</div>
+        <div class="chip-group" id="e${n}_pos_chips">
+          <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
+          <div class="chip blue" onclick="toggleChip(this)">Center</div>
+          <div class="chip blue" onclick="toggleChip(this)">Right Trench</div>
+          <div class="chip blue" onclick="toggleChip(this)">Left Bump</div>
+          <div class="chip blue" onclick="toggleChip(this)">Right Bump</div>
+          <div class="chip blue" onclick="toggleChip(this)">Flexible</div>
+        </div>
+        <div class="sub-title">2026 Auto Routines</div>
+        <div class="chip-group" id="e${n}_auto_chips">
+          <div class="chip" onclick="toggleChip(this)">Shoot Preload</div>
+          <div class="chip" onclick="toggleChip(this)">1 Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">2 Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">3 Cycles</div>
+          <div class="chip" onclick="toggleChip(this)">1 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">2 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">3 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">4 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">5 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">6 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">7 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">8 Preload</div>
+          <div class="chip" onclick="toggleChip(this)">Pickup From Depot</div>
+          <div class="chip" onclick="toggleChip(this)">Go Over Left Bump</div>
+          <div class="chip" onclick="toggleChip(this)">Go Over Right Bump</div>
+          <div class="chip" onclick="toggleChip(this)">Refill Human Player Station</div>
+          <div class="chip" onclick="toggleChip(this)">Immediately Go To Neutral Zone</div>
+          <div class="chip" onclick="toggleChip(this)">Intake From The Human Player Station</div>
+          <div class="chip" onclick="toggleChip(this)">Climb</div>
+          <div class="chip" onclick="toggleChip(this)">End in Neutral Zone</div>
+          <div class="chip" onclick="toggleChip(this)">Move Only</div>
+          <div class="chip" onclick="toggleChip(this)">No Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Disruptive Auto</div>
+          <div class="chip" onclick="toggleChip(this)">Taxi Only</div>
+        </div>
+        <div class="sub-title">Auto Climb / Park</div>
+        <div class="chip-group" id="e${n}_autoclimb_chips">
+          <div class="chip green" onclick="toggleChip(this)">Auto Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Auto Park</div>
+          <div class="chip green" onclick="toggleChip(this)">Neither</div>
+        </div>
+        <div class="field-group"><label>Auto Notes</label><input type="text" id="e${n}_autonotes" placeholder="Specific paths, timing, consistency %..."></div>
+        <hr class="divider">
+        <div class="section-title">Teleop Strategy</div>
+        <div class="sub-title">Primary Scoring Role</div>
+        <div class="chip-group" id="e${n}_role_chips">
+          <div class="chip" onclick="toggleChip(this)">Primary Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Secondary Scorer</div>
+          <div class="chip" onclick="toggleChip(this)">Shuttling</div>
+          <div class="chip" onclick="toggleChip(this)">Dedicated Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Flexible</div>
+        </div>
+        <div class="sub-title">Scoring Locations</div>
+        <div class="chip-group" id="e${n}_tele_chips">
+          <div class="chip" onclick="toggleChip(this)">Directly Against Hub</div>
+          <div class="chip" onclick="toggleChip(this)">Under Left Trench</div>
+          <div class="chip" onclick="toggleChip(this)">Under Right Trench</div>
+          <div class="chip" onclick="toggleChip(this)">Left Corner</div>
+          <div class="chip" onclick="toggleChip(this)">Right Corner</div>
+          <div class="chip" onclick="toggleChip(this)">Shuttle only</div>
+        </div>
+        <div class="sub-title">Intake Locations</div>
+        <div class="chip-group" id="e${n}_intake_chips">
+          <div class="chip" onclick="toggleChip(this)">Neutral Zone Intake</div>
+          <div class="chip" onclick="toggleChip(this)">Depot Intake</div>
+          <div class="chip" onclick="toggleChip(this)">Outpost Intake</div>
+        </div>
+        <div class="sub-title">Cycle Speed</div>
+        <div class="chip-group" id="e${n}_cycle_chips">
+          <div class="chip" onclick="toggleChip(this)">&lt;5s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">5–8s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">8–12s Cycle</div>
+          <div class="chip" onclick="toggleChip(this)">12s+ Cycle</div>
+        </div>
+        <div class="sub-title">Defense</div>
+        <div class="chip-group" id="e${n}_def_chips">
+          <div class="chip" onclick="toggleChip(this)">Plays Defense</div>
+          <div class="chip" onclick="toggleChip(this)">Dedicated Defender</div>
+          <div class="chip" onclick="toggleChip(this)">Good Defense Resistance</div>
+          <div class="chip" onclick="toggleChip(this)">Susceptible to Defense</div>
+          <div class="chip" onclick="toggleChip(this)">No Defense Played</div>
+        </div>
+        <hr class="divider">
+        <div class="section-title">Endgame / Climb</div>
+        <div class="chip-group" id="e${n}_climb_chips">
+          <div class="chip green" onclick="toggleChip(this)">No Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">L1 Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">L2 Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">L3 Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Can Shoot While Climbing</div>
+          <div class="chip green" onclick="toggleChip(this)">Shoots instead of climbing</div>
+          <div class="chip green" onclick="toggleChip(this)">Fails Climb</div>
+          <div class="chip green" onclick="toggleChip(this)">Last Possible Second</div>
+          <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
+        </div>
+        <div class="field-group"><label>Strategy Notes</label><input type="text" id="e${n}_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
+      </div>
+    `;
+    container.appendChild(div);
+    renumberEventLabels();
+  }
+
+  function removeEventBlock(n, evt) {
+    evt.stopPropagation();
+    if (eventBlockCount <= 1) return; // keep at least one
+    const block = document.getElementById('eventBlock_' + n);
+    if (block) block.remove();
+    renumberEventLabels();
+  }
+
+  function renumberEventLabels() {
+    const blocks = document.querySelectorAll('#eventBlocksContainer .event-block');
+    blocks.forEach((b, i) => {
+      const labelEl = b.querySelector('.event-num');
+      if (labelEl) labelEl.textContent = 'EVENT ' + String(i+1).padStart(2,'0');
+    });
+  }
+
+  // Init with one block
+  window.addEventListener('DOMContentLoaded', () => {
+    addEventBlock();
+  });
+
+  // ========================= SAVE =========================
   async function saveEI() {
     const btn = document.querySelector('#panelEI .btn-save');
-    btn.innerText = "UPLOADING...";
-    btn.disabled = true;
+    btn.innerText = "UPLOADING..."; btn.disabled = true;
 
     const scoutData = {
       team: document.getElementById('teamNum').value,
@@ -1175,116 +1124,87 @@
       t.innerHTML = '▲ EI TRANSMITTED TO SCOUTS_DCMP // STABLE';
       t.style.display = 'block';
       setTimeout(() => { location.reload(); }, 2800);
-    } catch (e) {
+    } catch(e) {
       alert("Firebase Error: " + e.message);
-      btn.innerText = "▶ Transmit EI to DCMP Database";
-      btn.disabled = false;
+      btn.innerText = "▶ Transmit EI to DCMP Database"; btn.disabled = false;
     }
   }
 
   async function savePerf() {
-    if (!currentScoutingEvent) {
-      document.getElementById('perfNoEventWarn').style.display = 'block';
-      document.getElementById('perfNoEventWarn').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-
     const btn = document.querySelector('#panelPerf .btn-save');
-    btn.innerText = "UPLOADING...";
-    btn.disabled = true;
+    btn.innerText = "UPLOADING..."; btn.disabled = true;
 
-    const collectionMap = { unh: 'scouts_unh', hartford: 'scouts_hartford', dcmp: 'scouts_dcmp' };
-    const collectionName = collectionMap[currentScoutingEvent];
+    const blocks = document.querySelectorAll('#eventBlocksContainer .event-block');
+    const events = [];
+    blocks.forEach(block => {
+      const id = block.id.replace('eventBlock_', '');
+      events.push({
+        name: document.getElementById('e'+id+'_name')?.value || '',
+        epa: document.getElementById('e'+id+'_epa')?.value || '',
+        opr: document.getElementById('e'+id+'_opr')?.value || '',
+        rank: document.getElementById('e'+id+'_rank')?.value || '',
+        record: document.getElementById('e'+id+'_record')?.value || '',
+        captain: document.getElementById('e'+id+'_captain')?.value || '',
+        result: document.getElementById('e'+id+'_result')?.value || '',
+        avgpts: document.getElementById('e'+id+'_avgpts')?.value || '',
+        autoPos: getChips('e'+id+'_pos_chips'),
+        auto: getChips('e'+id+'_auto_chips'),
+        autoClimb: getChips('e'+id+'_autoclimb_chips'),
+        autoNotes: document.getElementById('e'+id+'_autonotes')?.value || '',
+        role: getChips('e'+id+'_role_chips'),
+        tele: getChips('e'+id+'_tele_chips'),
+        intake: getChips('e'+id+'_intake_chips'),
+        cycles: getChips('e'+id+'_cycle_chips'),
+        defense: getChips('e'+id+'_def_chips'),
+        teleNotes: document.getElementById('e'+id+'_telenotes')?.value || '',
+        climb: getChips('e'+id+'_climb_chips')
+      });
+    });
 
     const scoutData = {
       team: document.getElementById('teamNum').value,
       teamName: document.getElementById('teamName').value,
       scout: document.getElementById('scoutName').value,
-      scoutingEvent: currentScoutingEvent,
+      scoutingEvent: 'dcmp',
       type: 'perf_only',
-      e1: {
-        name: document.getElementById('e1_name').value,
-        epa: document.getElementById('e1_epa').value,
-        opr: document.getElementById('e1_opr').value,
-        rank: document.getElementById('e1_rank').value,
-        record: document.getElementById('e1_record').value,
-        captain: document.getElementById('e1_captain').value,
-        result: document.getElementById('e1_result').value,
-        avgpts: document.getElementById('e1_avgpts').value,
-        autoPos: getChips('e1_pos_chips'),
-        auto: getChips('e1_auto_chips'),
-        autoClimb: getChips('e1_autoclimb_chips'),
-        autoNotes: document.getElementById('e1_autonotes').value,
-        role: getChips('e1_role_chips'),
-        tele: getChips('e1_tele_chips'),
-        intake: getChips('e1_intake_chips'),
-        cycles: getChips('e1_cycle_chips'),
-        defense: getChips('e1_def_chips'),
-        teleNotes: document.getElementById('e1_telenotes').value,
-        climb: getChips('e1_climb_chips')
-      },
+      districtRank: document.getElementById('districtRank').value,
+      districtPoints: document.getElementById('districtPoints').value,
+      dcmpDivision: document.getElementById('dcmpDivision').value,
+      events: events,
+      // keep e1/e2 for backward compatibility
+      e1: events[0] || {},
+      e2: events[1] || null,
       timestamp: window.serverTimestamp()
     };
 
-    if (currentScoutingEvent === 'dcmp') {
-      scoutData.e2 = {
-        name: document.getElementById('e2_name').value,
-        epa: document.getElementById('e2_epa').value,
-        opr: document.getElementById('e2_opr').value,
-        rank: document.getElementById('e2_rank').value,
-        record: document.getElementById('e2_record').value,
-        captain: document.getElementById('e2_captain').value,
-        result: document.getElementById('e2_result').value,
-        avgpts: document.getElementById('e2_avgpts').value,
-        autoPos: getChips('e2_pos_chips'),
-        auto: getChips('e2_auto_chips'),
-        autoClimb: getChips('e2_autoclimb_chips'),
-        autoNotes: document.getElementById('e2_autonotes').value,
-        role: getChips('e2_role_chips'),
-        tele: getChips('e2_tele_chips'),
-        intake: getChips('e2_intake_chips'),
-        cycles: getChips('e2_cycle_chips'),
-        defense: getChips('e2_def_chips'),
-        teleNotes: document.getElementById('e2_telenotes').value,
-        climb: getChips('e2_climb_chips')
-      };
-    }
-
     try {
-      await window.addDoc(window.collection(window.db, collectionName), scoutData);
+      await window.addDoc(window.collection(window.db, 'scouts_dcmp'), scoutData);
       const t = document.getElementById('toast');
-      t.innerHTML = '▲ TRANSMITTED TO ' + collectionName.toUpperCase() + ' // STABLE';
+      t.innerHTML = '▲ TRANSMITTED TO SCOUTS_DCMP // STABLE';
       t.style.display = 'block';
       setTimeout(() => { location.reload(); }, 2800);
-    } catch (e) {
+    } catch(e) {
       alert("Firebase Error: " + e.message);
-      btn.innerText = "▶ Transmit to SCRAPSIGHT";
-      btn.disabled = false;
+      btn.innerText = "▶ Transmit to SCRAPSIGHT"; btn.disabled = false;
     }
   }
 
+  // ========================= ANALYTICS =========================
   async function loadAnalytics() {
     const content = document.getElementById('analyticsContent');
     content.innerHTML = '<div class="loading-state"><div class="spinner"></div>PULLING INTEL FROM DATABASE...</div>';
 
-    const collections = analyticsFilter === 'all'
-      ? ['scouts_unh', 'scouts_hartford', 'scouts_dcmp']
-      : ['scouts_' + analyticsFilter];
-
+    const collections = ['scouts_dcmp', 'scouts_unh', 'scouts_hartford', 'scouts'];
     allScoutData = [];
 
     try {
       for (const col of collections) {
-        const snap = await window.getDocs(window.collection(window.db, col));
-        snap.forEach(doc => {
-          allScoutData.push({ id: doc.id, collection: col, ...doc.data() });
-        });
-      }
-      if (analyticsFilter === 'all') {
-        const snap = await window.getDocs(window.collection(window.db, 'scouts'));
-        snap.forEach(doc => {
-          allScoutData.push({ id: doc.id, collection: 'scouts', ...doc.data() });
-        });
+        try {
+          const snap = await window.getDocs(window.collection(window.db, col));
+          snap.forEach(doc => {
+            allScoutData.push({ id: doc.id, collection: col, ...doc.data() });
+          });
+        } catch(e) { /* collection may not exist */ }
       }
       renderAnalytics();
     } catch(e) {
@@ -1294,31 +1214,34 @@
 
   function setAnalyticsView(view) {
     analyticsView = view;
-    ['ei','perf'].forEach(v => {
+    ['ei','perf','div'].forEach(v => {
       const btn = document.getElementById('vbtn-' + v);
-      btn.className = 'view-toggle-btn';
+      if (btn) btn.className = 'view-toggle-btn';
     });
     document.getElementById('vbtn-' + view).className = 'view-toggle-btn active-' + view;
+
+    // show/hide filter bar for division view
+    const filterBar = document.getElementById('analyticsFilterBar');
+    filterBar.style.display = view === 'div' ? 'none' : 'flex';
+
     renderAnalytics();
   }
 
   function filterAnalytics(ev) {
     analyticsFilter = ev;
-    ['all','unh','hartford','dcmp'].forEach(e => {
+    ['all','dcmp'].forEach(e => {
       const pill = document.getElementById('apill-' + e);
       if (pill) pill.className = 'filter-pill';
     });
     const activePill = document.getElementById('apill-' + ev);
-    if (activePill) {
-      activePill.className = ev === 'all' ? 'filter-pill active-dcmp' : 'filter-pill active-' + ev;
-    }
+    if (activePill) activePill.className = 'filter-pill active-' + ev;
     loadAnalytics();
   }
 
   function getEventBadge(col) {
-    if (col === 'scouts_unh') return '<span class="event-tag unh">UNH</span>';
-    if (col === 'scouts_hartford') return '<span class="event-tag hartford">HARTFORD</span>';
     if (col === 'scouts_dcmp') return '<span class="event-tag dcmp">DCMP</span>';
+    if (col === 'scouts_unh') return '<span class="event-tag" style="color:var(--blue);border-color:rgba(0,180,255,0.4);background:rgba(0,180,255,0.08);">UNH</span>';
+    if (col === 'scouts_hartford') return '<span class="event-tag" style="color:var(--gold);border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.06);">HARTFORD</span>';
     return '<span class="event-tag" style="color:#555;border-color:#333;">LEGACY</span>';
   }
 
@@ -1328,18 +1251,17 @@
   }
 
   function renderAnalytics() {
+    if (analyticsView === 'div') { renderDivisionView(); return; }
+
     const content = document.getElementById('analyticsContent');
     const metaBar = document.getElementById('metaBar');
 
-    if (allScoutData.length === 0) {
-      metaBar.innerHTML = '';
-      content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO SCOUT DATA FOUND FOR THIS FILTER<br>SUBMIT REPORTS TO POPULATE THE DATABASE</p></div>';
-      return;
-    }
+    const filtered = analyticsFilter === 'all' ? allScoutData :
+      allScoutData.filter(d => d.collection === 'scouts_' + analyticsFilter || (analyticsFilter === 'dcmp' && d.collection === 'scouts_dcmp'));
 
     const viewRecords = analyticsView === 'ei'
-      ? allScoutData.filter(d => d.type === 'ei_only')
-      : allScoutData.filter(d => d.type === 'perf_only');
+      ? filtered.filter(d => d.type === 'ei_only')
+      : filtered.filter(d => d.type === 'perf_only');
 
     const teams = {};
     viewRecords.forEach(d => {
@@ -1358,223 +1280,293 @@
         <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">EI Reports</div></div>
         <div class="meta-stat"><div class="mv">${awardRecords.length}</div><div class="ml">Teams w/ Awards</div></div>
       `;
-
       if (teamCount === 0) {
-        content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EI REPORTS FOUND<br>SUBMIT AN EI ANALYSIS REPORT TO POPULATE THIS VIEW</p></div>';
+        content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EI REPORTS FOUND</p></div>';
         return;
       }
-
       let html = '';
-      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999) - (parseInt(b[0])||9999))
+      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999)-(parseInt(b[0])||9999))
         .forEach(([teamNum, records]) => {
-          const d = records[records.length - 1];
+          const d = records[records.length-1];
           const ei = d.ei || {};
-          const allOutreach = [
-            ...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]),
-            ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
-          ];
-          const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
+          const allOutreach = [...(ei.outreach?.first||[]),...(ei.outreach?.education||[]),...(ei.outreach?.community||[]),...(ei.outreach?.dei||[]),...(ei.outreach?.funding||[])];
+          const allAwards = [...(ei.awards?.impact||[]),...(ei.awards?.judged||[]),...(ei.awards?.comp||[])];
           const eiEventRow = ei.eiAwardEvent
-            ? `<div style="margin-top:5px;display:flex;align-items:center;gap:6px;">
-                <span style="font-family:'Share Tech Mono';font-size:8px;color:#555;text-transform:uppercase;letter-spacing:1px;">EI Won At:</span>
-                <span style="font-family:'Barlow Condensed';font-weight:700;font-size:13px;color:var(--accent);letter-spacing:1px;padding:2px 8px;border:1px solid rgba(255,45,85,0.4);background:rgba(255,45,85,0.08);">▲ ${ei.eiAwardEvent.toUpperCase()}</span>
-              </div>`
+            ? `<div style="margin-top:5px;display:flex;align-items:center;gap:6px;"><span style="font-family:'Share Tech Mono';font-size:8px;color:#555;text-transform:uppercase;letter-spacing:1px;">EI Won At:</span><span style="font-family:'Barlow Condensed';font-weight:700;font-size:13px;color:var(--accent);letter-spacing:1px;padding:2px 8px;border:1px solid rgba(255,45,85,0.4);background:rgba(255,45,85,0.08);">▲ ${ei.eiAwardEvent.toUpperCase()}</span></div>`
             : `<div style="margin-top:5px;"><span style="font-family:'Share Tech Mono';font-size:8px;color:#333;text-transform:uppercase;letter-spacing:1px;">EI Event: —</span></div>`;
-          html += `
-            <div class="team-card">
-              <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
-                <div class="team-card-num">#${teamNum}</div>
-                <div class="team-card-info">
-                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
-                  ${eiEventRow}
-                  <div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s) logged</div>
-                </div>
-                <div class="team-card-stats">
-                  <div class="team-stat-mini"><div class="v" style="color:var(--gold);">${allAwards.length}</div><div class="l">Awards</div></div>
-                  <div class="team-stat-mini"><div class="v" style="color:var(--win);">${allOutreach.length}</div><div class="l">Outreach</div></div>
-                </div>
-                <span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span>
-              </div>
-              <div class="team-card-body" id="tc_${teamNum}">
-                ${renderEIBody(records)}
-              </div>
-            </div>
-          `;
+          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div>${eiEventRow}<div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v" style="color:var(--gold);">${allAwards.length}</div><div class="l">Awards</div></div><div class="team-stat-mini"><div class="v" style="color:var(--win);">${allOutreach.length}</div><div class="l">Outreach</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderEIBody(records)}</div></div>`;
         });
       content.innerHTML = html;
 
     } else {
-      const epas = viewRecords.map(d => parseFloat(d.e1?.epa || 0)).filter(x => x > 0);
+      // PERF view
+      const epas = viewRecords.map(d => parseFloat((d.events?.[0]?.epa) || d.e1?.epa || 0)).filter(x=>x>0);
       const avgEpa = epas.length ? (epas.reduce((a,b)=>a+b,0)/epas.length).toFixed(1) : '—';
       metaBar.innerHTML = `
         <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
         <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">Total Reports</div></div>
         <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
       `;
-
       if (teamCount === 0) {
-        content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EVENT ANALYTICS REPORTS FOUND<br>SUBMIT AN EVENT ANALYTICS REPORT TO POPULATE THIS VIEW</p></div>';
+        content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EVENT ANALYTICS REPORTS FOUND</p></div>';
         return;
       }
-
       let html = '';
-      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999) - (parseInt(b[0])||9999))
+      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999)-(parseInt(b[0])||9999))
         .forEach(([teamNum, records]) => {
-          const d = records[records.length - 1];
-          const epa1 = d.e1?.epa || '—';
-          const opr1 = d.e1?.opr || '—';
-          const rank1 = d.e1?.rank || '—';
-          html += `
-            <div class="team-card">
-              <div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')">
-                <div class="team-card-num">#${teamNum}</div>
-                <div class="team-card-info">
-                  <div class="team-card-name">${d.teamName || '—'} ${getEventBadge(d.collection)}</div>
-                  <div class="team-card-scout">Scout: ${d.scout || 'Unknown'} &nbsp;|&nbsp; ${records.length} report(s)</div>
-                </div>
-                <div class="team-card-stats">
-                  <div class="team-stat-mini"><div class="v">${epa1}</div><div class="l">EPA</div></div>
-                  <div class="team-stat-mini"><div class="v">${opr1}</div><div class="l">OPR</div></div>
-                  <div class="team-stat-mini"><div class="v">${rank1}</div><div class="l">Rank</div></div>
-                </div>
-                <span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span>
-              </div>
-              <div class="team-card-body" id="tc_${teamNum}">
-                ${renderPerfBody(records)}
-              </div>
-            </div>
-          `;
+          const d = records[records.length-1];
+          const evts = d.events || (d.e1 ? [d.e1] : []);
+          const e1 = evts[0] || {};
+          const rankBadge = d.districtRank ? `<span class="district-rank-badge">NE RANK: ${d.districtRank}</span>` : '';
+          const divBadge = d.dcmpDivision ? `<span style="font-family:'Barlow Condensed';font-weight:700;font-size:12px;padding:3px 10px;border:1px solid;${d.dcmpDivision==='Burns'?'color:#ff6b35;border-color:rgba(255,107,53,0.4);background:rgba(255,107,53,0.07);':'color:#35b0ff;border-color:rgba(53,176,255,0.4);background:rgba(53,176,255,0.07);'}">${d.dcmpDivision.toUpperCase()} DIV</span>` : '';
+          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div><div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">${rankBadge}${divBadge}</div><div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${evts.length} event(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v">${e1.epa||'—'}</div><div class="l">EPA</div></div><div class="team-stat-mini"><div class="v">${e1.opr||'—'}</div><div class="l">OPR</div></div><div class="team-stat-mini"><div class="v">${d.districtRank||'—'}</div><div class="l">Rank</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderPerfBody(records)}</div></div>`;
         });
       content.innerHTML = html;
     }
   }
 
-  function renderEIBody(records) {
-    let html = '';
-    records.forEach((d, idx) => {
-      if (records.length > 1) {
-        html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">
-          Report ${idx+1} — Scout: ${d.scout || 'Unknown'} ${getEventBadge(d.collection)}
-        </div>`;
+  // ========================= DIVISION VIEW =========================
+  function renderDivisionView() {
+    const content = document.getElementById('analyticsContent');
+    const metaBar = document.getElementById('metaBar');
+    metaBar.innerHTML = '';
+
+    const perfRecords = allScoutData.filter(d => d.type === 'perf_only');
+
+    // Build team lookup
+    const teamLookup = {};
+    perfRecords.forEach(d => {
+      const key = String(d.team || '').trim();
+      if (key) {
+        if (!teamLookup[key]) teamLookup[key] = [];
+        teamLookup[key].push(d);
       }
-      const ei = d.ei || {};
-
-      // EI Award Event
-      if (ei.eiAwardEvent) {
-        html += `<div class="analytics-section"><div class="analytics-section-label">EI Award Event Origin</div><div class="chip-display"><span class="chip-display-item chip-event">NE District — ${ei.eiAwardEvent}</span></div></div>`;
-      }
-
-      const socials = ei.socials || {};
-      const socialLinks = Object.entries(socials).filter(([,v]) => v).map(([k,v]) =>
-        `<span class="chip-display-item chip-tele">${k}: ${v}</span>`).join('');
-      if (socialLinks) html += `<div class="analytics-section"><div class="analytics-section-label">Social & Web Presence</div><div class="chip-display">${socialLinks}</div></div>`;
-
-      const allOutreach = [
-        ...(ei.outreach?.first||[]), ...(ei.outreach?.education||[]),
-        ...(ei.outreach?.community||[]), ...(ei.outreach?.dei||[]), ...(ei.outreach?.funding||[])
-      ];
-      if (allOutreach.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities (${allOutreach.length} programs)</div><div class="chip-display">${renderChips(allOutreach, 'chip-outreach')}</div></div>`;
-
-      const allAwards = [...(ei.awards?.impact||[]), ...(ei.awards?.judged||[]), ...(ei.awards?.comp||[])];
-      if (allAwards.length > 0) html += `<div class="analytics-section"><div class="analytics-section-label">Awards Portfolio</div><div class="chip-display">${renderChips(allAwards, 'chip-gold')}</div></div>`;
-      if (ei.awards?.other) html += `<div class="analytics-section"><div class="analytics-section-label">Additional Awards</div><div class="analytics-note">${ei.awards.other}</div></div>`;
-
-      if (ei.script) html += `<div class="analytics-section"><div class="analytics-section-label">Emcee Script</div><div class="analytics-note" style="border-left-color:var(--blue);white-space:pre-wrap;">${ei.script}</div></div>`;
-      if (ei.presentationNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Presentation Notes</div><div class="analytics-note" style="border-left-color:var(--blue);">${ei.presentationNotes}</div></div>`;
-
-      if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
-      if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
-
-      if (idx < records.length - 1) html += '<hr class="divider" style="margin:20px 0;">';
     });
-    return html || '<div style="font-family:\'Share Tech Mono\';font-size:10px;color:#444;padding:10px;">NO EI DATA RECORDED FOR THIS TEAM</div>';
+
+    let html = `
+      <div class="division-setup-card">
+        <div class="division-setup-title">⬡ Division Assignment Setup</div>
+        <p style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;">
+          Enter team numbers for each division (one per line or comma-separated). Assignments auto-save to your browser.
+        </p>
+        <div class="division-teams-grid">
+          <div class="division-col">
+            <div class="division-col-header burns">🔥 Burns Division</div>
+            <textarea id="burns_input" rows="8" style="background:#0a0a0a;border:1px solid rgba(255,107,53,0.25);color:#ccc;font-family:'Share Tech Mono';font-size:11px;width:100%;padding:10px;outline:none;resize:vertical;" placeholder="4272&#10;1234&#10;5678...">${divisionAssignments.burns.join('\n')}</textarea>
+          </div>
+          <div class="division-col">
+            <div class="division-col-header newsom">⚡ Newsom Division</div>
+            <textarea id="newsom_input" rows="8" style="background:#0a0a0a;border:1px solid rgba(53,176,255,0.25);color:#ccc;font-family:'Share Tech Mono';font-size:11px;width:100%;padding:10px;outline:none;resize:vertical;" placeholder="9999&#10;4321&#10;8765...">${divisionAssignments.newsom.join('\n')}</textarea>
+          </div>
+        </div>
+        <button class="btn-load-divisions" onclick="loadDivisions()">▶ LOAD DIVISIONS & GENERATE PRESCOUTING</button>
+      </div>
+      <div id="divisionPrescouting"></div>
+    `;
+    content.innerHTML = html;
+
+    // Auto-render if we already have assignments
+    if (divisionAssignments.burns.length || divisionAssignments.newsom.length) {
+      renderDivisionPrescouting(teamLookup);
+    }
   }
 
-  function renderPerfBody(records) {
-    let html = '';
-    records.forEach((d, idx) => {
-      if (records.length > 1) {
-        html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">
-          Report ${idx+1} — Scout: ${d.scout || 'Unknown'} ${getEventBadge(d.collection)}
-        </div>`;
-      }
-      const e1 = d.e1 || {};
-      const e2 = d.e2 || {};
-      const hasE2 = d.e2 && (d.e2.name || d.e2.epa);
+  function loadDivisions() {
+    const burnsRaw = document.getElementById('burns_input').value;
+    const newsomRaw = document.getElementById('newsom_input').value;
 
-      if (hasE2) {
-        html += `
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-            <div>
-              <div class="analytics-section-label">EVENT 01 // ${e1.name || 'N/A'}</div>
-              <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
-                ${statMini('EPA', e1.epa)} ${statMini('OPR', e1.opr)} ${statMini('Rank', e1.rank)} ${statMini('Record', e1.record)}
-              </div>
-              <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
-              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}</div>
-            </div>
-            <div>
-              <div class="analytics-section-label">EVENT 02 // ${e2.name || 'N/A'}</div>
-              <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
-                ${statMini('EPA', e2.epa)} ${statMini('OPR', e2.opr)} ${statMini('Rank', e2.rank)} ${statMini('Record', e2.record)}
-              </div>
-              <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
-              <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${e2.captain || '—'} &nbsp;›&nbsp; ${e2.result || '—'}</div>
-            </div>
-          </div>
-        `;
-      } else if (e1.name || e1.epa) {
-        html += `
-          <div style="margin-bottom:16px;">
-            <div class="analytics-section-label">EVENT // ${e1.name || 'N/A'}</div>
-            <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
-              ${statMini('EPA', e1.epa)} ${statMini('OPR', e1.opr)} ${statMini('Rank', e1.rank)} ${statMini('Record', e1.record)}
-            </div>
-            <div style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:3px;">ROLE & RESULT</div>
-            <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${e1.captain || '—'} &nbsp;›&nbsp; ${e1.result || '—'}</div>
-          </div>
-        `;
-      }
+    const parse = (str) => str.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+    divisionAssignments.burns = parse(burnsRaw);
+    divisionAssignments.newsom = parse(newsomRaw);
 
-      if (e1.auto || e1.autoPos || e1.autoClimb) {
-        html += `<div class="analytics-section"><div class="analytics-section-label">Auto Routines (E1)</div><div class="chip-display">${renderChips([...(e1.autoPos||[]), ...(e1.auto||[]), ...(e1.autoClimb||[])], 'chip-auto')}</div></div>`;
-      }
-      if (e1.role || e1.tele || e1.intake) {
-        html += `<div class="analytics-section"><div class="analytics-section-label">Teleop Role & Scoring (E1)</div><div class="chip-display">${renderChips([...(e1.role||[]), ...(e1.tele||[]), ...(e1.intake||[])], 'chip-tele')}</div></div>`;
-      }
-      if (e1.cycles?.length) {
-        html += `<div class="analytics-section"><div class="analytics-section-label">Cycle Speed (E1)</div><div class="chip-display">${renderChips(e1.cycles, 'chip-role')}</div></div>`;
-      }
-      if (e1.defense?.length) {
-        html += `<div class="analytics-section"><div class="analytics-section-label">Defense Profile (E1)</div><div class="chip-display">${renderChips(e1.defense, 'chip-def')}</div></div>`;
-      }
-      if (e1.climb?.length) {
-        html += `<div class="analytics-section"><div class="analytics-section-label">Endgame / Climb (E1)</div><div class="chip-display">${renderChips(e1.climb, 'chip-climb')}</div></div>`;
-      }
-      if (e1.autoNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Auto Notes</div><div class="analytics-note">${e1.autoNotes}</div></div>`;
-      if (e1.teleNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Strategy Notes</div><div class="analytics-note">${e1.teleNotes}</div></div>`;
+    try { localStorage.setItem('scrapsight_divisions', JSON.stringify(divisionAssignments)); } catch(e){}
 
-      if (idx < records.length - 1) html += '<hr class="divider" style="margin:20px 0;">';
+    const perfRecords = allScoutData.filter(d => d.type === 'perf_only');
+    const teamLookup = {};
+    perfRecords.forEach(d => {
+      const key = String(d.team || '').trim();
+      if (key) {
+        if (!teamLookup[key]) teamLookup[key] = [];
+        teamLookup[key].push(d);
+      }
     });
-    return html || '<div style="font-family:\'Share Tech Mono\';font-size:10px;color:#444;padding:10px;">NO PERFORMANCE DATA RECORDED FOR THIS TEAM</div>';
+
+    renderDivisionPrescouting(teamLookup);
   }
 
-  function statMini(label, val) {
-    return `<div style="text-align:center;">
-      <div style="font-family:'Barlow Condensed';font-size:18px;font-weight:900;color:var(--blue);">${val || '—'}</div>
-      <div style="font-family:'Share Tech Mono';font-size:8px;color:var(--muted);">${label}</div>
-    </div>`;
+  function renderDivisionPrescouting(teamLookup) {
+    const container = document.getElementById('divisionPrescouting');
+    if (!container) return;
+
+    let html = '';
+    const divisions = [
+      { key: 'burns', label: 'Burns Division', cls: 'burns', emoji: '🔥', teams: divisionAssignments.burns },
+      { key: 'newsom', label: 'Newsom Division', cls: 'newsom', emoji: '⚡', teams: divisionAssignments.newsom }
+    ];
+
+    divisions.forEach(div => {
+      if (!div.teams.length) return;
+
+      const scouted = div.teams.filter(t => teamLookup[t]);
+      html += `
+        <div class="division-prescount-section">
+          <div class="division-prescount-header ${div.cls}">
+            ${div.emoji} ${div.label}
+            <span class="count-badge">${scouted.length} / ${div.teams.length} SCOUTED</span>
+          </div>
+      `;
+
+      // Sort by district rank if available, else by team number
+      const sorted = [...div.teams].sort((a, b) => {
+        const da = teamLookup[a]?.[teamLookup[a].length-1];
+        const db = teamLookup[b]?.[teamLookup[b].length-1];
+        const ra = parseFloat(da?.districtRank) || 9999;
+        const rb = parseFloat(db?.districtRank) || 9999;
+        if (ra !== rb) return ra - rb;
+        return (parseInt(a)||9999) - (parseInt(b)||9999);
+      });
+
+      sorted.forEach(teamNum => {
+        const records = teamLookup[teamNum];
+        const cardId = `div_tc_${div.key}_${teamNum}`;
+
+        if (!records || records.length === 0) {
+          html += `
+            <div class="div-team-mini-card" style="cursor:default;">
+              <div class="div-team-mini-num" style="color:#444;">#${teamNum}</div>
+              <div class="div-team-mini-info">
+                <div class="div-team-mini-name" style="color:#444;">—</div>
+                <div class="no-scout-warning" style="margin-top:4px;padding:4px 8px;">⚠ NOT YET SCOUTED</div>
+              </div>
+            </div>
+          `;
+        } else {
+          const d = records[records.length-1];
+          const evts = d.events || (d.e1 ? [d.e1] : []);
+          const e1 = evts[0] || {};
+          const rankBadge = d.districtRank ? `<span class="district-rank-badge" style="font-size:11px;">NE #${d.districtRank}</span>` : '';
+          const ptsBadge = d.districtPoints ? `<span style="font-family:'Share Tech Mono';font-size:9px;color:#777;padding:2px 6px;border:1px solid #2a2a2a;">PTS: ${d.districtPoints}</span>` : '';
+          const divisionBadge = d.dcmpDivision
+            ? `<span style="font-family:'Barlow Condensed';font-weight:700;font-size:10px;padding:2px 8px;border:1px solid;${d.dcmpDivision==='Burns'?'color:#ff6b35;border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.05);':'color:#35b0ff;border-color:rgba(53,176,255,0.3);background:rgba(53,176,255,0.05);'}">${d.dcmpDivision.toUpperCase()}</span>`
+            : '';
+
+          html += `
+            <div class="div-team-mini-card" onclick="toggleDivTeam('${cardId}')">
+              <div class="div-team-mini-num">#${teamNum}</div>
+              <div class="div-team-mini-info">
+                <div class="div-team-mini-name">${d.teamName || '—'}</div>
+                <div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;">${rankBadge}${ptsBadge}${divisionBadge}</div>
+                <div class="div-team-mini-meta">${evts.length} event(s) scouted &nbsp;|&nbsp; Scout: ${d.scout||'?'}</div>
+              </div>
+              <div class="div-team-mini-stats">
+                <div class="div-stat"><div class="dv">${e1.epa||'—'}</div><div class="dl">EPA</div></div>
+                <div class="div-stat"><div class="dv">${e1.opr||'—'}</div><div class="dl">OPR</div></div>
+                <div class="div-stat"><div class="dv">${evts.length > 0 && e1.rank ? e1.rank : '—'}</div><div class="dl">Rank E1</div></div>
+              </div>
+              <span style="font-family:'Share Tech Mono';font-size:11px;color:var(--muted);margin-left:8px;" id="${cardId}_toggle">[ + ]</span>
+            </div>
+            <div class="div-team-expand" id="${cardId}">
+              ${renderPerfBody(records)}
+            </div>
+          `;
+        }
+      });
+
+      html += `</div>`;
+    });
+
+    if (!html) {
+      html = '<div class="empty-state"><div class="icon">⬡</div><p>NO DIVISION TEAMS ENTERED YET<br>ADD TEAM NUMBERS ABOVE AND CLICK LOAD</p></div>';
+    }
+    container.innerHTML = html;
   }
 
-  function toggleTeamCard(id) {
-    const body = document.getElementById(id);
-    const teamNum = id.replace('tc_', '');
-    const toggle = document.getElementById('tct_' + teamNum);
+  function toggleDivTeam(cardId) {
+    const body = document.getElementById(cardId);
+    const toggle = document.getElementById(cardId + '_toggle');
+    if (!body || !toggle) return;
     if (body.classList.toggle('open')) {
       toggle.textContent = '[ — ]';
     } else {
       toggle.textContent = '[ + ]';
     }
+  }
+
+  // ========================= RENDER BODIES =========================
+  function renderEIBody(records) {
+    let html = '';
+    records.forEach((d, idx) => {
+      if (records.length > 1) html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Report ${idx+1} — Scout: ${d.scout||'Unknown'} ${getEventBadge(d.collection)}</div>`;
+      const ei = d.ei || {};
+      if (ei.eiAwardEvent) html += `<div class="analytics-section"><div class="analytics-section-label">EI Award Event Origin</div><div class="chip-display"><span class="chip-display-item chip-event">NE District — ${ei.eiAwardEvent}</span></div></div>`;
+      const socials = ei.socials || {};
+      const socialLinks = Object.entries(socials).filter(([,v])=>v).map(([k,v])=>`<span class="chip-display-item chip-tele">${k}: ${v}</span>`).join('');
+      if (socialLinks) html += `<div class="analytics-section"><div class="analytics-section-label">Social & Web Presence</div><div class="chip-display">${socialLinks}</div></div>`;
+      const allOutreach = [...(ei.outreach?.first||[]),...(ei.outreach?.education||[]),...(ei.outreach?.community||[]),...(ei.outreach?.dei||[]),...(ei.outreach?.funding||[])];
+      if (allOutreach.length>0) html += `<div class="analytics-section"><div class="analytics-section-label">Outreach Activities (${allOutreach.length} programs)</div><div class="chip-display">${renderChips(allOutreach,'chip-outreach')}</div></div>`;
+      const allAwards = [...(ei.awards?.impact||[]),...(ei.awards?.judged||[]),...(ei.awards?.comp||[])];
+      if (allAwards.length>0) html += `<div class="analytics-section"><div class="analytics-section-label">Awards Portfolio</div><div class="chip-display">${renderChips(allAwards,'chip-gold')}</div></div>`;
+      if (ei.awards?.other) html += `<div class="analytics-section"><div class="analytics-section-label">Additional Awards</div><div class="analytics-note">${ei.awards.other}</div></div>`;
+      if (ei.script) html += `<div class="analytics-section"><div class="analytics-section-label">Emcee Script</div><div class="analytics-note" style="border-left-color:var(--blue);white-space:pre-wrap;">${ei.script}</div></div>`;
+      if (ei.presentationNotes) html += `<div class="analytics-section"><div class="analytics-section-label">Presentation Notes</div><div class="analytics-note" style="border-left-color:var(--blue);">${ei.presentationNotes}</div></div>`;
+      if (ei.strengths) html += `<div class="analytics-section"><div class="analytics-section-label">Strengths</div><div class="analytics-note" style="border-left-color:var(--win);">${ei.strengths}</div></div>`;
+      if (ei.weaknesses) html += `<div class="analytics-section"><div class="analytics-section-label">Vulnerabilities</div><div class="analytics-note" style="border-left-color:var(--accent);">${ei.weaknesses}</div></div>`;
+      if (idx < records.length-1) html += '<hr class="divider" style="margin:20px 0;">';
+    });
+    return html || '<div style="font-family:\'Share Tech Mono\';font-size:10px;color:#444;padding:10px;">NO EI DATA RECORDED</div>';
+  }
+
+  function renderPerfBody(records) {
+    let html = '';
+    records.forEach((d, idx) => {
+      if (records.length > 1) html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Report ${idx+1} — Scout: ${d.scout||'Unknown'} ${getEventBadge(d.collection)}</div>`;
+
+      // District Standing
+      if (d.districtRank || d.districtPoints || d.dcmpDivision) {
+        const divColor = d.dcmpDivision === 'Burns' ? '#ff6b35' : d.dcmpDivision === 'Newsom' ? '#35b0ff' : '#888';
+        html += `<div class="analytics-section"><div class="analytics-section-label">District Standing</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            ${d.districtRank ? `<div style="text-align:center;"><div style="font-family:'Barlow Condensed';font-size:20px;font-weight:900;color:var(--gold);">${d.districtRank}</div><div style="font-family:'Share Tech Mono';font-size:8px;color:#666;">NE RANK</div></div>` : ''}
+            ${d.districtPoints ? `<div style="text-align:center;"><div style="font-family:'Barlow Condensed';font-size:20px;font-weight:900;color:var(--win);">${d.districtPoints}</div><div style="font-family:'Share Tech Mono';font-size:8px;color:#666;">DISTRICT PTS</div></div>` : ''}
+            ${d.dcmpDivision ? `<span style="font-family:'Barlow Condensed';font-weight:900;font-size:14px;padding:4px 12px;border:1px solid;color:${divColor};border-color:${divColor};background:${divColor}22;">${d.dcmpDivision.toUpperCase()} DIVISION</span>` : ''}
+          </div>
+        </div>`;
+      }
+
+      const evts = d.events || (d.e1 ? [d.e1, ...(d.e2 ? [d.e2] : [])] : []);
+      evts.forEach((ev, ei) => {
+        if (!ev || (!ev.name && !ev.epa)) return;
+        html += `
+          <div style="margin-bottom:14px;padding:10px;background:#080808;border:1px solid #1a1a1a;">
+            <div class="analytics-section-label" style="margin-bottom:8px;">EVENT ${String(ei+1).padStart(2,'0')} // ${ev.name || 'N/A'}</div>
+            <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+              ${statMini('EPA', ev.epa)} ${statMini('OPR', ev.opr)} ${statMini('Rank', ev.rank)} ${statMini('Record', ev.record)} ${statMini('Avg Pts', ev.avgpts)}
+            </div>
+            <div style="font-family:'Barlow Condensed';font-size:13px;color:#ccc;margin-bottom:8px;">${ev.captain||'—'} &nbsp;›&nbsp; ${ev.result||'—'}</div>
+            ${ev.auto?.length||ev.autoPos?.length||ev.autoClimb?.length ? `<div class="analytics-section"><div class="analytics-section-label">Auto</div><div class="chip-display">${renderChips([...(ev.autoPos||[]),...(ev.auto||[]),...(ev.autoClimb||[])],'chip-auto')}</div></div>` : ''}
+            ${ev.role?.length||ev.tele?.length||ev.intake?.length ? `<div class="analytics-section"><div class="analytics-section-label">Teleop</div><div class="chip-display">${renderChips([...(ev.role||[]),...(ev.tele||[]),...(ev.intake||[])],'chip-tele')}</div></div>` : ''}
+            ${ev.cycles?.length ? `<div class="analytics-section"><div class="analytics-section-label">Cycle Speed</div><div class="chip-display">${renderChips(ev.cycles,'chip-role')}</div></div>` : ''}
+            ${ev.defense?.length ? `<div class="analytics-section"><div class="analytics-section-label">Defense</div><div class="chip-display">${renderChips(ev.defense,'chip-def')}</div></div>` : ''}
+            ${ev.climb?.length ? `<div class="analytics-section"><div class="analytics-section-label">Endgame / Climb</div><div class="chip-display">${renderChips(ev.climb,'chip-climb')}</div></div>` : ''}
+            ${ev.autoNotes ? `<div class="analytics-note" style="margin-top:4px;">Auto: ${ev.autoNotes}</div>` : ''}
+            ${ev.teleNotes ? `<div class="analytics-note" style="margin-top:4px;">Strategy: ${ev.teleNotes}</div>` : ''}
+          </div>
+        `;
+      });
+      if (idx < records.length-1) html += '<hr class="divider" style="margin:20px 0;">';
+    });
+    return html || '<div style="font-family:\'Share Tech Mono\';font-size:10px;color:#444;padding:10px;">NO PERFORMANCE DATA RECORDED</div>';
+  }
+
+  function statMini(label, val) {
+    return `<div style="text-align:center;"><div style="font-family:'Barlow Condensed';font-size:18px;font-weight:900;color:var(--blue);">${val||'—'}</div><div style="font-family:'Share Tech Mono';font-size:8px;color:var(--muted);">${label}</div></div>`;
+  }
+
+  function toggleTeamCard(id) {
+    const body = document.getElementById(id);
+    const teamNum = id.replace('tc_','');
+    const toggle = document.getElementById('tct_'+teamNum);
+    if (body.classList.toggle('open')) { toggle.textContent='[ — ]'; } else { toggle.textContent='[ + ]'; }
   }
 </script>
 </body>
