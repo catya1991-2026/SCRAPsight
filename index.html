@@ -949,7 +949,7 @@
           <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e${n}_avgpts" placeholder="0"></div>
         </div>
         <hr class="divider">
-        <div class="section-title">Auto Strategy</div>
+        <div class="section-title">Auto Strategy (most likely to do) </div>
         <div class="sub-title">Starting Position</div>
         <div class="chip-group" id="e${n}_pos_chips">
           <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
@@ -1046,6 +1046,10 @@
           <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
         </div>
         <div class="field-group"><label>Strategy Notes</label><input type="text" id="e${n}_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
+        </div>
+        <div class="field-group"><label>Strategy Strengths</label><input type="text" id="e${n}_stratstren" placeholder="What strengths does the team show?"></div>
+        </div>
+        <div class="field-group"><label>Strategy Weaknesses</label><input type="text" id="e${n}_stratweak" placeholder="What weaknesses does the team show?"></div>
       </div>
     `;
     container.appendChild(div);
