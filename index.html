@@ -46,7 +46,6 @@
       repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
   }
 
-  /* HEADER */
   .header {
     background: #000; border-bottom: 3px solid var(--accent); padding: 12px 30px;
     display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
@@ -69,7 +68,6 @@
   .btn-analytics:hover { background: var(--blue); color: #000; }
   .btn-analytics.active { background: var(--blue); color: #000; }
 
-  /* EI MODE BANNER */
   .ei-mode-banner {
     background: rgba(255,45,85,0.06); border-bottom: 2px solid rgba(255,45,85,0.2);
     padding: 8px 30px; display: flex; align-items: center; gap: 10px;
@@ -86,7 +84,6 @@
   }
   .ei-mode-banner.hidden { display: none; }
 
-  /* TABS */
   .tab-nav { display: flex; max-width: 960px; margin: 20px auto 0; padding: 0 20px; gap: 4px; }
   .tab-btn {
     flex: 1; padding: 13px 10px; background: var(--surface); border: 1px solid var(--border);
@@ -96,12 +93,10 @@
   .tab-btn:hover { color: #ccc; border-color: #444; }
   .tab-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(255,45,85,0.06); }
 
-  /* LAYOUT */
   .container { max-width: 960px; margin: 0 auto; padding: 20px; }
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* CARDS */
   .card {
     background: var(--surface); border: 1px solid var(--border);
     margin-bottom: 16px; padding: 20px; border-left: 3px solid var(--accent);
@@ -111,7 +106,6 @@
   .card-gold { border-left-color: var(--gold); }
   .card-green { border-left-color: var(--win); }
 
-  /* SECTION TITLES */
   .section-title {
     font-family: 'Barlow Condensed'; color: var(--accent); font-weight: 900; font-size: 13px;
     margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px;
@@ -125,7 +119,6 @@
     border: 1px solid rgba(255,45,85,0.3); color: var(--accent); margin-left: auto;
   }
 
-  /* FIELDS */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
@@ -142,7 +135,6 @@
   select option { background: #111; }
   textarea { resize: vertical; line-height: 1.5; }
 
-  /* EI EVENT SELECTOR PILLS */
   .ei-event-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
   .ei-event-pill {
     padding: 7px 14px; background: #000; border: 1px solid #333;
@@ -155,7 +147,6 @@
     background: rgba(255,45,85,0.12); border-color: var(--accent); color: var(--accent);
   }
 
-  /* CHIPS */
   .chip-label { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 5px; }
   .chip-group { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
   .chip {
@@ -170,7 +161,6 @@
   .chip.gold.active { background: var(--gold); border-color: var(--gold); color: #000; }
   .chip.green.active { background: var(--win); border-color: var(--win); color: #000; }
 
-  /* EVENT BLOCK */
   .event-block { border: 1px solid var(--border); background: var(--surface2); margin-bottom: 12px; }
   .event-header {
     background: #0a0a0a; padding: 10px 15px; display: flex; align-items: center; gap: 10px;
@@ -184,7 +174,6 @@
   .event-body { padding: 15px; display: block; }
   .event-body.collapsed { display: none; }
 
-  /* REMOVE EVENT BTN */
   .btn-remove-event {
     background: transparent; border: 1px solid #3a1020; color: #883344;
     font-family: 'Share Tech Mono'; font-size: 9px; padding: 4px 10px; cursor: pointer;
@@ -192,7 +181,6 @@
   }
   .btn-remove-event:hover { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
 
-  /* ADD EVENT BTN */
   .btn-add-event {
     width: 100%; padding: 14px; background: transparent; border: 1px dashed #333;
     color: #555; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px;
@@ -201,7 +189,6 @@
   }
   .btn-add-event:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,180,255,0.04); }
 
-  /* PERFORMANCE SUMMARY BAR */
   .perf-bar { display: flex; gap: 8px; margin-bottom: 12px; }
   .perf-stat {
     flex: 1; background: #000; border: 1px solid var(--border); padding: 10px;
@@ -210,11 +197,9 @@
   .perf-stat .val { font-family: 'Barlow Condensed'; font-size: 24px; font-weight: 900; color: var(--blue); }
   .perf-stat .lbl { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
-  /* AWARDS */
   .award-chip { padding: 6px 10px; background: #100d00; border: 1px solid #3a2a00; font-size: 10px; cursor: pointer; color: #888; text-transform: uppercase; border-radius: 2px; font-family: 'Barlow Condensed'; font-weight: 700; transition: all .12s; }
   .award-chip.active { background: var(--gold); color: #000; border-color: var(--gold); }
 
-  /* SAVE BTN */
   .btn-save {
     width: 100%; padding: 18px; background: var(--accent); color: white;
     font-family: 'Barlow Condensed'; font-weight: 900; font-size: 18px; border: none;
@@ -224,20 +209,15 @@
   .btn-save:hover { opacity: 0.9; }
   .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* TOAST */
   #toast {
     position: fixed; bottom: 20px; right: 20px; background: var(--win); color: #000;
     padding: 15px 20px; font-family: 'Share Tech Mono'; font-size: 12px; display: none; z-index: 1000;
     border-left: 4px solid #00cc80;
   }
 
-  /* DIVIDER */
   .divider { border: none; border-top: 1px solid var(--border); margin: 15px 0; }
-
-  /* SUBSECTION */
   .sub-title { font-family: 'Share Tech Mono'; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 6px; }
 
-  /* ===== ANALYTICS PAGE ===== */
   #analyticsContainer { display: none; }
 
   .analytics-header {
@@ -249,7 +229,6 @@
   }
   .analytics-subtitle { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); margin-top: 3px; }
 
-  /* ANALYTICS VIEW TOGGLE */
   .analytics-view-toggle {
     display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); overflow: hidden;
   }
@@ -288,7 +267,6 @@
   }
   .btn-refresh:hover { border-color: var(--win); color: var(--win); }
 
-  /* TEAM CARDS IN ANALYTICS */
   .team-card {
     background: var(--surface); border: 1px solid var(--border);
     margin-bottom: 12px; overflow: hidden;
@@ -367,7 +345,6 @@
   .meta-stat .mv { font-family: 'Barlow Condensed'; font-size: 28px; font-weight: 900; color: var(--win); }
   .meta-stat .ml { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
-  /* ===== DIVISION PRESCOUTING ===== */
   .division-setup-card {
     background: var(--surface); border: 1px solid var(--border);
     border-left: 3px solid var(--purple); padding: 20px; margin-bottom: 16px;
@@ -381,7 +358,6 @@
   .division-teams-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;
   }
-  .division-col { }
   .division-col-header {
     font-family: 'Barlow Condensed'; font-weight: 900; font-size: 16px;
     text-transform: uppercase; letter-spacing: 2px; padding: 10px 14px;
@@ -393,15 +369,6 @@
   .division-col-header.newsom {
     color: #35b0ff; border-color: rgba(53,176,255,0.4); background: rgba(53,176,255,0.07);
   }
-  .division-team-input {
-    display: flex; gap: 6px; margin-bottom: 6px; align-items: center;
-  }
-  .division-team-input input {
-    background: #000; border: 1px solid #222; color: #fff;
-    padding: 7px 10px; font-family: 'Share Tech Mono'; font-size: 11px; flex: 1; outline: none;
-    transition: border-color .15s;
-  }
-  .division-team-input input:focus { border-color: var(--purple); }
   .btn-load-divisions {
     width: 100%; padding: 14px; background: var(--purple); color: #fff;
     font-family: 'Barlow Condensed'; font-weight: 900; font-size: 15px; border: none;
@@ -409,12 +376,6 @@
     margin-top: 10px;
   }
   .btn-load-divisions:hover { opacity: 0.85; }
-  .btn-save-divisions {
-    padding: 8px 16px; background: transparent; border: 1px solid var(--purple); color: var(--purple);
-    font-family: 'Share Tech Mono'; font-size: 9px; cursor: pointer; text-transform: uppercase;
-    letter-spacing: 1px; transition: all .15s; margin-top: 6px;
-  }
-  .btn-save-divisions:hover { background: rgba(176,96,255,0.12); }
 
   .division-prescount-section { margin-bottom: 24px; }
   .division-prescount-header {
@@ -486,7 +447,6 @@
   </div>
 </div>
 
-<!-- EI MODE BANNER -->
 <div class="ei-mode-banner" id="eiBanner">
   <span class="badge">▲ NE DCMP</span>
   <span class="label">EI Analysis always saved to DCMP database</span>
@@ -499,7 +459,6 @@
 
 <div class="container" id="mainContainer">
 
-  <!-- GLOBAL HEADER CARD -->
   <div class="card card-white" style="margin-bottom:16px;">
     <div class="grid-3">
       <div class="field-group"><label>Team #</label><input type="number" id="teamNum" placeholder="4272"></div>
@@ -508,10 +467,9 @@
     </div>
   </div>
 
-  <!-- ===================== EI ANALYSIS PANEL ===================== -->
+  <!-- EI ANALYSIS PANEL -->
   <div id="panelEI" class="panel active">
 
-    <!-- EI EVENT ORIGIN SELECTOR -->
     <div class="card" style="border-left-color: var(--accent);">
       <div class="section-title">EI Award — Event Origin</div>
       <div class="field-group" style="margin-bottom:0;">
@@ -682,22 +640,21 @@
       <div class="grid-2">
         <div class="field-group">
           <label>Strengths</label>
-          <textarea id="eiStrengths" rows="3" placeholder="Strong community reach, compelling stats, polished presentation..."></textarea>
+          <textarea id="eiStrengths" rows="1" placeholder="Strong community reach, compelling stats, polished presentation..."></textarea>
         </div>
         <div class="field-group">
           <label>Potential Vulnerabilities</label>
-          <textarea id="eiWeaknesses" rows="3" placeholder="Repetitive year-over-year, thin on DEI, weak digital presence..."></textarea>
+          <textarea id="eiWeaknesses" rows="1" placeholder="Repetitive year-over-year, thin on DEI, weak digital presence..."></textarea>
         </div>
       </div>
     </div>
 
     <button class="btn-save" onclick="saveEI()">▶ Transmit EI to DCMP Database</button>
-  </div><!-- end panelEI -->
+  </div>
 
-  <!-- ===================== EVENT ANALYTICS PANEL ===================== -->
+  <!-- EVENT ANALYTICS PANEL -->
   <div id="panelPerf" class="panel">
 
-    <!-- DISTRICT RANK + DIVISION -->
     <div class="card card-gold" style="margin-bottom:16px;">
       <div class="section-title gold">District Standing</div>
       <div class="grid-3">
@@ -720,17 +677,16 @@
       </div>
     </div>
 
-    <!-- DYNAMIC EVENT BLOCKS -->
     <div id="eventBlocksContainer"></div>
 
     <button class="btn-add-event" onclick="addEventBlock()">+ ADD ANOTHER EVENT</button>
 
     <button class="btn-save" onclick="savePerf()">▶ Transmit to SCRAPSIGHT</button>
-  </div><!-- end panelPerf -->
+  </div>
 
-</div><!-- end mainContainer -->
+</div>
 
-<!-- ===================== ANALYTICS PAGE ===================== -->
+<!-- ANALYTICS PAGE -->
 <div class="container" id="analyticsContainer" style="display:none;">
   <div class="analytics-header">
     <div>
@@ -739,7 +695,6 @@
     </div>
   </div>
 
-  <!-- VIEW MODE TOGGLE -->
   <div class="analytics-view-toggle">
     <button class="view-toggle-btn active-ei" id="vbtn-ei" onclick="setAnalyticsView('ei')">
       ▲ EI ANALYSIS
@@ -782,7 +737,6 @@
   let selectedEIEvent = null;
   let eventBlockCount = 0;
 
-  // Division state — persisted in localStorage
   let divisionAssignments = { burns: [], newsom: [] };
   try {
     const saved = localStorage.getItem('scrapsight_divisions');
@@ -819,7 +773,7 @@
     document.getElementById('dcmpDivision').selectedIndex = 0;
     document.getElementById('eventBlocksContainer').innerHTML = '';
     eventBlockCount = 0;
-    addEventBlock(); // start fresh with one block
+    addEventBlock();
   }
 
   function switchTab(tab) {
@@ -888,7 +842,6 @@
     return Array.from(el.querySelectorAll('.chip.active')).map(c => c.innerText);
   }
 
-  // ========================= DYNAMIC EVENT BLOCKS =========================
   const NE_EVENTS = [
     'NE District — Minuteman',
     'NE District — Pine Tree',
@@ -949,7 +902,7 @@
           <div class="field-group"><label>Avg Points / Match</label><input type="number" id="e${n}_avgpts" placeholder="0"></div>
         </div>
         <hr class="divider">
-        <div class="section-title">Auto Strategy (most likely to do) </div>
+        <div class="section-title">Auto Strategy (most likely to do)</div>
         <div class="sub-title">Starting Position</div>
         <div class="chip-group" id="e${n}_pos_chips">
           <div class="chip blue" onclick="toggleChip(this)">Left Trench</div>
@@ -1046,9 +999,7 @@
           <div class="chip green" onclick="toggleChip(this)">No Attempt</div>
         </div>
         <div class="field-group"><label>Strategy Notes</label><input type="text" id="e${n}_telenotes" placeholder="Scoring consistency, notable matches, issues..."></div>
-        </div>
         <div class="field-group"><label>Strategy Strengths</label><input type="text" id="e${n}_stratstren" placeholder="What strengths does the team show?"></div>
-        </div>
         <div class="field-group"><label>Strategy Weaknesses</label><input type="text" id="e${n}_stratweak" placeholder="What weaknesses does the team show?"></div>
       </div>
     `;
@@ -1058,7 +1009,7 @@
 
   function removeEventBlock(n, evt) {
     evt.stopPropagation();
-    if (eventBlockCount <= 1) return; // keep at least one
+    if (eventBlockCount <= 1) return;
     const block = document.getElementById('eventBlock_' + n);
     if (block) block.remove();
     renumberEventLabels();
@@ -1072,12 +1023,10 @@
     });
   }
 
-  // Init with one block
   window.addEventListener('DOMContentLoaded', () => {
     addEventBlock();
   });
 
-  // ========================= SAVE =========================
   async function saveEI() {
     const btn = document.querySelector('#panelEI .btn-save');
     btn.innerText = "UPLOADING..."; btn.disabled = true;
@@ -1174,7 +1123,6 @@
       districtPoints: document.getElementById('districtPoints').value,
       dcmpDivision: document.getElementById('dcmpDivision').value,
       events: events,
-      // keep e1/e2 for backward compatibility
       e1: events[0] || {},
       e2: events[1] || null,
       timestamp: window.serverTimestamp()
@@ -1192,7 +1140,6 @@
     }
   }
 
-  // ========================= ANALYTICS =========================
   async function loadAnalytics() {
     const content = document.getElementById('analyticsContent');
     content.innerHTML = '<div class="loading-state"><div class="spinner"></div>PULLING INTEL FROM DATABASE...</div>';
@@ -1207,7 +1154,7 @@
           snap.forEach(doc => {
             allScoutData.push({ id: doc.id, collection: col, ...doc.data() });
           });
-        } catch(e) { /* collection may not exist */ }
+        } catch(e) {}
       }
       renderAnalytics();
     } catch(e) {
@@ -1223,7 +1170,6 @@
     });
     document.getElementById('vbtn-' + view).className = 'view-toggle-btn active-' + view;
 
-    // show/hide filter bar for division view
     const filterBar = document.getElementById('analyticsFilterBar');
     filterBar.style.display = view === 'div' ? 'none' : 'flex';
 
@@ -1274,13 +1220,11 @@
     });
 
     const teamCount = Object.keys(teams).length;
-    const recordCount = viewRecords.length;
 
     if (analyticsView === 'ei') {
       const awardRecords = viewRecords.filter(d => d.ei?.awards?.impact?.length > 0 || d.ei?.awards?.judged?.length > 0);
       metaBar.innerHTML = `
         <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
-        <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">EI Reports</div></div>
         <div class="meta-stat"><div class="mv">${awardRecords.length}</div><div class="ml">Teams w/ Awards</div></div>
       `;
       if (teamCount === 0) {
@@ -1297,17 +1241,15 @@
           const eiEventRow = ei.eiAwardEvent
             ? `<div style="margin-top:5px;display:flex;align-items:center;gap:6px;"><span style="font-family:'Share Tech Mono';font-size:8px;color:#555;text-transform:uppercase;letter-spacing:1px;">EI Won At:</span><span style="font-family:'Barlow Condensed';font-weight:700;font-size:13px;color:var(--accent);letter-spacing:1px;padding:2px 8px;border:1px solid rgba(255,45,85,0.4);background:rgba(255,45,85,0.08);">▲ ${ei.eiAwardEvent.toUpperCase()}</span></div>`
             : `<div style="margin-top:5px;"><span style="font-family:'Share Tech Mono';font-size:8px;color:#333;text-transform:uppercase;letter-spacing:1px;">EI Event: —</span></div>`;
-          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div>${eiEventRow}<div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${allAwards.length} award(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v" style="color:var(--gold);">${allAwards.length}</div><div class="l">Awards</div></div><div class="team-stat-mini"><div class="v" style="color:var(--win);">${allOutreach.length}</div><div class="l">Outreach</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderEIBody(records)}</div></div>`;
+          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div>${eiEventRow}<div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${allAwards.length} award(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v" style="color:var(--gold);">${allAwards.length}</div><div class="l">Awards</div></div><div class="team-stat-mini"><div class="v" style="color:var(--win);">${allOutreach.length}</div><div class="l">Outreach</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderEIBody(records)}</div></div>`;
         });
       content.innerHTML = html;
 
     } else {
-      // PERF view
       const epas = viewRecords.map(d => parseFloat((d.events?.[0]?.epa) || d.e1?.epa || 0)).filter(x=>x>0);
       const avgEpa = epas.length ? (epas.reduce((a,b)=>a+b,0)/epas.length).toFixed(1) : '—';
       metaBar.innerHTML = `
         <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
-        <div class="meta-stat"><div class="mv">${recordCount}</div><div class="ml">Total Reports</div></div>
         <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
       `;
       if (teamCount === 0) {
@@ -1322,21 +1264,18 @@
           const e1 = evts[0] || {};
           const rankBadge = d.districtRank ? `<span class="district-rank-badge">NE RANK: ${d.districtRank}</span>` : '';
           const divBadge = d.dcmpDivision ? `<span style="font-family:'Barlow Condensed';font-weight:700;font-size:12px;padding:3px 10px;border:1px solid;${d.dcmpDivision==='Burns'?'color:#ff6b35;border-color:rgba(255,107,53,0.4);background:rgba(255,107,53,0.07);':'color:#35b0ff;border-color:rgba(53,176,255,0.4);background:rgba(53,176,255,0.07);'}">${d.dcmpDivision.toUpperCase()} DIV</span>` : '';
-          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div><div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">${rankBadge}${divBadge}</div><div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${records.length} report(s) &nbsp;|&nbsp; ${evts.length} event(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v">${e1.epa||'—'}</div><div class="l">EPA</div></div><div class="team-stat-mini"><div class="v">${e1.opr||'—'}</div><div class="l">OPR</div></div><div class="team-stat-mini"><div class="v">${d.districtRank||'—'}</div><div class="l">Rank</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderPerfBody(records)}</div></div>`;
+          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div><div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">${rankBadge}${divBadge}</div><div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${evts.length} event(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v">${e1.epa||'—'}</div><div class="l">EPA</div></div><div class="team-stat-mini"><div class="v">${e1.opr||'—'}</div><div class="l">OPR</div></div><div class="team-stat-mini"><div class="v">${d.districtRank||'—'}</div><div class="l">Rank</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderPerfBody(records)}</div></div>`;
         });
       content.innerHTML = html;
     }
   }
 
-  // ========================= DIVISION VIEW =========================
   function renderDivisionView() {
     const content = document.getElementById('analyticsContent');
     const metaBar = document.getElementById('metaBar');
     metaBar.innerHTML = '';
 
     const perfRecords = allScoutData.filter(d => d.type === 'perf_only');
-
-    // Build team lookup
     const teamLookup = {};
     perfRecords.forEach(d => {
       const key = String(d.team || '').trim();
@@ -1368,7 +1307,6 @@
     `;
     content.innerHTML = html;
 
-    // Auto-render if we already have assignments
     if (divisionAssignments.burns.length || divisionAssignments.newsom.length) {
       renderDivisionPrescouting(teamLookup);
     }
@@ -1419,7 +1357,6 @@
           </div>
       `;
 
-      // Sort by district rank if available, else by team number
       const sorted = [...div.teams].sort((a, b) => {
         const da = teamLookup[a]?.[teamLookup[a].length-1];
         const db = teamLookup[b]?.[teamLookup[b].length-1];
@@ -1495,7 +1432,6 @@
     }
   }
 
-  // ========================= RENDER BODIES =========================
   function renderEIBody(records) {
     let html = '';
     records.forEach((d, idx) => {
@@ -1524,7 +1460,6 @@
     records.forEach((d, idx) => {
       if (records.length > 1) html += `<div style="font-family:'Share Tech Mono';font-size:9px;color:#444;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Report ${idx+1} — Scout: ${d.scout||'Unknown'} ${getEventBadge(d.collection)}</div>`;
 
-      // District Standing
       if (d.districtRank || d.districtPoints || d.dcmpDivision) {
         const divColor = d.dcmpDivision === 'Burns' ? '#ff6b35' : d.dcmpDivision === 'Newsom' ? '#35b0ff' : '#888';
         html += `<div class="analytics-section"><div class="analytics-section-label">District Standing</div>
