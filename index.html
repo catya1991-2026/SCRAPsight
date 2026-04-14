@@ -244,7 +244,6 @@
   .view-toggle-btn:hover { color: #aaa; background: #111; }
   .view-toggle-btn.active-ei { background: rgba(255,215,0,0.07); color: var(--gold); border-bottom: 2px solid var(--gold); }
   .view-toggle-btn.active-perf { background: rgba(0,180,255,0.07); color: var(--blue); border-bottom: 2px solid var(--blue); }
-  .view-toggle-btn.active-div { background: rgba(176,96,255,0.07); color: var(--purple); border-bottom: 2px solid var(--purple); }
   .view-toggle-sub {
     font-family: 'Share Tech Mono'; font-size: 8px; display: block;
     margin-top: 3px; opacity: 0.6; letter-spacing: 1px;
@@ -261,6 +260,8 @@
   .filter-pill:hover { border-color: #555; color: #aaa; }
   .filter-pill.active-all { background: rgba(0,255,163,0.08); border-color: var(--win); color: var(--win); }
   .filter-pill.active-dcmp { background: rgba(255,45,85,0.1); border-color: var(--accent); color: var(--accent); }
+  .filter-pill.active-burns { background: rgba(255,107,53,0.1); border-color: #ff6b35; color: #ff6b35; }
+  .filter-pill.active-newsom { background: rgba(53,176,255,0.1); border-color: #35b0ff; color: #35b0ff; }
 
   .btn-refresh {
     margin-left: auto; padding: 7px 14px; background: transparent; border: 1px solid #333;
@@ -347,103 +348,27 @@
   .meta-stat .mv { font-family: 'Barlow Condensed'; font-size: 28px; font-weight: 900; color: var(--win); }
   .meta-stat .ml { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
 
-  .division-setup-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-left: 3px solid var(--purple); padding: 20px; margin-bottom: 16px;
-  }
-  .division-setup-title {
-    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 13px; color: var(--purple);
-    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px;
-    border-bottom: 1px solid #1e1e1e; padding-bottom: 6px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .division-teams-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;
-  }
-  .division-col-header {
-    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 16px;
-    text-transform: uppercase; letter-spacing: 2px; padding: 10px 14px;
-    margin-bottom: 8px; border: 1px solid;
-  }
-  .division-col-header.burns {
-    color: #ff6b35; border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.07);
-  }
-  .division-col-header.newsom {
-    color: #35b0ff; border-color: rgba(53,176,255,0.4); background: rgba(53,176,255,0.07);
-  }
-  .btn-load-divisions {
-    width: 100%; padding: 14px; background: var(--purple); color: #fff;
-    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 15px; border: none;
-    cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: opacity .15s;
-    margin-top: 10px;
-  }
-  .btn-load-divisions:hover { opacity: 0.85; }
-
-  .division-prescount-section { margin-bottom: 24px; }
-  .division-prescount-header {
-    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 18px;
-    text-transform: uppercase; letter-spacing: 2px; padding: 12px 16px;
-    display: flex; align-items: center; gap: 12px; border: 1px solid; margin-bottom: 10px;
-  }
-  .division-prescount-header.burns {
-    color: #ff6b35; border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.05);
-  }
-  .division-prescount-header.newsom {
-    color: #35b0ff; border-color: rgba(53,176,255,0.4); background: rgba(53,176,255,0.05);
-  }
-  .division-prescount-header .count-badge {
-    font-family: 'Share Tech Mono'; font-size: 10px; padding: 3px 10px;
-    border: 1px solid; margin-left: auto;
-  }
-  .division-prescount-header.burns .count-badge { border-color: rgba(255,107,53,0.4); color: #ff6b35; background: rgba(255,107,53,0.08); }
-  .division-prescount-header.newsom .count-badge { border-color: rgba(53,176,255,0.4); color: #35b0ff; background: rgba(53,176,255,0.08); }
-
-  .div-team-mini-card {
-    background: #0a0a0a; border: 1px solid var(--border); padding: 12px 16px;
-    margin-bottom: 8px; display: flex; align-items: center; gap: 14px;
-    cursor: pointer; transition: all .15s;
-  }
-  .div-team-mini-card:hover { border-color: #444; background: #111; }
-  .div-team-mini-num {
-    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 22px; color: var(--accent);
-    min-width: 60px;
-  }
-  .div-team-mini-info { flex: 1; }
-  .div-team-mini-name { font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px; color: #ddd; }
-  .div-team-mini-meta { font-family: 'Share Tech Mono'; font-size: 9px; color: var(--muted); margin-top: 2px; }
-  .div-team-mini-stats { display: flex; gap: 14px; }
-  .div-stat { text-align: center; }
-  .div-stat .dv { font-family: 'Barlow Condensed'; font-size: 17px; font-weight: 900; color: var(--blue); }
-  .div-stat .dl { font-family: 'Share Tech Mono'; font-size: 8px; color: #555; }
-  .div-team-expand { padding: 0 16px 16px; display: none; border-top: 1px solid #1a1a1a; }
-  .div-team-expand.open { display: block; }
-  .no-scout-warning {
-    font-family: 'Share Tech Mono'; font-size: 10px; color: #555;
-    padding: 10px; border: 1px dashed #222; text-align: center; text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
   .district-rank-badge {
     font-family: 'Barlow Condensed'; font-weight: 900; font-size: 14px;
     padding: 3px 10px; border: 1px solid rgba(255,215,0,0.4);
     background: rgba(255,215,0,0.07); color: var(--gold); letter-spacing: 1px;
   }
 
-  /* Division sync status badge */
-  .div-sync-status {
-    font-family: 'Share Tech Mono'; font-size: 9px; padding: 3px 10px;
-    border: 1px solid; text-transform: uppercase; letter-spacing: 1px; margin-left: auto;
+  /* Division filter header shown when filtering by division */
+  .division-section-header {
+    padding: 12px 16px; margin-bottom: 10px; margin-top: 6px;
+    font-family: 'Barlow Condensed'; font-weight: 900; font-size: 18px;
+    text-transform: uppercase; letter-spacing: 2px; border: 1px solid;
+    display: flex; align-items: center; gap: 10px;
   }
-  .div-sync-status.synced { color: var(--win); border-color: rgba(0,255,163,0.4); background: rgba(0,255,163,0.06); }
-  .div-sync-status.saving { color: var(--gold); border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.06); }
-  .div-sync-status.error { color: var(--accent); border-color: rgba(255,45,85,0.4); background: rgba(255,45,85,0.06); }
+  .division-section-header.burns { color: #ff6b35; border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.05); }
+  .division-section-header.newsom { color: #35b0ff; border-color: rgba(53,176,255,0.4); background: rgba(53,176,255,0.05); }
 
   @media(max-width:600px) {
     .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     .perf-bar { flex-wrap: wrap; }
     .team-card-stats { display: none; }
-    .division-teams-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -715,16 +640,14 @@
       ⬡ EVENT ANALYTICS
       <span class="view-toggle-sub">EPA · OPR · Auto · Teleop · Climb</span>
     </button>
-    <button class="view-toggle-btn" id="vbtn-div" onclick="setAnalyticsView('div')">
-      ⬡ DIVISION PRESCOUTING
-      <span class="view-toggle-sub">Burns · Newsom · Sorted by Division</span>
-    </button>
   </div>
 
   <div class="analytics-filter" id="analyticsFilterBar">
     <span class="analytics-filter-label">Filter:</span>
     <div class="filter-pill active-all" id="apill-all" onclick="filterAnalytics('all')">ALL</div>
     <div class="filter-pill" id="apill-dcmp" onclick="filterAnalytics('dcmp')">DCMP</div>
+    <div class="filter-pill" id="apill-burns" onclick="filterAnalytics('burns')" style="display:none;">🔥 BURNS</div>
+    <div class="filter-pill" id="apill-newsom" onclick="filterAnalytics('newsom')" style="display:none;">⚡ NEWSOM</div>
     <button class="btn-refresh" onclick="loadAnalytics()">↻ REFRESH</button>
   </div>
 
@@ -748,7 +671,7 @@
   let selectedEIEvent = null;
   let eventBlockCount = 0;
 
-  // Division assignments — loaded from Firestore, NOT localStorage
+  // Division assignments — loaded from Firestore
   let divisionAssignments = { burns: [], newsom: [] };
 
   function updateClock() {
@@ -1164,31 +1087,18 @@
     }
   }
 
-  // ─── DIVISION SYNC: Save to scouts_dcmp ──────────────────────────────────
-  async function saveDivisionAssignmentsToDB(burnsArr, newsomArr) {
-    const statusEl = document.getElementById('divSyncStatus');
-    if (statusEl) { statusEl.className = 'div-sync-status saving'; statusEl.textContent = '⟳ SAVING...'; }
-    try {
-      await window.setDoc(
-        window.doc(window.db, 'scouts_dcmp', '__divisions__'),
-        { burns: burnsArr, newsom: newsomArr, type: '__divisions__', updatedAt: window.serverTimestamp() }
-      );
-      divisionAssignments.burns = burnsArr;
-      divisionAssignments.newsom = newsomArr;
-      if (statusEl) { statusEl.className = 'div-sync-status synced'; statusEl.textContent = '✓ SYNCED TO ALL DEVICES'; }
-    } catch(e) {
-      if (statusEl) { statusEl.className = 'div-sync-status error'; statusEl.textContent = '✕ SYNC FAILED'; }
-      console.error('Division save error:', e);
-    }
-  }
-  // ──────────────────────────────────────────────────────────────────────────
-
   async function loadAnalytics() {
     const content = document.getElementById('analyticsContent');
     content.innerHTML = '<div class="loading-state"><div class="spinner"></div>PULLING INTEL FROM DATABASE...</div>';
 
     // Load division assignments from Firestore first
     await loadDivisionAssignmentsFromDB();
+
+    // Show/hide division filter pills based on whether divisions are configured
+    const burnsPill = document.getElementById('apill-burns');
+    const newsomPill = document.getElementById('apill-newsom');
+    if (burnsPill) burnsPill.style.display = divisionAssignments.burns.length ? '' : 'none';
+    if (newsomPill) newsomPill.style.display = divisionAssignments.newsom.length ? '' : 'none';
 
     const collections = ['scouts_dcmp', 'scouts_unh', 'scouts_hartford', 'scouts'];
     allScoutData = [];
@@ -1211,27 +1121,44 @@
 
   function setAnalyticsView(view) {
     analyticsView = view;
-    ['ei','perf','div'].forEach(v => {
+    ['ei','perf'].forEach(v => {
       const btn = document.getElementById('vbtn-' + v);
       if (btn) btn.className = 'view-toggle-btn';
     });
     document.getElementById('vbtn-' + view).className = 'view-toggle-btn active-' + view;
 
-    const filterBar = document.getElementById('analyticsFilterBar');
-    filterBar.style.display = view === 'div' ? 'none' : 'flex';
+    // Division filters only make sense in perf view
+    const burnsPill = document.getElementById('apill-burns');
+    const newsomPill = document.getElementById('apill-newsom');
+    if (view !== 'perf') {
+      if (burnsPill) burnsPill.style.display = 'none';
+      if (newsomPill) newsomPill.style.display = 'none';
+      // If currently on a division filter, reset to all
+      if (analyticsFilter === 'burns' || analyticsFilter === 'newsom') {
+        analyticsFilter = 'all';
+        updateFilterPillUI('all');
+      }
+    } else {
+      if (burnsPill) burnsPill.style.display = divisionAssignments.burns.length ? '' : 'none';
+      if (newsomPill) newsomPill.style.display = divisionAssignments.newsom.length ? '' : 'none';
+    }
 
     renderAnalytics();
   }
 
-  function filterAnalytics(ev) {
-    analyticsFilter = ev;
-    ['all','dcmp'].forEach(e => {
+  function updateFilterPillUI(active) {
+    ['all','dcmp','burns','newsom'].forEach(e => {
       const pill = document.getElementById('apill-' + e);
       if (pill) pill.className = 'filter-pill';
     });
-    const activePill = document.getElementById('apill-' + ev);
-    if (activePill) activePill.className = 'filter-pill active-' + ev;
-    loadAnalytics();
+    const activePill = document.getElementById('apill-' + active);
+    if (activePill) activePill.className = 'filter-pill active-' + active;
+  }
+
+  function filterAnalytics(ev) {
+    analyticsFilter = ev;
+    updateFilterPillUI(ev);
+    renderAnalytics();
   }
 
   function getEventBadge(col) {
@@ -1247,20 +1174,33 @@
   }
 
   function renderAnalytics() {
-    if (analyticsView === 'div') { renderDivisionView(); return; }
-
     const content = document.getElementById('analyticsContent');
     const metaBar = document.getElementById('metaBar');
 
-    const filtered = analyticsFilter === 'all' ? allScoutData :
-      allScoutData.filter(d => d.collection === 'scouts_' + analyticsFilter || (analyticsFilter === 'dcmp' && d.collection === 'scouts_dcmp'));
+    // Apply source filter (all / dcmp)
+    let filtered;
+    if (analyticsFilter === 'dcmp') {
+      filtered = allScoutData.filter(d => d.collection === 'scouts_dcmp');
+    } else {
+      filtered = [...allScoutData];
+    }
 
     const viewRecords = analyticsView === 'ei'
       ? filtered.filter(d => d.type === 'ei_only')
       : filtered.filter(d => d.type === 'perf_only');
 
+    // For perf view, additionally filter by division if selected
+    let perfRecordsFiltered = viewRecords;
+    let activeDivision = null;
+    if (analyticsView === 'perf' && (analyticsFilter === 'burns' || analyticsFilter === 'newsom')) {
+      activeDivision = analyticsFilter === 'burns' ? 'Burns' : 'Newsom';
+      perfRecordsFiltered = viewRecords.filter(d => d.dcmpDivision === activeDivision);
+    }
+
+    const recordsToRender = analyticsView === 'perf' ? perfRecordsFiltered : viewRecords;
+
     const teams = {};
-    viewRecords.forEach(d => {
+    recordsToRender.forEach(d => {
       const key = d.team || 'unknown';
       if (!teams[key]) teams[key] = [];
       teams[key].push(d);
@@ -1293,195 +1233,86 @@
       content.innerHTML = html;
 
     } else {
-      const epas = viewRecords.map(d => parseFloat((d.events?.[0]?.epa) || d.e1?.epa || 0)).filter(x=>x>0);
+      // PERF view — optionally grouped by division when showing all/dcmp
+      const epas = recordsToRender.map(d => parseFloat((d.events?.[0]?.epa) || d.e1?.epa || 0)).filter(x=>x>0);
       const avgEpa = epas.length ? (epas.reduce((a,b)=>a+b,0)/epas.length).toFixed(1) : '—';
+
+      let divLabel = 'Teams Scouted';
+      if (activeDivision) divLabel = activeDivision + ' Division';
       metaBar.innerHTML = `
-        <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">Teams Scouted</div></div>
+        <div class="meta-stat"><div class="mv">${teamCount}</div><div class="ml">${divLabel}</div></div>
         <div class="meta-stat"><div class="mv">${avgEpa}</div><div class="ml">Avg EPA (E1)</div></div>
       `;
+
       if (teamCount === 0) {
         content.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>NO EVENT ANALYTICS REPORTS FOUND</p></div>';
         return;
       }
-      let html = '';
-      Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999)-(parseInt(b[0])||9999))
-        .forEach(([teamNum, records]) => {
-          const d = records[records.length-1];
-          const evts = d.events || (d.e1 ? [d.e1] : []);
-          const e1 = evts[0] || {};
-          const rankBadge = d.districtRank ? `<span class="district-rank-badge">NE RANK: ${d.districtRank}</span>` : '';
-          const divBadge = d.dcmpDivision ? `<span style="font-family:'Barlow Condensed';font-weight:700;font-size:12px;padding:3px 10px;border:1px solid;${d.dcmpDivision==='Burns'?'color:#ff6b35;border-color:rgba(255,107,53,0.4);background:rgba(255,107,53,0.07);':'color:#35b0ff;border-color:rgba(53,176,255,0.4);background:rgba(53,176,255,0.07);'}">${d.dcmpDivision.toUpperCase()} DIV</span>` : '';
-          html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div><div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">${rankBadge}${divBadge}</div><div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${evts.length} event(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v">${e1.epa||'—'}</div><div class="l">EPA</div></div><div class="team-stat-mini"><div class="v">${e1.opr||'—'}</div><div class="l">OPR</div></div><div class="team-stat-mini"><div class="v">${d.districtRank||'—'}</div><div class="l">Rank</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderPerfBody(records)}</div></div>`;
-        });
-      content.innerHTML = html;
+
+      // If filtering by a specific division, render flat list
+      // If showing all or dcmp, group by division (Burns → Newsom → Unassigned)
+      const shouldGroup = !activeDivision;
+
+      if (shouldGroup) {
+        content.innerHTML = renderPerfGroupedByDivision(teams);
+      } else {
+        // Single division — render flat with a header
+        const headerCls = analyticsFilter === 'burns' ? 'burns' : 'newsom';
+        const headerLabel = analyticsFilter === 'burns' ? '🔥 Burns Division' : '⚡ Newsom Division';
+        let html = `<div class="division-section-header ${headerCls}">${headerLabel}<span style="font-family:'Share Tech Mono';font-size:10px;margin-left:auto;">${teamCount} TEAMS</span></div>`;
+        html += renderPerfTeamCards(teams);
+        content.innerHTML = html;
+      }
     }
   }
 
-  function renderDivisionView() {
-    const content = document.getElementById('analyticsContent');
-    const metaBar = document.getElementById('metaBar');
-    metaBar.innerHTML = '';
+  function renderPerfGroupedByDivision(teams) {
+    // Split teams into burns, newsom, unassigned
+    const burnsTeams = {};
+    const newsomTeams = {};
+    const unassignedTeams = {};
 
-    const perfRecords = allScoutData.filter(d => d.type === 'perf_only');
-    const teamLookup = {};
-    perfRecords.forEach(d => {
-      const key = String(d.team || '').trim();
-      if (key) {
-        if (!teamLookup[key]) teamLookup[key] = [];
-        teamLookup[key].push(d);
-      }
+    Object.entries(teams).forEach(([teamNum, records]) => {
+      const d = records[records.length-1];
+      const div = d.dcmpDivision || '';
+      if (div === 'Burns') burnsTeams[teamNum] = records;
+      else if (div === 'Newsom') newsomTeams[teamNum] = records;
+      else unassignedTeams[teamNum] = records;
     });
-
-    let html = `
-      <div class="division-setup-card">
-        <div class="division-setup-title">
-          ⬡ Division Assignment Setup
-          <span class="div-sync-status synced" id="divSyncStatus">✓ CLOUD SYNCED</span>
-        </div>
-        <p style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;">
-          Enter team numbers for each division (one per line or comma-separated).<br>
-          Assignments save to the shared database — all devices see the same list.
-        </p>
-        <div class="division-teams-grid">
-          <div class="division-col">
-            <div class="division-col-header burns">🔥 Burns Division</div>
-            <textarea id="burns_input" rows="8" style="background:#0a0a0a;border:1px solid rgba(255,107,53,0.25);color:#ccc;font-family:'Share Tech Mono';font-size:11px;width:100%;padding:10px;outline:none;resize:vertical;" placeholder="4272&#10;1234&#10;5678...">${divisionAssignments.burns.join('\n')}</textarea>
-          </div>
-          <div class="division-col">
-            <div class="division-col-header newsom">⚡ Newsom Division</div>
-            <textarea id="newsom_input" rows="8" style="background:#0a0a0a;border:1px solid rgba(53,176,255,0.25);color:#ccc;font-family:'Share Tech Mono';font-size:11px;width:100%;padding:10px;outline:none;resize:vertical;" placeholder="9999&#10;4321&#10;8765...">${divisionAssignments.newsom.join('\n')}</textarea>
-          </div>
-        </div>
-        <button class="btn-load-divisions" onclick="loadDivisions()">▶ SAVE TO DATABASE & GENERATE PRESCOUTING</button>
-      </div>
-      <div id="divisionPrescouting"></div>
-    `;
-    content.innerHTML = html;
-
-    if (divisionAssignments.burns.length || divisionAssignments.newsom.length) {
-      renderDivisionPrescouting(teamLookup);
-    }
-  }
-
-  async function loadDivisions() {
-    const burnsRaw = document.getElementById('burns_input').value;
-    const newsomRaw = document.getElementById('newsom_input').value;
-
-    const parse = (str) => str.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    const burnsArr = parse(burnsRaw);
-    const newsomArr = parse(newsomRaw);
-
-    // Save to Firestore so all devices get the update
-    await saveDivisionAssignmentsToDB(burnsArr, newsomArr);
-
-    const perfRecords = allScoutData.filter(d => d.type === 'perf_only');
-    const teamLookup = {};
-    perfRecords.forEach(d => {
-      const key = String(d.team || '').trim();
-      if (key) {
-        if (!teamLookup[key]) teamLookup[key] = [];
-        teamLookup[key].push(d);
-      }
-    });
-
-    renderDivisionPrescouting(teamLookup);
-  }
-
-  function renderDivisionPrescouting(teamLookup) {
-    const container = document.getElementById('divisionPrescouting');
-    if (!container) return;
 
     let html = '';
-    const divisions = [
-      { key: 'burns', label: 'Burns Division', cls: 'burns', emoji: '🔥', teams: divisionAssignments.burns },
-      { key: 'newsom', label: 'Newsom Division', cls: 'newsom', emoji: '⚡', teams: divisionAssignments.newsom }
-    ];
 
-    divisions.forEach(div => {
-      if (!div.teams.length) return;
-
-      const scouted = div.teams.filter(t => teamLookup[t]);
-      html += `
-        <div class="division-prescount-section">
-          <div class="division-prescount-header ${div.cls}">
-            ${div.emoji} ${div.label}
-            <span class="count-badge">${scouted.length} / ${div.teams.length} SCOUTED</span>
-          </div>
-      `;
-
-      const sorted = [...div.teams].sort((a, b) => {
-        const da = teamLookup[a]?.[teamLookup[a].length-1];
-        const db = teamLookup[b]?.[teamLookup[b].length-1];
-        const ra = parseFloat(da?.districtRank) || 9999;
-        const rb = parseFloat(db?.districtRank) || 9999;
-        if (ra !== rb) return ra - rb;
-        return (parseInt(a)||9999) - (parseInt(b)||9999);
-      });
-
-      sorted.forEach(teamNum => {
-        const records = teamLookup[teamNum];
-        const cardId = `div_tc_${div.key}_${teamNum}`;
-
-        if (!records || records.length === 0) {
-          html += `
-            <div class="div-team-mini-card" style="cursor:default;">
-              <div class="div-team-mini-num" style="color:#444;">#${teamNum}</div>
-              <div class="div-team-mini-info">
-                <div class="div-team-mini-name" style="color:#444;">—</div>
-                <div class="no-scout-warning" style="margin-top:4px;padding:4px 8px;">⚠ NOT YET SCOUTED</div>
-              </div>
-            </div>
-          `;
-        } else {
-          const d = records[records.length-1];
-          const evts = d.events || (d.e1 ? [d.e1, ...(d.e2 ? [d.e2] : [])] : []);
-          const e1 = evts[0] || {};
-          const rankBadge = d.districtRank ? `<span class="district-rank-badge" style="font-size:11px;">NE #${d.districtRank}</span>` : '';
-          const ptsBadge = d.districtPoints ? `<span style="font-family:'Share Tech Mono';font-size:9px;color:#777;padding:2px 6px;border:1px solid #2a2a2a;">PTS: ${d.districtPoints}</span>` : '';
-          const divisionBadge = d.dcmpDivision
-            ? `<span style="font-family:'Barlow Condensed';font-weight:700;font-size:10px;padding:2px 8px;border:1px solid;${d.dcmpDivision==='Burns'?'color:#ff6b35;border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.05);':'color:#35b0ff;border-color:rgba(53,176,255,0.3);background:rgba(53,176,255,0.05);'}">${d.dcmpDivision.toUpperCase()}</span>`
-            : '';
-
-          html += `
-            <div class="div-team-mini-card" onclick="toggleDivTeam('${cardId}')">
-              <div class="div-team-mini-num">#${teamNum}</div>
-              <div class="div-team-mini-info">
-                <div class="div-team-mini-name">${d.teamName || '—'}</div>
-                <div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;">${rankBadge}${ptsBadge}${divisionBadge}</div>
-                <div class="div-team-mini-meta">${evts.length} event(s) scouted &nbsp;|&nbsp; Scout: ${d.scout||'?'}</div>
-              </div>
-              <div class="div-team-mini-stats">
-                <div class="div-stat"><div class="dv">${e1.epa||'—'}</div><div class="dl">EPA</div></div>
-                <div class="div-stat"><div class="dv">${e1.opr||'—'}</div><div class="dl">OPR</div></div>
-                <div class="div-stat"><div class="dv">${evts.length > 0 && e1.rank ? e1.rank : '—'}</div><div class="dl">Rank E1</div></div>
-              </div>
-              <span style="font-family:'Share Tech Mono';font-size:11px;color:var(--muted);margin-left:8px;" id="${cardId}_toggle">[ + ]</span>
-            </div>
-            <div class="div-team-expand" id="${cardId}">
-              ${renderPerfBody(records)}
-            </div>
-          `;
-        }
-      });
-
-      html += `</div>`;
-    });
-
-    if (!html) {
-      html = '<div class="empty-state"><div class="icon">⬡</div><p>NO DIVISION TEAMS ENTERED YET<br>ADD TEAM NUMBERS ABOVE AND CLICK SAVE</p></div>';
+    if (Object.keys(burnsTeams).length) {
+      html += `<div class="division-section-header burns">🔥 Burns Division<span style="font-family:'Share Tech Mono';font-size:10px;margin-left:auto;">${Object.keys(burnsTeams).length} TEAMS</span></div>`;
+      html += renderPerfTeamCards(burnsTeams);
     }
-    container.innerHTML = html;
+
+    if (Object.keys(newsomTeams).length) {
+      html += `<div class="division-section-header newsom" style="margin-top:20px;">⚡ Newsom Division<span style="font-family:'Share Tech Mono';font-size:10px;margin-left:auto;">${Object.keys(newsomTeams).length} TEAMS</span></div>`;
+      html += renderPerfTeamCards(newsomTeams);
+    }
+
+    if (Object.keys(unassignedTeams).length) {
+      html += `<div class="division-section-header" style="margin-top:20px;color:#555;border-color:#2a2a2a;background:#0a0a0a;">⬡ Unassigned<span style="font-family:'Share Tech Mono';font-size:10px;margin-left:auto;color:#444;">${Object.keys(unassignedTeams).length} TEAMS</span></div>`;
+      html += renderPerfTeamCards(unassignedTeams);
+    }
+
+    if (!html) html = '<div class="empty-state"><div class="icon">📡</div><p>NO EVENT ANALYTICS REPORTS FOUND</p></div>';
+    return html;
   }
 
-  function toggleDivTeam(cardId) {
-    const body = document.getElementById(cardId);
-    const toggle = document.getElementById(cardId + '_toggle');
-    if (!body || !toggle) return;
-    if (body.classList.toggle('open')) {
-      toggle.textContent = '[ — ]';
-    } else {
-      toggle.textContent = '[ + ]';
-    }
+  function renderPerfTeamCards(teams) {
+    let html = '';
+    Object.entries(teams).sort((a,b) => (parseInt(a[0])||9999)-(parseInt(b[0])||9999))
+      .forEach(([teamNum, records]) => {
+        const d = records[records.length-1];
+        const evts = d.events || (d.e1 ? [d.e1] : []);
+        const e1 = evts[0] || {};
+        const rankBadge = d.districtRank ? `<span class="district-rank-badge">NE RANK: ${d.districtRank}</span>` : '';
+        const divBadge = d.dcmpDivision ? `<span style="font-family:'Barlow Condensed';font-weight:700;font-size:12px;padding:3px 10px;border:1px solid;${d.dcmpDivision==='Burns'?'color:#ff6b35;border-color:rgba(255,107,53,0.4);background:rgba(255,107,53,0.07);':'color:#35b0ff;border-color:rgba(53,176,255,0.4);background:rgba(53,176,255,0.07);'}">${d.dcmpDivision.toUpperCase()} DIV</span>` : '';
+        html += `<div class="team-card"><div class="team-card-header" onclick="toggleTeamCard('tc_${teamNum}')"><div class="team-card-num">#${teamNum}</div><div class="team-card-info"><div class="team-card-name">${d.teamName||'—'} ${getEventBadge(d.collection)}</div><div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">${rankBadge}${divBadge}</div><div class="team-card-scout" style="margin-top:4px;">Scout: ${d.scout||'Unknown'} &nbsp;|&nbsp; ${evts.length} event(s)</div></div><div class="team-card-stats"><div class="team-stat-mini"><div class="v">${e1.epa||'—'}</div><div class="l">EPA</div></div><div class="team-stat-mini"><div class="v">${e1.opr||'—'}</div><div class="l">OPR</div></div><div class="team-stat-mini"><div class="v">${d.districtRank||'—'}</div><div class="l">Rank</div></div></div><span class="team-card-toggle" id="tct_${teamNum}">[ + ]</span></div><div class="team-card-body" id="tc_${teamNum}">${renderPerfBody(records)}</div></div>`;
+      });
+    return html;
   }
 
   function renderEIBody(records) {
