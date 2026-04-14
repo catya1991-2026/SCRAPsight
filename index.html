@@ -1148,12 +1148,12 @@
     }
   }
 
-  // ─── DIVISION SYNC: Load from Firestore ───────────────────────────────────
+  // ─── DIVISION SYNC: Load from scouts_dcmp ────────────────────────────────
   async function loadDivisionAssignmentsFromDB() {
     try {
-      const snap = await window.getDocs(window.collection(window.db, 'config'));
+      const snap = await window.getDocs(window.collection(window.db, 'scouts_dcmp'));
       snap.forEach(d => {
-        if (d.id === 'divisions') {
+        if (d.id === '__divisions__') {
           const data = d.data();
           divisionAssignments.burns = data.burns || [];
           divisionAssignments.newsom = data.newsom || [];
@@ -1164,14 +1164,14 @@
     }
   }
 
-  // ─── DIVISION SYNC: Save to Firestore ─────────────────────────────────────
+  // ─── DIVISION SYNC: Save to scouts_dcmp ──────────────────────────────────
   async function saveDivisionAssignmentsToDB(burnsArr, newsomArr) {
     const statusEl = document.getElementById('divSyncStatus');
     if (statusEl) { statusEl.className = 'div-sync-status saving'; statusEl.textContent = '⟳ SAVING...'; }
     try {
       await window.setDoc(
-        window.doc(window.db, 'config', 'divisions'),
-        { burns: burnsArr, newsom: newsomArr, updatedAt: window.serverTimestamp() }
+        window.doc(window.db, 'scouts_dcmp', '__divisions__'),
+        { burns: burnsArr, newsom: newsomArr, type: '__divisions__', updatedAt: window.serverTimestamp() }
       );
       divisionAssignments.burns = burnsArr;
       divisionAssignments.newsom = newsomArr;
@@ -1198,6 +1198,7 @@
         try {
           const snap = await window.getDocs(window.collection(window.db, col));
           snap.forEach(doc => {
+            if (doc.id === '__divisions__') return;
             allScoutData.push({ id: doc.id, collection: col, ...doc.data() });
           });
         } catch(e) {}
