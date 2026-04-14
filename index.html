@@ -8,7 +8,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, setDoc, doc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBA0TxRk1JgoYcu8i-y5XDjp3GH-c5QXBk",
@@ -23,6 +23,8 @@
   const db = getFirestore(app);
   window.db = db;
   window.addDoc = addDoc;
+  window.setDoc = setDoc;
+  window.doc = doc;
   window.getDocs = getDocs;
   window.collection = collection;
   window.query = query;
@@ -427,6 +429,15 @@
     background: rgba(255,215,0,0.07); color: var(--gold); letter-spacing: 1px;
   }
 
+  /* Division sync status badge */
+  .div-sync-status {
+    font-family: 'Share Tech Mono'; font-size: 9px; padding: 3px 10px;
+    border: 1px solid; text-transform: uppercase; letter-spacing: 1px; margin-left: auto;
+  }
+  .div-sync-status.synced { color: var(--win); border-color: rgba(0,255,163,0.4); background: rgba(0,255,163,0.06); }
+  .div-sync-status.saving { color: var(--gold); border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.06); }
+  .div-sync-status.error { color: var(--accent); border-color: rgba(255,45,85,0.4); background: rgba(255,45,85,0.06); }
+
   @media(max-width:600px) {
     .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
@@ -737,11 +748,8 @@
   let selectedEIEvent = null;
   let eventBlockCount = 0;
 
+  // Division assignments — loaded from Firestore, NOT localStorage
   let divisionAssignments = { burns: [], newsom: [] };
-  try {
-    const saved = localStorage.getItem('scrapsight_divisions');
-    if (saved) divisionAssignments = JSON.parse(saved);
-  } catch(e){}
 
   function updateClock() {
     const now = new Date();
@@ -1140,9 +1148,47 @@
     }
   }
 
+  // ─── DIVISION SYNC: Load from Firestore ───────────────────────────────────
+  async function loadDivisionAssignmentsFromDB() {
+    try {
+      const snap = await window.getDocs(window.collection(window.db, 'config'));
+      snap.forEach(d => {
+        if (d.id === 'divisions') {
+          const data = d.data();
+          divisionAssignments.burns = data.burns || [];
+          divisionAssignments.newsom = data.newsom || [];
+        }
+      });
+    } catch(e) {
+      console.warn('Could not load divisions from DB:', e);
+    }
+  }
+
+  // ─── DIVISION SYNC: Save to Firestore ─────────────────────────────────────
+  async function saveDivisionAssignmentsToDB(burnsArr, newsomArr) {
+    const statusEl = document.getElementById('divSyncStatus');
+    if (statusEl) { statusEl.className = 'div-sync-status saving'; statusEl.textContent = '⟳ SAVING...'; }
+    try {
+      await window.setDoc(
+        window.doc(window.db, 'config', 'divisions'),
+        { burns: burnsArr, newsom: newsomArr, updatedAt: window.serverTimestamp() }
+      );
+      divisionAssignments.burns = burnsArr;
+      divisionAssignments.newsom = newsomArr;
+      if (statusEl) { statusEl.className = 'div-sync-status synced'; statusEl.textContent = '✓ SYNCED TO ALL DEVICES'; }
+    } catch(e) {
+      if (statusEl) { statusEl.className = 'div-sync-status error'; statusEl.textContent = '✕ SYNC FAILED'; }
+      console.error('Division save error:', e);
+    }
+  }
+  // ──────────────────────────────────────────────────────────────────────────
+
   async function loadAnalytics() {
     const content = document.getElementById('analyticsContent');
     content.innerHTML = '<div class="loading-state"><div class="spinner"></div>PULLING INTEL FROM DATABASE...</div>';
+
+    // Load division assignments from Firestore first
+    await loadDivisionAssignmentsFromDB();
 
     const collections = ['scouts_dcmp', 'scouts_unh', 'scouts_hartford', 'scouts'];
     allScoutData = [];
@@ -1287,9 +1333,13 @@
 
     let html = `
       <div class="division-setup-card">
-        <div class="division-setup-title">⬡ Division Assignment Setup</div>
+        <div class="division-setup-title">
+          ⬡ Division Assignment Setup
+          <span class="div-sync-status synced" id="divSyncStatus">✓ CLOUD SYNCED</span>
+        </div>
         <p style="font-family:'Share Tech Mono';font-size:9px;color:#555;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;">
-          Enter team numbers for each division (one per line or comma-separated). Assignments auto-save to your browser.
+          Enter team numbers for each division (one per line or comma-separated).<br>
+          Assignments save to the shared database — all devices see the same list.
         </p>
         <div class="division-teams-grid">
           <div class="division-col">
@@ -1301,7 +1351,7 @@
             <textarea id="newsom_input" rows="8" style="background:#0a0a0a;border:1px solid rgba(53,176,255,0.25);color:#ccc;font-family:'Share Tech Mono';font-size:11px;width:100%;padding:10px;outline:none;resize:vertical;" placeholder="9999&#10;4321&#10;8765...">${divisionAssignments.newsom.join('\n')}</textarea>
           </div>
         </div>
-        <button class="btn-load-divisions" onclick="loadDivisions()">▶ LOAD DIVISIONS & GENERATE PRESCOUTING</button>
+        <button class="btn-load-divisions" onclick="loadDivisions()">▶ SAVE TO DATABASE & GENERATE PRESCOUTING</button>
       </div>
       <div id="divisionPrescouting"></div>
     `;
@@ -1312,15 +1362,16 @@
     }
   }
 
-  function loadDivisions() {
+  async function loadDivisions() {
     const burnsRaw = document.getElementById('burns_input').value;
     const newsomRaw = document.getElementById('newsom_input').value;
 
     const parse = (str) => str.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    divisionAssignments.burns = parse(burnsRaw);
-    divisionAssignments.newsom = parse(newsomRaw);
+    const burnsArr = parse(burnsRaw);
+    const newsomArr = parse(newsomRaw);
 
-    try { localStorage.setItem('scrapsight_divisions', JSON.stringify(divisionAssignments)); } catch(e){}
+    // Save to Firestore so all devices get the update
+    await saveDivisionAssignmentsToDB(burnsArr, newsomArr);
 
     const perfRecords = allScoutData.filter(d => d.type === 'perf_only');
     const teamLookup = {};
@@ -1382,7 +1433,7 @@
           `;
         } else {
           const d = records[records.length-1];
-          const evts = d.events || (d.e1 ? [d.e1] : []);
+          const evts = d.events || (d.e1 ? [d.e1, ...(d.e2 ? [d.e2] : [])] : []);
           const e1 = evts[0] || {};
           const rankBadge = d.districtRank ? `<span class="district-rank-badge" style="font-size:11px;">NE #${d.districtRank}</span>` : '';
           const ptsBadge = d.districtPoints ? `<span style="font-family:'Share Tech Mono';font-size:9px;color:#777;padding:2px 6px;border:1px solid #2a2a2a;">PTS: ${d.districtPoints}</span>` : '';
@@ -1416,7 +1467,7 @@
     });
 
     if (!html) {
-      html = '<div class="empty-state"><div class="icon">⬡</div><p>NO DIVISION TEAMS ENTERED YET<br>ADD TEAM NUMBERS ABOVE AND CLICK LOAD</p></div>';
+      html = '<div class="empty-state"><div class="icon">⬡</div><p>NO DIVISION TEAMS ENTERED YET<br>ADD TEAM NUMBERS ABOVE AND CLICK SAVE</p></div>';
     }
     container.innerHTML = html;
   }
